@@ -51,9 +51,9 @@ export default function Dashboard() {
                 </h2>
                 <div className="grid auto-rows-min gap-4 md:grid-cols-4">
                     <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        {/* <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" /> */}
-                        <Card className="h-full hover:shadow-md transition">
-                            <Link href="/noticias">
+                        <Link href="/noticias">
+                            {/* <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" /> */}
+                            <Card className="h-full hover:shadow-md transition">
                                 <CardContent className="pt-5">
                                     <CardTitle className="text-base">
                                         📰 Últimas noticias
@@ -62,13 +62,13 @@ export default function Dashboard() {
                                         Lo más reciente del grupo GEEVIH y avances en enfermería VIH.
                                     </p>
                                 </CardContent>
-                            </Link>
-                        </Card>
+                            </Card>
+                        </Link>
                     </div>
                     <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                         {/* <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" /> */}
-                        <Card className="h-full hover:shadow-md transition">
-                            <Link href="/eventos">
+                        <Link href="/eventos">
+                            <Card className="h-full hover:shadow-md transition">
                                 <CardContent className="p-5">
                                     <CardTitle className="text-base">
                                         📅 Próximos eventos
@@ -77,21 +77,21 @@ export default function Dashboard() {
                                         Jornadas, congresos y talleres en los que participamos.
                                     </p>
                                 </CardContent>
-                            </Link>
-                        </Card>
+                            </Card>
+                        </Link>
                     </div>
                     <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                         {/* <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" /> */}
-                        <Card className="h-full hover:shadow-md transition">
-                            <Link href="/publicaciones">
+                        <Link href="/publicaciones">
+                            <Card className="h-full hover:shadow-md transition">
                                 <CardContent className="p-5">
                                     <CardTitle className="text-base">📚 Publicaciones</CardTitle>
                                     <p className="text-sm text-muted-foreground mt-2">
                                         Consulta los estudios y artículos más recientes.
                                     </p>
                                 </CardContent>
-                            </Link>
-                        </Card>
+                            </Card>
+                        </Link>
                     </div>
                     <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
                         {/* <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" /> */}
