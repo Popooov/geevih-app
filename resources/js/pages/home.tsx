@@ -11,12 +11,12 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Dashboard() {
+export default function Home() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Home" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl px-4 py-12 overflow-x-auto">
-                <div className="flex min-h-[100vh] justify-center flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border">
+                <div className="flex min-h-[100vh] justify-center flex-1 overflow-hidden rounded-xl md:min-h-min">
                     {/* <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" /> */}
                     <section className="flex flex-col justify-center items-center text-center space-y-18">
                         <div className="flex justify-center">
@@ -50,61 +50,56 @@ export default function Dashboard() {
                     Accesos rápidos
                 </h2>
                 <div className="grid auto-rows-min gap-4 md:grid-cols-4">
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        <Link href="/noticias">
-                            {/* <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" /> */}
-                            <Card className="h-full hover:shadow-md transition">
-                                <CardContent className="pt-5">
-                                    <CardTitle className="text-base">
-                                        📰 Últimas noticias
-                                    </CardTitle>
-                                    <p className="text-sm text-muted-foreground mt-2">
-                                        Lo más reciente del grupo GEEVIH y avances en enfermería VIH.
-                                    </p>
-                                </CardContent>
-                            </Card>
-                        </Link>
-                    </div>
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        {/* <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" /> */}
-                        <Link href="/eventos">
-                            <Card className="h-full hover:shadow-md transition">
-                                <CardContent className="p-5">
-                                    <CardTitle className="text-base">
-                                        📅 Próximos eventos
-                                    </CardTitle>
-                                    <p className="text-sm text-muted-foreground mt-2">
-                                        Jornadas, congresos y talleres en los que participamos.
-                                    </p>
-                                </CardContent>
-                            </Card>
-                        </Link>
-                    </div>
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
-                        {/* <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" /> */}
-                        <Link href="/publicaciones">
-                            <Card className="h-full hover:shadow-md transition">
-                                <CardContent className="p-5">
-                                    <CardTitle className="text-base">📚 Publicaciones</CardTitle>
-                                    <p className="text-sm text-muted-foreground mt-2">
-                                        Consulta los estudios y artículos más recientes.
-                                    </p>
-                                </CardContent>
-                            </Card>
-                        </Link>
-                    </div>
-                    <div className="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border">
+                    <Link href="/noticias">
                         {/* <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" /> */}
                         <Card className="h-full hover:shadow-md transition">
-                            <CardContent className="p-5">
-                                <CardTitle className="text-base">🤝 Hacerse socio</CardTitle>
+                            <CardContent className="pt-5">
+                                <CardTitle className="text-base">
+                                    📰 Últimas noticias
+                                </CardTitle>
                                 <p className="text-sm text-muted-foreground mt-2">
-                                Únete al GEEVIH y participa activamente en nuestras
-                                iniciativas.
+                                    Lo más reciente del grupo GEEVIH y avances en enfermería VIH.
                                 </p>
                             </CardContent>
                         </Card>
-                    </div>
+                    </Link>
+
+                    {/* <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" /> */}
+                    <Link href="/eventos">
+                        <Card className="h-full hover:shadow-md transition">
+                            <CardContent className="p-5">
+                                <CardTitle className="text-base">
+                                    📅 Próximos eventos
+                                </CardTitle>
+                                <p className="text-sm text-muted-foreground mt-2">
+                                    Jornadas, congresos y talleres en los que participamos.
+                                </p>
+                            </CardContent>
+                        </Card>
+                    </Link>
+
+                    {/* <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" /> */}
+                    <Link href="/publicaciones">
+                        <Card className="h-full hover:shadow-md transition">
+                            <CardContent className="p-5">
+                                <CardTitle className="text-base">📚 Publicaciones</CardTitle>
+                                <p className="text-sm text-muted-foreground mt-2">
+                                    Consulta los estudios y artículos más recientes.
+                                </p>
+                            </CardContent>
+                        </Card>
+                    </Link>
+
+                    {/* <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" /> */}
+                    <Card className="h-full hover:shadow-md transition">
+                        <CardContent className="p-5">
+                            <CardTitle className="text-base">🤝 Hacerse socio</CardTitle>
+                            <p className="text-sm text-muted-foreground mt-2">
+                            Únete al GEEVIH y participa activamente en nuestras
+                            iniciativas.
+                            </p>
+                        </CardContent>
+                    </Card>
                 </div>
             </div>
         </AppLayout>
