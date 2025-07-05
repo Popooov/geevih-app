@@ -11,6 +11,10 @@ Route::get('/sobre', function () {
     return Inertia::render('about');
 })->name('about');
 
+Route::get('/areas', function () {
+    return Inertia::render('areas');
+})->name('areas');
+
 // Route::middleware(['auth', 'verified'])->group(function () {
 //     Route::get('dashboard', function () {
 //         return Inertia::render('dashboard');
