@@ -15,7 +15,7 @@ export default function Home() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Home" />
-            <main className="mx-auto flex min-h-[calc(100vh-60px)] max-w-6xl flex-col items-center justify-center space-y-24 p-6">
+            <main className="mx-auto flex min-h-[calc(100vh-80px)] max-w-6xl flex-col items-center justify-center space-y-24 p-6">
                 {/* <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" /> */}
                 <section className="space-y-8 text-center">
                     <div className="flex justify-center">

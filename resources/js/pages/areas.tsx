@@ -14,7 +14,7 @@ export default function Areas() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="About" />
             <main className="mx-auto max-w-6xl space-y-10 p-6">
-                <h1 className="text-3xl font-bold">Áreas de Trabajo</h1>
+                <h1 className="mt-6 lg:mt-8 text-3xl text-center font-bold">Áreas de Trabajo</h1>
 
                 {/* Investigación */}
                 <section className="space-y-4">
