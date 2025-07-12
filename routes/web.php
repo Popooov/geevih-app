@@ -15,6 +15,10 @@ Route::get('/areas', function () {
     return Inertia::render('areas');
 })->name('areas');
 
+Route::get('/eventos', function () {
+    return Inertia::render('events');
+})->name('events');
+
 // Route::middleware(['auth', 'verified'])->group(function () {
 //     Route::get('dashboard', function () {
 //         return Inertia::render('dashboard');

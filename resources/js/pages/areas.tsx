@@ -2,6 +2,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { BookOpen, Microscope, Share2 } from 'lucide-react';
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Areas',
