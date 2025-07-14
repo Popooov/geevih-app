@@ -19,6 +19,10 @@ Route::get('/eventos', function () {
     return Inertia::render('events');
 })->name('events');
 
+Route::get('/recursos', function () {
+    return Inertia::render('resources');
+})->name('resources');
+
 // Route::middleware(['auth', 'verified'])->group(function () {
 //     Route::get('dashboard', function () {
 //         return Inertia::render('dashboard');
