@@ -23,6 +23,10 @@ Route::get('/recursos', function () {
     return Inertia::render('resources');
 })->name('resources');
 
+Route::get('/noticias', function () {
+    return Inertia::render('news');
+})->name('news');
+
 // Route::middleware(['auth', 'verified'])->group(function () {
 //     Route::get('dashboard', function () {
 //         return Inertia::render('dashboard');
