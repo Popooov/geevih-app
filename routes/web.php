@@ -31,6 +31,10 @@ Route::get('/contacto', function () {
     return Inertia::render('contact');
 })->name('contact');
 
+Route::get('/enlaces', function () {
+    return Inertia::render('links');
+})->name('links');
+
 // Route::middleware(['auth', 'verified'])->group(function () {
 //     Route::get('dashboard', function () {
 //         return Inertia::render('dashboard');
