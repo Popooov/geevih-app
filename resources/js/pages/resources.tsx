@@ -7,12 +7,12 @@ import { FileText, BookMarked, Landmark } from "lucide-react";
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Resorces',
+        title: 'Resources',
         href: '/recursos',
     },
 ];
 
-export default function Recursos() {
+export default function Resources() {
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head />
