@@ -24,7 +24,7 @@ export default function EventCard({
   imagen,
 }: EventCardProps) {
   return (
-    <Card className="hover:shadow-md transition overflow-hidden">
+    <Card className="hover:shadow-md transition overflow-hidden flex flex-col justify-between">
       {/* HEADER: imagen + título */}
       <CardHeader className="p-0 relative h-40">
         <img
@@ -52,7 +52,7 @@ export default function EventCard({
 
       {/* FOOTER: enlace si existe */}
       {link && (
-        <CardFooter className="pt-2">
+        <CardFooter className="pb-4">
           <a
             href={link}
             target="_blank"
