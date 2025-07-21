@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class News extends Model
 {
+    protected $casts = [
+        'published_at' => 'datetime',
+    ];
+
     protected $fillable = [
         'title',
         'published_at',

@@ -6,10 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Event extends Model
 {
+    protected $casts = [
+        'date' => 'datetime',
+    ];
+
     protected $fillable = [
         'title',
         'date',
         'description',
+        'content',
         'image_url',
     ];
 
