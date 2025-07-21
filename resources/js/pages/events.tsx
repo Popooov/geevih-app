@@ -30,14 +30,14 @@ export default function Events() {
               titulo="European HIV Nurse Network (EHNN) Webinar"
               fecha="1 de abril de 2025"
               descripcion="Join us for an insightful session where experts in HIV nursing will share the latest updates, best practices, and innovative approaches to patient care."
-              imagen="/images/eventos/european-hiv-nursing.png"
+              imagen="/images/events/european-hiv-nursing.png"
               link="#"
             />
             <EventCard
               titulo="Reunión SEISIDA 2025"
               fecha="29 de abril de 2025"
               descripcion="Cuidados diversos para necesidades diversas."
-              imagen="/images/eventos/SAVE-THE-DATE-REUNION-25.jpg"
+              imagen="/images/events/SAVE-THE-DATE-REUNION-25.jpg"
               link="#"
             />
           </div>
