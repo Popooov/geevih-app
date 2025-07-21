@@ -55,7 +55,7 @@ export default function EventCard({
         <CardFooter className="pb-4">
           <a
             href={link}
-            target="_blank"
+            target="_self"
             rel="noopener noreferrer"
             className="text-sm text-primary underline"
           >

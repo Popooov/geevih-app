@@ -41,3 +41,32 @@ export interface User {
     updated_at: string;
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export interface Event {
+  id: number;
+  titulo: string;
+  fecha: string;
+  descripcion: string;
+  imagen: string;
+  link?: string;
+}
+
+export interface SingleEvent {
+  id: number;
+  titulo: string;
+  fecha: string;
+  descripcion: string;
+  contenido?: string;
+  imagen: string;
+}
+
+export interface PageProps {
+  upcomingEvents: Event[];
+  pastEvents: Event[];
+  [key: string]: unknown;
+}
+
+export interface ShowEventPageProps {
+  event: SingleEvent;
+  [key: string]: unknown;
+}

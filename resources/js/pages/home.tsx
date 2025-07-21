@@ -37,7 +37,7 @@ export default function Home() {
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
                         {/* <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" /> */}
                         <Card>
-                            <Link href="/noticias">
+                            <Link href="/noticias" prefetch>
                                 <CardContent>
                                     <CardTitle>📰 Últimas noticias</CardTitle>
                                     <CardDescription>Lo más reciente del grupo GEEVIH y avances en enfermería VIH.</CardDescription>
@@ -47,7 +47,7 @@ export default function Home() {
 
                         {/* <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" /> */}
                         <Card>
-                            <Link href="/eventos">
+                            <Link href="/eventos" prefetch>
                                 <CardContent>
                                     <CardTitle>📅 Próximos eventos</CardTitle>
                                     <CardDescription>Jornadas, congresos y talleres en los que participamos.</CardDescription>

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\EventController;
 
 Route::get('/', function () {
     return Inertia::render('home');
@@ -15,9 +16,11 @@ Route::get('/areas', function () {
     return Inertia::render('areas');
 })->name('areas');
 
-Route::get('/eventos', function () {
-    return Inertia::render('events');
-})->name('events');
+Route::get('/eventos', [EventController::class, 'index'],
+)->name('events');
+
+Route::get('/eventos/{event}', [EventController::class, 'show'])
+     ->name('events.show');
 
 Route::get('/recursos', function () {
     return Inertia::render('resources');
