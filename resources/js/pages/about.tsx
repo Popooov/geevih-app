@@ -12,8 +12,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function About() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="About" />
-            <main className="mx-auto max-w-5xl space-y-10 p-6">
+            <Head title="Sobre" />
+            <div className="mx-auto max-w-5xl space-y-10 p-6">
                 {/* Título */}
                 <h1 className="mt-6 lg:mt-8 text-center text-3xl font-bold">Sobre el GEEVIH</h1>
 
@@ -83,7 +83,7 @@ export default function About() {
                         continua.
                     </p>
                 </section>
-            </main>
+            </div>
         </AppLayout>
     );
 }
