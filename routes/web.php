@@ -27,6 +27,10 @@ Route::get('/noticias', function () {
     return Inertia::render('news');
 })->name('news');
 
+Route::get('/contacto', function () {
+    return Inertia::render('contact');
+})->name('contact');
+
 // Route::middleware(['auth', 'verified'])->group(function () {
 //     Route::get('dashboard', function () {
 //         return Inertia::render('dashboard');
