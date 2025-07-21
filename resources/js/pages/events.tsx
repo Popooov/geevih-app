@@ -1,4 +1,4 @@
-import EventCard from '@/components/ui/event-card';
+import EventCard from '@/components/event-card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';

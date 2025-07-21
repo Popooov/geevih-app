@@ -1,4 +1,4 @@
-import ResourceCard from '@/components/ui/resource-card';
+import ResourceCard from '@/components/resource-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
