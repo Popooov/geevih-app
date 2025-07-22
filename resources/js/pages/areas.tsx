@@ -1,21 +1,13 @@
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { BookOpen, Microscope, Share2 } from 'lucide-react';
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Areas',
-        href: '/areas',
-    },
-];
-
 export default function Areas() {
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout>
             <Head title="Áreas" />
             <div className="mx-auto max-w-6xl space-y-10 p-6">
-                <h1 className="mt-6 lg:mt-8 text-3xl text-center font-bold">Áreas de Trabajo</h1>
+                <h1 className="mt-6 text-center text-3xl font-bold lg:mt-8">Áreas de Trabajo</h1>
 
                 {/* Investigación */}
                 <section className="space-y-4">

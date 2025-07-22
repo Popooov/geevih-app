@@ -1,23 +1,15 @@
 import ResourceCard from '@/components/resource-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { BookMarked, FileText, Landmark } from 'lucide-react';
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Resources',
-        href: '/recursos',
-    },
-];
-
 export default function Resources() {
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout>
             <Head title="Recursos" />
             <div className="mx-auto max-w-6xl space-y-10 p-6">
-                <h1 className="mt-6 lg:mt-8 text-center text-3xl font-bold">Recursos y Documentos</h1>
+                <h1 className="mt-6 text-center text-3xl font-bold lg:mt-8">Recursos y Documentos</h1>
 
                 <p className="text-muted-foreground">
                     Accede a guías clínicas, infografías educativas y documentos relevantes relacionados con el cuidado de las personas con VIH.

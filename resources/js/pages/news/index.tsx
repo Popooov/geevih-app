@@ -1,7 +1,7 @@
 import NewsCard from '@/components/news-card';
 import AppLayout from '@/layouts/app-layout';
 import { type NewsPageProps } from '@/types';
-import { usePage, Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { Newspaper } from 'lucide-react';
 
 export default function Index() {
@@ -11,7 +11,7 @@ export default function Index() {
         <AppLayout>
             <Head title="Noticias" />
             <div className="mx-auto max-w-6xl space-y-10 p-6">
-                <h1 className="flex items-center gap-2 mt-6 lg:mt-8 text-center text-3xl font-bold">
+                <h1 className="mt-6 flex items-center gap-2 text-center text-3xl font-bold lg:mt-8">
                     <Newspaper className="h-7 w-7 text-primary" />
                     Noticias
                 </h1>

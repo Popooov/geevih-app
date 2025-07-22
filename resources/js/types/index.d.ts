@@ -43,21 +43,21 @@ export interface User {
 }
 
 export interface Events {
-  id: number;
-  titulo: string;
-  fecha: string;
-  descripcion: string;
-  imagen: string;
-  link?: string;
+    id: number;
+    titulo: string;
+    fecha: string;
+    descripcion: string;
+    imagen: string;
+    link?: string;
 }
 
 export interface SingleEvent {
-  id: number;
-  titulo: string;
-  fecha: string;
-  descripcion: string;
-  contenido?: string;
-  imagen: string;
+    id: number;
+    titulo: string;
+    fecha: string;
+    descripcion: string;
+    contenido?: string;
+    imagen: string;
 }
 
 export interface News {
@@ -79,14 +79,14 @@ export interface SingleNews {
 }
 
 export interface EventPageProps {
-  upcomingEvents: Events[];
-  pastEvents: Events[];
-  [key: string]: unknown;
+    upcomingEvents: Events[];
+    pastEvents: Events[];
+    [key: string]: unknown;
 }
 
 export interface ShowEventPageProps {
-  event: SingleEvent;
-  [key: string]: unknown;
+    event: SingleEvent;
+    [key: string]: unknown;
 }
 
 export interface NewsPageProps {
