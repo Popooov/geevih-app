@@ -42,7 +42,7 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
-export interface Event {
+export interface Events {
   id: number;
   titulo: string;
   fecha: string;
@@ -60,13 +60,41 @@ export interface SingleEvent {
   imagen: string;
 }
 
-export interface PageProps {
-  upcomingEvents: Event[];
-  pastEvents: Event[];
+export interface News {
+    id: number;
+    titulo: string;
+    fecha: string;
+    descripcion: string;
+    imagen: string;
+    link?: string;
+}
+
+export interface SingleNews {
+    id: number;
+    titulo: string;
+    fecha: string;
+    descripcion: string;
+    contenido?: string;
+    imagen: string;
+}
+
+export interface EventPageProps {
+  upcomingEvents: Events[];
+  pastEvents: Events[];
   [key: string]: unknown;
 }
 
 export interface ShowEventPageProps {
   event: SingleEvent;
   [key: string]: unknown;
+}
+
+export interface NewsPageProps {
+    news: News[];
+    [key: string]: unknown;
+}
+
+export interface ShowNewsPageProps {
+    singleNews: SingleNews;
+    [key: string]: unknown;
 }

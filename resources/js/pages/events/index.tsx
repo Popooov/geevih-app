@@ -1,12 +1,12 @@
 import EventCard from '@/components/event-card';
 import AppLayout from '@/layouts/app-layout';
-import { type PageProps } from '@/types';
+import { type EventPageProps } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
 import { Archive, CalendarCheck, Trophy } from 'lucide-react';
 
 
 export default function Index() {
-    const { upcomingEvents, pastEvents } = usePage<PageProps>().props;
+    const { upcomingEvents, pastEvents } = usePage<EventPageProps>().props;
 
     return (
         <AppLayout>
@@ -30,7 +30,7 @@ export default function Index() {
                                     fecha={event.fecha}
                                     descripcion={event.descripcion}
                                     imagen={event.imagen}
-                                    link={event.link}
+                                    enlace={event.link}
                                 />
                             ))
                         ) : (
@@ -54,7 +54,7 @@ export default function Index() {
                                     fecha={event.fecha}
                                     descripcion={event.descripcion}
                                     imagen={event.imagen}
-                                    link={event.link}
+                                    enlace={event.link}
                                 />
                             ))
                         ) : (

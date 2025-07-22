@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\NewsController;
 
 Route::get('/', function () {
     return Inertia::render('home');
@@ -26,9 +27,11 @@ Route::get('/recursos', function () {
     return Inertia::render('resources');
 })->name('resources');
 
-Route::get('/noticias', function () {
-    return Inertia::render('news');
-})->name('news');
+Route::get('/noticias', [NewsController::class, 'index'])
+->name('news.index');
+
+Route::get('/noticias/{news}', [NewsController::class, 'show'])
+->name('news.show');
 
 Route::get('/contacto', function () {
     return Inertia::render('contact');

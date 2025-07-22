@@ -15,7 +15,7 @@ export default function Show() {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={event.titulo} />
 
-            <div className="mx-auto max-w-3xl space-y-6 p-6">
+            <div className="mx-auto max-w-3xl space-y-6 p-6 mb-6">
                 <Link href="/eventos" prefetch className="flex items-center text-sm text-primary underline">
                     <ArrowLeft className="mr-1 h-4 w-4" /> Volver
                 </Link>
