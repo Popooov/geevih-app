@@ -5,7 +5,6 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ResourceResource\Pages;
 use App\Filament\Resources\ResourceResource\RelationManagers;
 use App\Models\ContentResource;
-use App\Models\Resource as ResourceModel;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
