@@ -31,7 +31,7 @@ export default function About() {
 
                 {/* Objetivos */}
                 <section>
-                    <h2 className="mb-2 text-2xl font-semibold">🎯 Objetivos del grupo</h2>
+                    <h2 className="mb-2 text-2xl font-semibold">Objetivos del grupo</h2>
                     <ul className="list-inside list-disc space-y-1 text-muted-foreground">
                         <li>Consolidar el liderazgo en el cuidado de personas con VIH.</li>
                         <li>Promover la formación continua y la investigación.</li>
@@ -41,7 +41,7 @@ export default function About() {
 
                 {/* Principios del grupo */}
                 <section>
-                    <h2 className="mb-2 text-2xl font-semibold">💡 Principios</h2>
+                    <h2 className="mb-2 text-2xl font-semibold">Principios</h2>
                     <p className="text-muted-foreground">
                         Cuidados de enfermería integrales, <strong>libres de estigma y discriminación</strong>, son principios básicos de GEEVIH. Todo
                         ello sin olvidar la <strong>investigación enfermera de excelencia</strong>, imprescindible para mejorar la atención y calidad
@@ -51,7 +51,7 @@ export default function About() {
 
                 {/* Integración en SEISIDA */}
                 <section>
-                    <h2 className="mb-2 text-2xl font-semibold">🤝 Integración en SEISIDA</h2>
+                    <h2 className="mb-2 text-2xl font-semibold">Integración en SEISIDA</h2>
                     <p className="text-muted-foreground">
                         Gracias a su integración en SEISIDA, el grupo cuenta con una plataforma colaborativa robusta para alcanzar sus objetivos en el
                         marco de la defensa de los derechos y la igualdad de acceso a servicios de calidad de las personas con VIH.
@@ -67,7 +67,7 @@ export default function About() {
 
                 {/* Misión */}
                 <section>
-                    <h2 className="mb-2 text-2xl font-semibold">🚀 Misión</h2>
+                    <h2 className="mb-2 text-2xl font-semibold">Misión</h2>
                     <p className="text-muted-foreground">
                         GEEVIH nace con la misión de ser un referente en el ámbito de los cuidados a las PVIH en todos los servicios sanitarios del
                         territorio español, contribuyendo activamente en el diagnóstico precoz del VIH/ITS y en la mejora de la calidad de vida de las
