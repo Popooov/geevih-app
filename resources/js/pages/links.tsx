@@ -1,17 +1,13 @@
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
-import { ExternalLink, Link as LinkIcon } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 
 export default function Links() {
     return (
         <AppLayout>
             <Head title="Enlaces" />
             <main className="mx-auto max-w-4xl space-y-10 p-6">
-                <h1 className="mt-6 flex items-center gap-2 text-center text-3xl font-bold lg:mt-8">
-                    <LinkIcon className="h-6 w-6 text-primary" />
-                    Enlaces de interés
-                </h1>
-
+                <h1 className="mt-6 text-center text-3xl font-bold lg:mt-8">Enlaces de interés</h1>
                 <ul className="space-y-4 text-muted-foreground">
                     <li className="flex items-center gap-3">
                         <ExternalLink className="h-4 w-4 text-primary" />
