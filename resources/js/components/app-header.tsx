@@ -1,7 +1,15 @@
 import { Breadcrumbs } from '@/components/breadcrumbs';
 import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
-import { NavigationMenu, NavigationMenuItem, NavigationMenuList, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
+import {
+    NavigationMenu,
+    NavigationMenuContent,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList,
+    NavigationMenuTrigger,
+    navigationMenuTriggerStyle,
+} from '@/components/ui/navigation-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
@@ -10,46 +18,22 @@ import { BookOpenText, Calendar, Home, Info, LayoutGrid, Link2, Mail, Menu, News
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
-    {
-        title: 'Inicio',
-        href: '/',
-        icon: Home,
-    },
-    {
-        title: 'Sobre Nosotros',
-        href: '/sobre',
-        icon: Info,
-    },
-    {
-        title: 'Áreas',
-        href: '/areas',
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Eventos',
-        href: '/eventos',
-        icon: Calendar,
-    },
-    {
-        title: 'Recursos',
-        href: '/recursos',
-        icon: BookOpenText,
-    },
-    {
-        title: 'Noticias',
-        href: '/noticias',
-        icon: Newspaper,
-    },
-    {
-        title: 'Contacto',
-        href: '/contacto',
-        icon: Mail,
-    },
-    {
-        title: 'Enlaces',
-        href: '/enlaces',
-        icon: Link2,
-    },
+    { title: 'Inicio', href: '/', icon: Home },
+    { title: 'Sobre Nosotros', href: '/sobre', icon: Info },
+    { title: 'Áreas', href: '/areas', icon: LayoutGrid },
+    { title: 'Eventos', href: '/eventos', icon: Calendar },
+    { title: 'Recursos', href: '/recursos', icon: BookOpenText },
+    { title: 'Noticias', href: '/noticias', icon: Newspaper },
+    { title: 'Contacto', href: '/contacto', icon: Mail },
+    { title: 'Enlaces', href: '/enlaces', icon: Link2 },
+];
+
+const recursosItems = [
+    { title: 'Guías y Protocolos', href: '/recursos/guias' },
+    { title: 'Herramientas Prácticas', href: '/recursos/herramientas' },
+    { title: 'Biblioteca de Artículos Científicos', href: '/recursos/biblioteca' },
+    { title: 'Material de Apoyo al Paciente', href: '/recursos/material' },
+    { title: 'Links de interés', href: '/recursos/enlaces' },
 ];
 
 const activeItemStyles = 'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
@@ -65,11 +49,12 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
         <>
             <div className="border-b border-sidebar-border/80">
                 <div className="mx-auto flex h-16 items-center justify-between px-4 md:max-w-7xl">
-                    {/* Mobile Menu */}
+                    {/* Logo */}
                     <Link href="/" prefetch className="flex items-center space-x-2">
                         <AppLogo />
                     </Link>
 
+                    {/* Mobile Menu */}
                     <div className="lg:hidden">
                         <Sheet>
                             <SheetTrigger asChild>
@@ -79,16 +64,42 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                             </SheetTrigger>
                             <SheetContent side="right" className="flex h-full w-64 flex-col items-stretch justify-between bg-sidebar">
                                 <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-                                <SheetHeader className="flex justify-start text-left"></SheetHeader>
+                                <SheetHeader className="flex justify-start text-left" />
                                 <div className="flex h-full flex-1 flex-col space-y-4 p-4">
                                     <div className="flex h-full flex-col justify-between text-sm">
-                                        <div className="flex flex-col space-y-4">
-                                            {mainNavItems.map((item) => (
-                                                <Link prefetch key={item.title} href={item.href} className="flex items-center space-x-2 font-medium">
-                                                    {item.icon && <Icon iconNode={item.icon} className="h-5 w-5" />}
-                                                    <span>{item.title}</span>
-                                                </Link>
-                                            ))}
+                                        <div className="flex flex-col space-y-1.5">
+                                            {mainNavItems.map((item) => {
+                                                const isRecursos = item.title === 'Recursos';
+                                                const isActive = page.url === item.href || (isRecursos && page.url.startsWith('/recursos'));
+
+                                                return (
+                                                    <div key={item.title} className="flex flex-col">
+                                                        <Link
+                                                            prefetch
+                                                            href={item.href}
+                                                            className={cn(
+                                                                'flex items-center gap-3 space-x-2 rounded-md px-4 py-3 text-base font-medium transition-colors',
+                                                                isActive
+                                                                    ? 'bg-muted text-primary'
+                                                                    : 'text-muted-foreground hover:bg-accent hover:text-foreground',
+                                                            )}
+                                                        >
+                                                            {item.icon && <Icon iconNode={item.icon} className="h-5 w-5" />}
+                                                            <span>{item.title}</span>
+                                                        </Link>
+
+                                                        {isRecursos && (
+                                                            <div className="mt-2 ml-7 flex flex-col space-y-2 text-[0.95rem]">
+                                                                {recursosItems.map((sub) => (
+                                                                    <Link key={sub.href} prefetch href={sub.href} className="text-neutral-400">
+                                                                        {sub.title}
+                                                                    </Link>
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 </div>
@@ -98,32 +109,84 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
 
                     {/* Desktop Navigation */}
                     <div className="ml-6 hidden h-full items-center space-x-6 lg:flex">
-                        <NavigationMenu className="flex h-full items-stretch">
+                        <NavigationMenu viewport={false} className="relative flex h-full items-stretch">
                             <NavigationMenuList className="flex h-full items-stretch space-x-2">
-                                {mainNavItems.map((item, index) => (
-                                    <NavigationMenuItem key={index} className="relative flex h-full items-center">
-                                        <Link
-                                            href={item.href}
-                                            prefetch
-                                            className={cn(
-                                                navigationMenuTriggerStyle(),
-                                                page.url === item.href && activeItemStyles,
-                                                'h-9 cursor-pointer lg:px-3 xl:px-5',
+                                {mainNavItems.map((item, index) => {
+                                    const isRecursos = item.title === 'Recursos';
+                                    const isActive = page.url === item.href || (isRecursos && page.url.startsWith('/recursos'));
+
+                                    if (isRecursos) {
+                                        return (
+                                            <NavigationMenuItem key={index} className="relative flex h-full items-center">
+                                                <NavigationMenuTrigger
+                                                    className={cn(
+                                                        navigationMenuTriggerStyle(),
+                                                        'h-9 cursor-pointer lg:px-3 xl:px-5',
+                                                        isActive && activeItemStyles,
+                                                        'data-[state=open]:bg-accent data-[state=open]:text-foreground',
+                                                    )}
+                                                >
+                                                    {item.icon && <Icon iconNode={item.icon} className="mr-1 hidden h-4 w-4 lg:mr-2 xl:block" />}
+                                                    {item.title}
+                                                </NavigationMenuTrigger>
+
+                                                <NavigationMenuContent>
+                                                    <ul className="grid w-[250px] gap-3">
+                                                        {recursosItems.map((sub) => {
+                                                            const isActiveSub = page.url === sub.href || page.url.startsWith(sub.href + '/');
+                                                            return (
+                                                                <li key={sub.href}>
+                                                                    <NavigationMenuLink asChild>
+                                                                        <Link
+                                                                            href={sub.href}
+                                                                            prefetch
+                                                                            className={cn(
+                                                                                'block rounded-md px-3 py-3 text-sm leading-none transition-colors outline-none select-none hover:bg-accent focus:bg-accent',
+                                                                                isActiveSub && 'bg-accent/60',
+                                                                            )}
+                                                                        >
+                                                                            {sub.title}
+                                                                        </Link>
+                                                                    </NavigationMenuLink>
+                                                                </li>
+                                                            );
+                                                        })}
+                                                    </ul>
+                                                </NavigationMenuContent>
+
+                                                {isActive && (
+                                                    <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white" />
+                                                )}
+                                            </NavigationMenuItem>
+                                        );
+                                    }
+
+                                    return (
+                                        <NavigationMenuItem key={index} className="relative flex h-full items-center">
+                                            <Link
+                                                href={item.href}
+                                                prefetch
+                                                className={cn(
+                                                    navigationMenuTriggerStyle(),
+                                                    isActive && activeItemStyles,
+                                                    'h-9 cursor-pointer lg:px-3 xl:px-5',
+                                                )}
+                                            >
+                                                {item.icon && <Icon iconNode={item.icon} className="mr-1 hidden h-4 w-4 lg:mr-2 xl:block" />}
+                                                {item.title}
+                                            </Link>
+                                            {isActive && (
+                                                <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white" />
                                             )}
-                                        >
-                                            {item.icon && <Icon iconNode={item.icon} className="mr-1 hidden h-4 w-4 lg:mr-2 xl:block" />}
-                                            {item.title}
-                                        </Link>
-                                        {page.url === item.href && (
-                                            <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white"></div>
-                                        )}
-                                    </NavigationMenuItem>
-                                ))}
+                                        </NavigationMenuItem>
+                                    );
+                                })}
                             </NavigationMenuList>
                         </NavigationMenu>
                     </div>
                 </div>
             </div>
+
             {breadcrumbs.length > 1 && (
                 <div className="flex w-full border-b border-sidebar-border/70">
                     <div className="mx-auto flex h-12 w-full items-center justify-start px-4 text-neutral-500 md:max-w-7xl">
