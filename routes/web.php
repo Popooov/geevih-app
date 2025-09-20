@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\ResourceController;
 
 Route::get('/', function () {
     return Inertia::render('home');
@@ -23,9 +24,18 @@ Route::get('/eventos', [EventController::class, 'index'],
 Route::get('/eventos/{event}', [EventController::class, 'show'])
      ->name('events.show');
 
-Route::get('/recursos', function () {
-    return Inertia::render('resources');
-})->name('resources');
+// Route::get('/recursos', function () {
+//     return Inertia::render('resources');
+// })->name('resources');
+
+Route::prefix('recursos')->name('resources.')->group(function () {
+    Route::get('/', [ResourceController::class, 'index'])->name('index');
+    Route::get('/guias', [ResourceController::class, 'guides'])->name('guides');
+    Route::get('/herramientas', [ResourceController::class, 'herramientas'])->name('herramientas');
+    Route::get('/biblioteca', [ResourceController::class, 'biblioteca'])->name('biblioteca');
+    Route::get('/material', [ResourceController::class, 'material'])->name('material');
+    Route::get('/enlaces', [ResourceController::class, 'enlaces'])->name('enlaces');
+});
 
 Route::get('/noticias', [NewsController::class, 'index'])
 ->name('news.index');
