@@ -98,3 +98,24 @@ export interface ShowNewsPageProps {
     singleNews: SingleNews;
     [key: string]: unknown;
 }
+
+export interface Resource {
+  id: number;
+  titulo: string;
+  tipo: string;
+  fecha: string;   // render-ready
+  enlace: string;  // URL final (Cloudinary o http)
+}
+
+export interface PaginationMeta {
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+}
+
+export interface ResourcesPageProps {
+  resources: Resource[];
+  pagination: PaginationMeta;
+  [key: string]: unknown;
+}

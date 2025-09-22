@@ -29,12 +29,11 @@ Route::get('/eventos/{event}', [EventController::class, 'show'])
 // })->name('resources');
 
 Route::prefix('recursos')->name('resources.')->group(function () {
-    Route::get('/', [ResourceController::class, 'index'])->name('index');
     Route::get('/guias', [ResourceController::class, 'guides'])->name('guides');
-    Route::get('/herramientas', [ResourceController::class, 'herramientas'])->name('herramientas');
-    Route::get('/biblioteca', [ResourceController::class, 'biblioteca'])->name('biblioteca');
+    Route::get('/herramientas', [ResourceController::class, 'tools'])->name('tools');
+    Route::get('/biblioteca', [ResourceController::class, 'library'])->name('library');
     Route::get('/material', [ResourceController::class, 'material'])->name('material');
-    Route::get('/enlaces', [ResourceController::class, 'enlaces'])->name('enlaces');
+    // Route::get('/enlaces', [ResourceController::class, 'enlaces'])->name('enlaces');
 });
 
 Route::get('/noticias', [NewsController::class, 'index'])

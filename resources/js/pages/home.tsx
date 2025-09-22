@@ -1,5 +1,6 @@
 // import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import { Card, CardContent, CardDescription, CardTitle } from '@/components/ui/card';
+// import { BookOpenText, Calendar, Home, Info, LayoutGrid, Link2, Mail, Menu, Newspaper } from 'lucide-react';
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link } from '@inertiajs/react';
 
@@ -11,7 +12,7 @@ export default function Home() {
                 {/* <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" /> */}
                 <section className="space-y-8 text-center">
                     <div className="flex justify-center">
-                        <img src="geevih-logo.png" alt="Logo GEEVIH SEISIDA" className="mx-auto w-60" width={200} height={100} />
+                        <img src="images/geevih-logo.png" alt="Logo GEEVIH SEISIDA" className="mx-auto w-60" width={200} height={100} />
                     </div>
                     <h1 className="text-3xl font-bold">Grupo de Enfermería Experta en VIH (GEEVIH)</h1>
                     <p className="mx-auto max-w-xl text-muted-foreground">
@@ -31,7 +32,7 @@ export default function Home() {
                         <Card>
                             <Link href="/noticias" prefetch>
                                 <CardContent>
-                                    <CardTitle>📰 Últimas noticias</CardTitle>
+                                    <CardTitle>Últimas noticias</CardTitle>
                                     <CardDescription>Lo más reciente del grupo GEEVIH y avances en enfermería VIH.</CardDescription>
                                 </CardContent>
                             </Link>
@@ -41,7 +42,7 @@ export default function Home() {
                         <Card>
                             <Link href="/eventos" prefetch>
                                 <CardContent>
-                                    <CardTitle>📅 Próximos eventos</CardTitle>
+                                    <CardTitle>Próximos eventos</CardTitle>
                                     <CardDescription>Jornadas, congresos y talleres en los que participamos.</CardDescription>
                                 </CardContent>
                             </Link>
@@ -51,7 +52,7 @@ export default function Home() {
                         <Card>
                             <Link href="/publicaciones">
                                 <CardContent>
-                                    <CardTitle>📚 Publicaciones</CardTitle>
+                                    <CardTitle>Publicaciones</CardTitle>
                                     <CardDescription>Consulta los estudios y artículos más recientes.</CardDescription>
                                 </CardContent>
                             </Link>
@@ -60,7 +61,7 @@ export default function Home() {
                         {/* <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" /> */}
                         <Card>
                             <CardContent>
-                                <CardTitle>🤝 Hacerse socio</CardTitle>
+                                <CardTitle>Hacerse socio</CardTitle>
                                 <CardDescription>Únete al GEEVIH y participa activamente en nuestras iniciativas.</CardDescription>
                             </CardContent>
                         </Card>
