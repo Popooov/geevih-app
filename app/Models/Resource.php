@@ -50,22 +50,44 @@ class Resource extends Model
             return null;
         }
 
-        // Si ya es una URL absoluta, devolverla
+        // 1) Si ya hay una URL absoluta guardada, devolverla
         if (str_starts_with($path, 'http')) {
             return $path;
         }
 
+        // 2) Intentar resolver con Storage (adaptador Cloudinary)
         try {
-            return Storage::disk('cloudinary')->url($path);
+            $url = Storage::disk('cloudinary')->url($path);
+            if ($url) {
+                return $url;
+            }
         } catch (\Throwable $e) {
-            // Log para depuración — no rompemos la app en producción/dev
-            logger()->warning('Cloudinary URL resolution failed for Resource', [
-                'resource_id' => $this->id ?? null,
+            // no hacemos nada aquí, pasamos a fallback CDN
+            logger()->debug('Storage::disk(cloudinary)->url failed, using CDN fallback', [
+                'resource_id' => $this->id,
                 'stored_value' => $path,
                 'error' => $e->getMessage(),
             ]);
-
-            return null;
         }
+
+        // 3) Fallback: construir URL pública CDN (no requiere API)
+        // Extraemos CLOUD_NAME de CLOUDINARY_URL: cloudinary://KEY:SECRET@CLOUD_NAME
+        $cloudName = null;
+        $cloudinaryUrl = env('CLOUDINARY_URL', env('CLOUDINARY_API_URL', ''));
+
+        if ($cloudinaryUrl) {
+            $parts = explode('@', $cloudinaryUrl);
+            $cloudName = $parts[1] ?? null;
+        }
+
+        if ($cloudName) {
+            // Aseguramos que la ruta quede bien: si file_url contiene "resources/...", la dejamos.
+            $publicPath = ltrim($path, '/');
+            // Usamos raw/upload para PDFs; si fueran images podría usarse image/upload
+            return "https://res.cloudinary.com/{$cloudName}/raw/upload/{$publicPath}";
+        }
+
+        // 4) Si no podemos construir CDN, devolvemos null para no romper la vista
+        return null;
     }
 }
