@@ -6,9 +6,10 @@ import ResourceGrid from './_ResourceGrid'
 import CategoryPagination from '@/components/category-pagination'
 
 export default function Guides() {
-  const { props } = usePage<ResourcesPageProps>()
-  const items = props.resources ?? []
-  const { current_page, last_page } = props.pagination ?? { current_page: 1, last_page: 1 }
+  const { resources = [], pagination = { current_page: 1, last_page: 1 } } =
+    usePage<ResourcesPageProps>().props;
+
+  const { current_page, last_page } = pagination;
 
   return (
     <AppLayout>
@@ -22,8 +23,14 @@ export default function Guides() {
         </header>
 
         <ResourceGrid>
-          {items.map((r) => (
-            <ResourceCard key={r.id} titulo={r.titulo} tipo={r.tipo} fecha={r.fecha} enlace={r.enlace} />
+          {resources.map((r) => (
+            <ResourceCard
+              key={r.id}
+              titulo={r.titulo}
+              tipo={r.tipo}
+              fecha={r.fecha}
+              enlace={r.enlace ?? null}
+            />
           ))}
         </ResourceGrid>
 

@@ -31,7 +31,7 @@ const mainNavItems: NavItem[] = [
 const recursosItems = [
     { title: 'Guías y Protocolos', href: '/recursos/guias' },
     { title: 'Herramientas Prácticas', href: '/recursos/herramientas' },
-    { title: 'Biblioteca de Artículos Científicos', href: '/recursos/biblioteca' },
+    { title: 'Últimas Evidencias Científicas', href: '/recursos/biblioteca' },
     { title: 'Material de Apoyo al Paciente', href: '/recursos/material' },
     { title: 'Links de interés', href: '/recursos/enlaces' },
 ];

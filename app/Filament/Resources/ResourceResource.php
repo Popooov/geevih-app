@@ -3,19 +3,18 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ResourceResource\Pages;
-use App\Filament\Resources\ResourceResource\RelationManagers;
 use App\Models\Resource as ContentResource;
 use Filament\Forms;
+use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Columns\TextColumn;
+use Illuminate\Support\Facades\Storage;
 
 class ResourceResource extends Resource
 {
@@ -27,17 +26,37 @@ class ResourceResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('title')->required(),
+                TextInput::make('title')
+                    ->label('Título')
+                    ->required()
+                    ->maxLength(255),
+
                 Select::make('type')
+                    ->label('Tipo')
                     ->options([
                         'guias' => 'Guías',
-                        'infografias' => 'Infografías',
-                        'documentos' => 'Documentos',
+                        'herramientas' => 'Herramientas Prácticas',
+                        'biblioteca' => 'Biblioteca de Artículos Científicos',
+                        'material' => 'Material de Apoyo al Paciente',
                     ])
                     ->required(),
+
                 FileUpload::make('file_url')
+                    ->label('Archivo (Cloudinary)')
                     ->disk('cloudinary')
-                    ->directory('resources'),
+                    ->directory('resources')
+                    ->acceptedFileTypes(['application/pdf']) // o quita si aceptas otros tipos
+                    ->maxSize(10240) // 10 MB en KB
+                    ->preserveFilenames(false)
+                    ->openable()     // muestra botón para abrir en nueva pestaña en el panel
+                    ->downloadable() // permite descargar desde el panel
+                    ->nullable(),
+
+                DatePicker::make('published_at')
+                    ->label('Fecha de publicación')
+                    ->native(false)
+                    ->displayFormat('Y-m-d')
+                    ->placeholder('YYYY-MM-DD'),
             ]);
     }
 
@@ -45,9 +64,35 @@ class ResourceResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('title'),
-                TextColumn::make('type')->formatStateUsing(fn($state) => ucfirst($state)),
-                TextColumn::make('file_url')->url(fn ($record) => $record->file_url),
+                TextColumn::make('title')
+                    ->label('Título')
+                    ->searchable()
+                    ->limit(50),
+
+                TextColumn::make('type')
+                    ->label('Tipo')
+                    ->formatStateUsing(fn($state) => ucfirst((string) $state)),
+
+                TextColumn::make('published_at')
+                    ->label('Fecha')
+                    ->date('Y-m-d')
+                    ->sortable(),
+
+                TextColumn::make('file_url')
+                    ->label('Archivo')
+                    ->wrap(false)
+                    ->url(fn ($record) => is_string($record->file_url) && str_starts_with($record->file_url, 'http') ? $record->file_url : null)
+                    ->openUrlInNewTab(),
+
+                TextColumn::make('created_at')
+                    ->label('Creado')
+                    ->dateTime()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
+                TextColumn::make('updated_at')
+                    ->label('Actualizado')
+                    ->dateTime()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 //

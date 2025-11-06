@@ -11,7 +11,7 @@ interface RecursoCardProps {
   titulo: string;
   tipo: string;
   fecha: string;
-  enlace: string;
+  enlace?: string | null;
 }
 
 export default function ResourceCard({ titulo, tipo, fecha, enlace }: RecursoCardProps) {
@@ -27,14 +27,20 @@ export default function ResourceCard({ titulo, tipo, fecha, enlace }: RecursoCar
         </div>
       </CardHeader>
       <CardContent>
-        <a
-          href={enlace}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm text-primary underline hover:opacity-80"
-        >
-          Descargar recurso →
-        </a>
+        {enlace ? (
+          <a
+            href={enlace}
+            target="_blank"
+            rel="noopener noreferrer"
+            title={`Abrir ${titulo}`}
+            aria-label={`Abrir o descargar ${titulo}`}
+            className="text-sm text-primary underline hover:opacity-80"
+          >
+            Ver / Descargar recurso →
+          </a>
+        ) : (
+          <span className="text-sm text-gray-400">Recurso no disponible</span>
+        )}
       </CardContent>
     </Card>
   );

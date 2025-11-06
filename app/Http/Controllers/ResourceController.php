@@ -2,74 +2,69 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Resource;
-use Illuminate\Http\Request;
+use App\Models\Resource as ContentResource;
 use Inertia\Inertia;
+use Illuminate\Http\Request;
 
 class ResourceController extends Controller
 {
-    public function index()
+    private function mapResource(ContentResource $r): array
     {
-        return Inertia::render('resources/index', [
-            'breadcrumbs' => [
-                ['label' => 'Inicio', 'href' => route('home', absolute: false) ?? '/'],
-                ['label' => 'Recursos', 'href' => route('resources.index', absolute: false)],
+        // Usamos el accessor del modelo para obtener la URL pública (o null)
+        $url = $r->file_public_url;
+
+        return [
+            'id'     => $r->id,
+            'titulo' => $r->title,
+            'tipo'   => match ($r->type) {
+                'guias' => 'Guía',
+                'herramientas' => 'Herramienta',
+                'biblioteca' => 'Artículo',
+                'material' => 'Material',
+                default => ucfirst((string) $r->type),
+            },
+            'fecha'  => optional($r->published_at)?->locale('es')->translatedFormat('LL') ?? '',
+            'enlace' => $url,
+        ];
+    }
+
+    private function paginateCategory(string $type, string $pageName = 'page'): array
+    {
+        $paginated = ContentResource::where('type', $type)
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
+            ->paginate(9, ['*'], $pageName)
+            ->through(fn (ContentResource $r) => $this->mapResource($r));
+
+        return [
+            'resources' => $paginated->items(),
+            'pagination' => [
+                'current_page' => $paginated->currentPage(),
+                'last_page'    => $paginated->lastPage(),
+                'per_page'     => $paginated->perPage(),
+                'total'        => $paginated->total(),
             ],
-        ]);
+            'filters' => request()->only([]),
+        ];
     }
 
     public function guides()
     {
-        return Inertia::render('resources/guides', [
-            'breadcrumbs' => [
-                ['label' => 'Inicio', 'href' => route('home', absolute: false) ?? '/'],
-                ['label' => 'Recursos', 'href' => route('resources.index', absolute: false)],
-                ['label' => 'Guías y Protocolos', 'href' => route('resources.guides', absolute: false)],
-            ],
-        ]);
+        return Inertia::render('resources/guides', $this->paginateCategory('guias'));
     }
 
-    public function herramientas()
+    public function tools()
     {
-        return Inertia::render('resources/herramientas', [
-            'breadcrumbs' => [
-                ['label' => 'Inicio', 'href' => route('home', absolute: false) ?? '/'],
-                ['label' => 'Recursos', 'href' => route('recursos.index', absolute: false)],
-                ['label' => 'Herramientas Prácticas', 'href' => route('recursos.herramientas', absolute: false)],
-            ],
-        ]);
+        return Inertia::render('resources/tools', $this->paginateCategory('herramientas'));
     }
 
-    public function biblioteca()
+    public function library()
     {
-        return Inertia::render('resources/biblioteca', [
-            'breadcrumbs' => [
-                ['label' => 'Inicio', 'href' => route('home', absolute: false) ?? '/'],
-                ['label' => 'Recursos', 'href' => route('recursos.index', absolute: false)],
-                ['label' => 'Biblioteca de Artículos Científicos', 'href' => route('recursos.biblioteca', absolute: false)],
-            ],
-        ]);
+        return Inertia::render('resources/library', $this->paginateCategory('biblioteca'));
     }
 
     public function material()
     {
-        return Inertia::render('resources/material', [
-            'breadcrumbs' => [
-                ['label' => 'Inicio', 'href' => route('home', absolute: false) ?? '/'],
-                ['label' => 'Recursos', 'href' => route('recursos.index', absolute: false)],
-                ['label' => 'Material de Apoyo al Paciente', 'href' => route('recursos.material', absolute: false)],
-            ],
-        ]);
-    }
-
-    public function enlaces()
-    {
-        return Inertia::render('resources/Enlaces', [
-            'breadcrumbs' => [
-                ['label' => 'Inicio', 'href' => route('home', absolute: false) ?? '/'],
-                ['label' => 'Recursos', 'href' => route('recursos.index', absolute: false)],
-                ['label' => 'Links de interés', 'href' => route('recursos.enlaces', absolute: false)],
-            ],
-        ]);
+        return Inertia::render('resources/material', $this->paginateCategory('material'));
     }
 }
