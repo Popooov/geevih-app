@@ -72,14 +72,52 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                                 const isRecursos = item.title === 'Recursos';
                                                 const isActive = page.url === item.href || (isRecursos && page.url.startsWith('/recursos'));
 
+                                                if (isRecursos) {
+                                                    // 🔒 Sin enlace al índice /recursos en móvil
+                                                    return (
+                                                        <div key={item.title} className="flex flex-col">
+                                                            <div
+                                                                className={cn(
+                                                                    'flex items-center gap-3 rounded-md px-4 py-3 text-base font-medium',
+                                                                    isActive ? 'text-primary' : 'text-muted-foreground',
+                                                                )}
+                                                                aria-current={isActive ? 'true' : undefined}
+                                                            >
+                                                                {item.icon && <Icon iconNode={item.icon} className="h-5 w-5" />}
+                                                                <span>Recursos</span>
+                                                            </div>
+
+                                                            {/* Solo sub-enlaces */}
+                                                            <div className="mt-2 ml-7 flex flex-col space-y-2 text-[0.95rem]">
+                                                                {recursosItems.map((sub) => (
+                                                                    <Link
+                                                                        key={sub.href}
+                                                                        prefetch
+                                                                        href={sub.href}
+                                                                        className={cn(
+                                                                            'rounded-md px-2 py-1.5 transition-colors',
+                                                                            page.url.startsWith(sub.href)
+                                                                                ? 'bg-accent text-foreground'
+                                                                                : 'text-neutral-400 hover:bg-accent/60 hover:text-foreground',
+                                                                        )}
+                                                                    >
+                                                                        {sub.title}
+                                                                    </Link>
+                                                                ))}
+                                                            </div>
+                                                        </div>
+                                                    );
+                                                }
+
+                                                // Resto de items: siguen siendo enlaces
                                                 return (
                                                     <div key={item.title} className="flex flex-col">
                                                         <Link
                                                             prefetch
                                                             href={item.href}
                                                             className={cn(
-                                                                'flex items-center gap-3 space-x-2 rounded-md px-4 py-3 text-base font-medium transition-colors',
-                                                                isActive
+                                                                'flex items-center gap-3 rounded-md px-4 py-3 text-base font-medium transition-colors',
+                                                                page.url === item.href
                                                                     ? 'bg-muted text-primary'
                                                                     : 'text-muted-foreground hover:bg-accent hover:text-foreground',
                                                             )}
@@ -87,16 +125,6 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                                             {item.icon && <Icon iconNode={item.icon} className="h-5 w-5" />}
                                                             <span>{item.title}</span>
                                                         </Link>
-
-                                                        {isRecursos && (
-                                                            <div className="mt-2 ml-7 flex flex-col space-y-2 text-[0.95rem]">
-                                                                {recursosItems.map((sub) => (
-                                                                    <Link key={sub.href} prefetch href={sub.href} className="text-neutral-400">
-                                                                        {sub.title}
-                                                                    </Link>
-                                                                ))}
-                                                            </div>
-                                                        )}
                                                     </div>
                                                 );
                                             })}
