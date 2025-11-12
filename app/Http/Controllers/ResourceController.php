@@ -5,13 +5,36 @@ namespace App\Http\Controllers;
 use App\Models\Resource as ContentResource;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class ResourceController extends Controller
 {
     private function mapResource(ContentResource $r): array
     {
-        // Usamos el accessor del modelo para obtener la URL pública (o null)
-        $url = $r->file_public_url;
+        // Formateo seguro y en español sin depender de intl
+        $fecha = '';
+        if ($r->published_at) {
+            try {
+                $c = $r->published_at instanceof \DateTime
+                    ? Carbon::instance($r->published_at)
+                    : Carbon::parse($r->published_at);
+
+                $meses = [
+                    'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+                    'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre',
+                ];
+
+                $dia = $c->format('j'); // 1..31
+                $mesNombre = $meses[(int) $c->format('n') - 1];
+                $anio = $c->format('Y');
+
+                $fecha = "{$dia} de {$mesNombre} de {$anio}"; // ej: "6 de noviembre de 2025"
+            } catch (\Throwable $e) {
+                $fecha = '';
+            }
+        }
+
+        $url = $r->file_public_url ?? null;
 
         return [
             'id'     => $r->id,
@@ -23,7 +46,7 @@ class ResourceController extends Controller
                 'material' => 'Material',
                 default => ucfirst((string) $r->type),
             },
-            'fecha'  => optional($r->published_at)?->locale('es')->translatedFormat('LL') ?? '',
+            'fecha'  => $fecha,
             'enlace' => $url,
         ];
     }
