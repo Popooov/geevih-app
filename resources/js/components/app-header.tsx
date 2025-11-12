@@ -33,7 +33,7 @@ const recursosItems = [
     { title: 'Herramientas Prácticas', href: '/recursos/herramientas' },
     { title: 'Últimas Evidencias Científicas', href: '/recursos/biblioteca' },
     { title: 'Material de Apoyo al Paciente', href: '/recursos/material' },
-    { title: 'Links de interés', href: '/recursos/enlaces' },
+    // { title: 'Links de interés', href: '/recursos/enlaces' },
 ];
 
 const activeItemStyles = 'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
