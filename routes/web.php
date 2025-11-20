@@ -24,10 +24,6 @@ Route::get('/eventos', [EventController::class, 'index'],
 Route::get('/eventos/{event}', [EventController::class, 'show'])
      ->name('events.show');
 
-// Route::get('/recursos', function () {
-//     return Inertia::render('resources');
-// })->name('resources');
-
 Route::prefix('recursos')->name('resources.')->group(function () {
     Route::get('/guias', [ResourceController::class, 'guides'])->name('guides');
     Route::get('/herramientas', [ResourceController::class, 'tools'])->name('tools');

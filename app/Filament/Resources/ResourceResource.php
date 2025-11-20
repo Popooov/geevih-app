@@ -35,6 +35,7 @@ class ResourceResource extends Resource
                     ->label('Tipo')
                     ->options([
                         'guias' => 'Guías',
+                        'protocolos' => 'Protocolos',
                         'herramientas' => 'Herramientas Prácticas',
                         'biblioteca' => 'Biblioteca de Artículos Científicos',
                         'material' => 'Material de Apoyo al Paciente',

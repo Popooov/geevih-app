@@ -15,6 +15,7 @@ interface RecursoCardProps {
 }
 
 export default function ResourceCard({ titulo, tipo, fecha, enlace }: RecursoCardProps) {
+    console.log({ titulo, tipo, fecha, enlace });
   return (
     <Card className="hover:shadow-md transition">
       <CardHeader className="flex items-start gap-3 pb-2">

@@ -41,6 +41,7 @@ class ResourceController extends Controller
             'titulo' => $r->title,
             'tipo'   => match ($r->type) {
                 'guias' => 'Guía',
+                'protocolos' => 'Protocolo',
                 'herramientas' => 'Herramienta',
                 'biblioteca' => 'Artículo',
                 'material' => 'Material',
@@ -48,6 +49,29 @@ class ResourceController extends Controller
             },
             'fecha'  => $fecha,
             'enlace' => $url,
+        ];
+    }
+
+    /**
+     * Paginación para varios tipos (por ejemplo ['guias','protocolos'])
+     */
+    private function paginateTypes(array $types, string $pageName = 'page'): array
+    {
+        $paginated = ContentResource::whereIn('type', $types)
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
+            ->paginate(9, ['*'], $pageName)
+            ->through(fn (ContentResource $r) => $this->mapResource($r));
+
+        return [
+            'resources' => $paginated->items(),
+            'pagination' => [
+                'current_page' => $paginated->currentPage(),
+                'last_page'    => $paginated->lastPage(),
+                'per_page'     => $paginated->perPage(),
+                'total'        => $paginated->total(),
+            ],
+            'filters' => request()->only([]),
         ];
     }
 
@@ -73,7 +97,7 @@ class ResourceController extends Controller
 
     public function guides()
     {
-        return Inertia::render('resources/guides', $this->paginateCategory('guias'));
+        return Inertia::render('resources/guides', $this->paginateTypes(['guias', 'protocolos']));
     }
 
     public function tools()
