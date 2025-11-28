@@ -23,6 +23,7 @@ class EventController extends Controller
             'upcomingEvents' => $upcoming->map(fn($event) => [
                 'id'          => $event->id,
                 'titulo'      => $event->title,
+                'lugar'       => $event->location,
                 'fecha'       => $event->date->toFormattedDateString(),
                 'descripcion' => $event->description,
                 'imagen'      => Storage::disk('cloudinary')->url($event->image_url),
@@ -31,6 +32,7 @@ class EventController extends Controller
             'pastEvents' => $past->map(fn($event) => [
                 'id'          => $event->id,
                 'titulo'      => $event->title,
+                'lugar'       => $event->location,
                 'fecha'       => $event->date->toFormattedDateString(),
                 'descripcion' => $event->description,
                 'imagen'      => Storage::disk('cloudinary')->url($event->image_url),
@@ -45,6 +47,7 @@ class EventController extends Controller
             'event' => [
                 'id'          => $event->id,
                 'titulo'      => $event->title,
+                'lugar'       => $event->location,
                 'fecha'       => $event->date->toFormattedDateString(),
                 'descripcion' => $event->description,
                 'contenido'   => $event->content,

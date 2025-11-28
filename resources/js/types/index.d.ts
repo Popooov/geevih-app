@@ -45,6 +45,7 @@ export interface User {
 export interface Events {
     id: number;
     titulo: string;
+    lugar: string;
     fecha: string;
     descripcion: string;
     imagen: string;
@@ -54,6 +55,7 @@ export interface Events {
 export interface SingleEvent {
     id: number;
     titulo: string;
+    lugar: string;
     fecha: string;
     descripcion: string;
     contenido?: string;

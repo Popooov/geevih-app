@@ -26,6 +26,9 @@ class EventResource extends Resource
                 Forms\Components\TextInput::make('title')
                     ->required()
                     ->maxLength(255),
+                    Forms\Components\TextInput::make('location')
+                    ->required()
+                    ->maxLength(255),
                 Forms\Components\DatePicker::make('date')
                     ->required(),
                 Forms\Components\Textarea::make('description')
@@ -53,6 +56,8 @@ class EventResource extends Resource
                 Tables\Columns\TextColumn::make('date')
                     ->date()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('location')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('content')
                     ->limit(50)
                     ->toggleable(),
