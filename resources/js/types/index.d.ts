@@ -47,6 +47,7 @@ export interface Events {
     titulo: string;
     lugar: string;
     fecha: string;
+    hora?: string;
     descripcion: string;
     imagen: string;
     link?: string;
@@ -57,6 +58,7 @@ export interface SingleEvent {
     titulo: string;
     lugar: string;
     fecha: string;
+    hora?: string;
     descripcion: string;
     contenido?: string;
     imagen: string;
@@ -102,22 +104,23 @@ export interface ShowNewsPageProps {
 }
 
 export interface Resource {
-  id: number;
-  titulo: string;
-  tipo: string;
-  fecha: string;   // render-ready
-  enlace: string;  // URL final (Cloudinary o http)
+    id: number;
+    titulo: string;
+    tipo: string;
+    fecha: string; // render-ready
+    enlace: string; // URL final (Cloudinary o http)
+    imagen?: string; // URL de la imagen asociada (opcional)
 }
 
 export interface PaginationMeta {
-  current_page: number;
-  last_page: number;
-  per_page: number;
-  total: number;
+    current_page: number;
+    last_page: number;
+    per_page: number;
+    total: number;
 }
 
 export interface ResourcesPageProps {
-  resources: Resource[];
-  pagination: PaginationMeta;
-  [key: string]: unknown;
+    resources: Resource[];
+    pagination: PaginationMeta;
+    [key: string]: unknown;
 }

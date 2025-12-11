@@ -19,7 +19,7 @@ export default function About() {
 
                     <div className="flex justify-center pt-4">
                         <Link
-                            href="/junta-directiva"
+                            href="/equipo"
                             className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground shadow-md transition-all hover:gap-3 hover:bg-primary/90 hover:shadow-lg"
                         >
                             <Users className="h-4 w-4" />

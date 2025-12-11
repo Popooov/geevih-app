@@ -29,6 +29,7 @@ export default function Guides() {
               titulo={r.titulo}
               tipo={r.tipo}
               fecha={r.fecha}
+              imagen={r.imagen}
               enlace={r.enlace ?? null}
             />
           ))}

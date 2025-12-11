@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Event;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Carbon\Carbon;
 
 class EventController extends Controller
 {
@@ -25,6 +26,11 @@ class EventController extends Controller
                 'titulo'      => $event->title,
                 'lugar'       => $event->location,
                 'fecha'       => $event->date->toFormattedDateString(),
+                'hora'        => $event->time ? (
+                    $event->time instanceof \Carbon\Carbon
+                        ? $event->time->format('H:i')
+                        : Carbon::parse($event->time)->format('H:i')
+                    ) : null,
                 'descripcion' => $event->description,
                 'imagen'      => Storage::disk('cloudinary')->url($event->image_url),
                 'link'        => route('events.show', $event),
@@ -34,6 +40,11 @@ class EventController extends Controller
                 'titulo'      => $event->title,
                 'lugar'       => $event->location,
                 'fecha'       => $event->date->toFormattedDateString(),
+                'hora'        => $event->time ? (
+                    $event->time instanceof \Carbon\Carbon
+                        ? $event->time->format('H:i')
+                        : Carbon::parse($event->time)->format('H:i')
+                    ) : null,
                 'descripcion' => $event->description,
                 'imagen'      => Storage::disk('cloudinary')->url($event->image_url),
                 'link'        => route('events.show', $event),
@@ -49,6 +60,11 @@ class EventController extends Controller
                 'titulo'      => $event->title,
                 'lugar'       => $event->location,
                 'fecha'       => $event->date->toFormattedDateString(),
+                'hora'        => $event->time ? (
+                    $event->time instanceof \Carbon\Carbon
+                        ? $event->time->format('H:i')
+                        : Carbon::parse($event->time)->format('H:i')
+                    ) : null,
                 'descripcion' => $event->description,
                 'contenido'   => $event->content,
                 'imagen'      => Storage::disk('cloudinary')->url($event->image_url),

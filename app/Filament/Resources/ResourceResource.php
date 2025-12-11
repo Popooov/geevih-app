@@ -14,7 +14,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Support\Facades\Storage;
+use Filament\Tables\Columns\ImageColumn;
 
 class ResourceResource extends Resource
 {
@@ -42,15 +42,27 @@ class ResourceResource extends Resource
                     ])
                     ->required(),
 
+                // Subida del fichero principal (ej. PDF)
                 FileUpload::make('file_url')
-                    ->label('Archivo (Cloudinary)')
+                    ->label('Archivo (PDF / Documentos)')
                     ->disk('cloudinary')
                     ->directory('resources')
-                    ->acceptedFileTypes(['application/pdf']) // o quita si aceptas otros tipos
-                    ->maxSize(10240) // 10 MB en KB
+                    ->acceptedFileTypes(['application/pdf'])
                     ->preserveFilenames(false)
-                    ->openable()     // muestra botón para abrir en nueva pestaña en el panel
-                    ->downloadable() // permite descargar desde el panel
+                    ->openable()
+                    ->downloadable()
+                    ->nullable(),
+
+                // Subida de imagen miniatura asociada al recurso
+                FileUpload::make('image_url')
+                    ->label('Imagen (miniatura)')
+                    ->image()
+                    ->disk('cloudinary')
+                    ->directory('resources/images')
+                    ->acceptedFileTypes(['image/*'])
+                    ->preserveFilenames(false)
+                    ->openable()
+                    ->downloadable()
                     ->nullable(),
 
                 DatePicker::make('published_at')
@@ -79,6 +91,13 @@ class ResourceResource extends Resource
                     ->date('Y-m-d')
                     ->sortable(),
 
+                // Miniatura: resuelve vía disco cloudinary
+                ImageColumn::make('image_url')
+                    ->label('Imagen')
+                    ->disk('cloudinary')
+                    ->toggleable(),
+
+                // Enlace al archivo (solo si file_url contiene URL absoluta)
                 TextColumn::make('file_url')
                     ->label('Archivo')
                     ->wrap(false)

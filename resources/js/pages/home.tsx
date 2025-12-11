@@ -11,7 +11,7 @@ export default function Home() {
             <div className="min-h-[calc(100vh-80px)] bg-gradient-to-b from-background to-muted/20">
                 <div className="mx-auto flex max-w-6xl flex-col items-center space-y-20 p-8 py-16">
                     <section className="relative flex flex-col items-center space-y-8 text-center duration-700 animate-in fade-in slide-in-from-bottom-4">
-                        <div className="flex justify-center drop-shadow-sm transition-transform hover:scale-105">
+                        <div className="flex justify-center drop-shadow-sm">
                             <img src="images/geevih-logo.png" alt="Logo GEEVIH SEISIDA" className="mx-auto w-64 md:w-72" />
                         </div>
                         <div className="max-w-3xl space-y-4">

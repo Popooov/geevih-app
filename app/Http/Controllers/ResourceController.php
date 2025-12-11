@@ -4,11 +4,58 @@ namespace App\Http\Controllers;
 
 use App\Models\Resource as ContentResource;
 use Inertia\Inertia;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class ResourceController extends Controller
 {
+    /**
+     * Helper: intenta resolver Storage::disk('cloudinary')->url($path)
+     * Si falla, intenta construir una URL pública CDN básica como fallback.
+     */
+    protected function resolveCloudinaryUrl(?string $path): ?string
+    {
+        if (! $path) {
+            return null;
+        }
+
+        // Si ya es URL absoluta la devolvemos
+        if (str_starts_with($path, 'http')) {
+            return $path;
+        }
+
+        // Intentamos Storage (puede lanzar exceptions si credenciales fallan)
+        try {
+            $url = Storage::disk('cloudinary')->url($path);
+            if ($url) {
+                return $url;
+            }
+        } catch (\Throwable $e) {
+            // opcional: loguear para debugging
+            logger()->debug('Storage::disk(cloudinary)->url failed', [
+                'path' => $path,
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        // Fallback CDN (no requiere API): cloud name extraído de CLOUDINARY_URL
+        $cloudinaryUrl = env('CLOUDINARY_URL', env('CLOUDINARY_API_URL', ''));
+        if ($cloudinaryUrl && str_contains($cloudinaryUrl, '@')) {
+            $parts = explode('@', $cloudinaryUrl);
+            $cloudName = $parts[1] ?? null;
+            if ($cloudName) {
+                $publicPath = ltrim($path, '/');
+                // Para ficheros PDF usamos raw/upload, para imagenes image/upload
+                // Aquí no sabemos el tipo, asumimos que si ext es pdf => raw, else image
+                $ext = strtolower(pathinfo($publicPath, PATHINFO_EXTENSION));
+                $resourceType = in_array($ext, ['pdf','doc','docx','xls','xlsx','ppt','pptx']) ? 'raw' : 'image';
+                return "https://res.cloudinary.com/{$cloudName}/{$resourceType}/upload/{$publicPath}";
+            }
+        }
+
+        return null;
+    }
+
     private function mapResource(ContentResource $r): array
     {
         // Formateo seguro y en español sin depender de intl
@@ -24,17 +71,19 @@ class ResourceController extends Controller
                     'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre',
                 ];
 
-                $dia = $c->format('j'); // 1..31
+                $dia = $c->format('j'); // 1..31 sin ceros
                 $mesNombre = $meses[(int) $c->format('n') - 1];
                 $anio = $c->format('Y');
 
-                $fecha = "{$dia} de {$mesNombre} de {$anio}"; // ej: "6 de noviembre de 2025"
+                $fecha = "{$dia} de {$mesNombre} de {$anio}"; // e.g. "6 de noviembre de 2025"
             } catch (\Throwable $e) {
                 $fecha = '';
             }
         }
 
-        $url = $r->file_public_url ?? null;
+        // Ahora usamos $r->file_url y $r->image_url que devuelven la URL pública gracias a los accessors
+        $fileUrl = $r->file_url ?? null;
+        $imageUrl = $r->image_url ?? null;
 
         return [
             'id'     => $r->id,
@@ -48,13 +97,11 @@ class ResourceController extends Controller
                 default => ucfirst((string) $r->type),
             },
             'fecha'  => $fecha,
-            'enlace' => $url,
+            'imagen' => Storage::disk('cloudinary')->url($imageUrl),
+            'enlace' => $fileUrl,
         ];
     }
 
-    /**
-     * Paginación para varios tipos (por ejemplo ['guias','protocolos'])
-     */
     private function paginateTypes(array $types, string $pageName = 'page'): array
     {
         $paginated = ContentResource::whereIn('type', $types)

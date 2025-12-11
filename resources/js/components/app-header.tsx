@@ -145,7 +145,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
 
                                     if (isRecursos) {
                                         return (
-                                            <NavigationMenuItem key={index} className="relative flex h-full items-center">
+                                            <NavigationMenuItem key={index} className="relative flex h-full items-center z-10">
                                                 <NavigationMenuTrigger
                                                     className={cn(
                                                         navigationMenuTriggerStyle(),

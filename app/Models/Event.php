@@ -8,11 +8,13 @@ class Event extends Model
 {
     protected $casts = [
         'date' => 'datetime',
+        'time' => 'datetime:H:i',
     ];
 
     protected $fillable = [
         'title',
         'date',
+        'time',
         'location',
         'description',
         'content',

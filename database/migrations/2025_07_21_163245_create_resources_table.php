@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->enum('type', ['guias', 'protocolos', 'herramientas', 'biblioteca', 'material']);
             $table->string('file_url');
+            $table->string('image_url')->nullable();
             $table->date('published_at')->nullable();
             $table->timestamps();
         });

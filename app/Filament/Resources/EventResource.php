@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Forms\Components\TimePicker;
 
 class EventResource extends Resource
 {
@@ -31,6 +32,11 @@ class EventResource extends Resource
                     ->maxLength(255),
                 Forms\Components\DatePicker::make('date')
                     ->required(),
+                TimePicker::make('time')
+                    ->label('Hora')
+                    ->format('H:i') // formato 24h
+                    ->placeholder('HH:MM')
+                    ->nullable(),
                 Forms\Components\Textarea::make('description')
                     ->columnSpanFull(),
                 Forms\Components\RichEditor::make('content')
@@ -55,6 +61,10 @@ class EventResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('date')
                     ->date()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('time')
+                    ->label('Hora')
+                    ->formatStateUsing(fn ($state) => $state ? \Carbon\Carbon::parse($state)->format('H:i') : null)
                     ->sortable(),
                 Tables\Columns\TextColumn::make('location')
                     ->searchable(),
