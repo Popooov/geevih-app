@@ -13,47 +13,64 @@ class ResourceController extends Controller
      * Helper: intenta resolver Storage::disk('cloudinary')->url($path)
      * Si falla, intenta construir una URL pública CDN básica como fallback.
      */
-    protected function resolveCloudinaryUrl(?string $path): ?string
+    private function resolveCloudinaryUrl(?string $path, string $type = 'raw'): ?string
     {
         if (! $path) {
             return null;
         }
 
-        // Si ya es URL absoluta la devolvemos
+        // si ya es URL absoluta, devolvemos
         if (str_starts_with($path, 'http')) {
             return $path;
         }
 
-        // Intentamos Storage (puede lanzar exceptions si credenciales fallan)
+        // 1) Intento con el adapter (puede lanzar NotFound o 401)
         try {
             $url = Storage::disk('cloudinary')->url($path);
             if ($url) {
                 return $url;
             }
         } catch (\Throwable $e) {
-            // opcional: loguear para debugging
-            logger()->debug('Storage::disk(cloudinary)->url failed', [
+            // log para depuración y seguir al fallback
+            logger()->warning('Cloudinary adapter failed to resolve url', [
                 'path' => $path,
                 'error' => $e->getMessage(),
             ]);
         }
 
-        // Fallback CDN (no requiere API): cloud name extraído de CLOUDINARY_URL
-        $cloudinaryUrl = env('CLOUDINARY_URL', env('CLOUDINARY_API_URL', ''));
-        if ($cloudinaryUrl && str_contains($cloudinaryUrl, '@')) {
-            $parts = explode('@', $cloudinaryUrl);
-            $cloudName = $parts[1] ?? null;
-            if ($cloudName) {
-                $publicPath = ltrim($path, '/');
-                // Para ficheros PDF usamos raw/upload, para imagenes image/upload
-                // Aquí no sabemos el tipo, asumimos que si ext es pdf => raw, else image
-                $ext = strtolower(pathinfo($publicPath, PATHINFO_EXTENSION));
-                $resourceType = in_array($ext, ['pdf','doc','docx','xls','xlsx','ppt','pptx']) ? 'raw' : 'image';
-                return "https://res.cloudinary.com/{$cloudName}/{$resourceType}/upload/{$publicPath}";
+        // 2) Fallback: construir CDN URL explícita
+        // Preferimos CLOUDINARY_CLOUD_NAME en .env
+        $cloud = env('CLOUDINARY_CLOUD_NAME') ?: null;
+        if (! $cloud) {
+            $cloudly = env('CLOUDINARY_URL', env('CLOUDINARY_API_URL', ''));
+            if ($cloudly && str_contains($cloudly, '@')) {
+                $parts = explode('@', $cloudly, 2);
+                $cloud = $parts[1] ?? null;
+            } else {
+                // intentar extraer de /v1_1/<cloud>/
+                try {
+                    $parsed = parse_url($cloudly);
+                    if (! empty($parsed['path'])) {
+                        $segments = array_values(array_filter(explode('/', $parsed['path'])));
+                        $idx = array_search('v1_1', $segments, true);
+                        if ($idx !== false && isset($segments[$idx + 1])) {
+                            $cloud = $segments[$idx + 1];
+                        }
+                    }
+                } catch (\Throwable $ee) { /* ignore */ }
             }
         }
 
-        return null;
+        if (! $cloud) {
+            return null;
+        }
+
+        $publicPath = ltrim($path, '/');
+
+        // forzamos raw para documentos; image para imágenes
+        $resourceType = $type === 'image' ? 'image' : 'raw';
+
+        return "https://res.cloudinary.com/{$cloud}/{$resourceType}/upload/{$publicPath}";
     }
 
     private function mapResource(ContentResource $r): array
@@ -98,7 +115,7 @@ class ResourceController extends Controller
             },
             'fecha'  => $fecha,
             'imagen' => Storage::disk('cloudinary')->url($imageUrl),
-            'enlace' => $fileUrl,
+            'enlace' => $this->resolveCloudinaryUrl($r->file_url, 'raw'),
         ];
     }
 
