@@ -76,7 +76,7 @@ export default function Home() {
                             </Link>
 
                             {/* Card 3: Publications */}
-                            <Link href="/publicaciones" className="group">
+                            <Link href="/recursos/guias" className="group">
                                 <Card className="h-full transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg">
                                     <CardHeader className="flex flex-row items-center gap-4 space-y-0">
                                         <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-600 transition-transform group-hover:scale-110 dark:bg-green-900/30 dark:text-green-400">
