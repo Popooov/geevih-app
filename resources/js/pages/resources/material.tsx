@@ -13,10 +13,12 @@ export default function Material() {
     return (
         <AppLayout>
             <Head title="Material de Apoyo al Paciente" />
-            <div className="mx-auto w-full max-w-7xl px-4 py-6">
+            <div className="mx-auto max-w-6xl space-y-16 p-6 pt-16">
                 <header className="mb-6">
-                    <h1 className="mt-6 text-center text-3xl font-bold lg:mt-8">Material de Apoyo al Paciente</h1>
-                    <p className="mt-2 text-center text-muted-foreground">Recursos educativos descargables e imprimibles.</p>
+                    <div className="flex flex-col items-center justify-center space-y-4">
+                        <h1 className="text-center text-3xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white">Material de Apoyo al Paciente</h1>
+                        <p className="mx-auto max-w-3xl text-center md:text-xl text-gray-600 dark:text-gray-400">Recursos educativos descargables e imprimibles.</p>
+                    </div>
                 </header>
 
                 <ResourceGrid>

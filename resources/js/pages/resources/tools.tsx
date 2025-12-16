@@ -16,8 +16,10 @@ export default function Herramientas() {
             <div className="mx-auto max-w-6xl space-y-16 p-6 pt-16">
                 <header className="space-y-3 text-center">
                     <div className="flex flex-col items-center justify-center space-y-4">
-                        <h1 className="text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white">Herramientas Prácticas</h1>
-                        <p className="mx-auto max-w-3xl text-xl text-gray-600 dark:text-gray-400">
+                        <h1 className="text-center text-3xl font-extrabold tracking-tight text-gray-900 md:text-5xl dark:text-white">
+                            Herramientas Prácticas
+                        </h1>
+                        <p className="mx-auto max-w-3xl text-center text-gray-600 md:text-xl dark:text-gray-400">
                             Calculadoras, checklists y plantillas para la práctica clínica diaria.
                         </p>
                     </div>

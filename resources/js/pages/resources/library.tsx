@@ -6,21 +6,27 @@ import { Head, usePage } from '@inertiajs/react';
 import ResourceGrid from './_ResourceGrid';
 
 export default function Biblioteca() {
-    const { props } = usePage<ResourcesPageProps>();
-    const items = props.resources ?? [];
-    const { current_page, last_page } = props.pagination ?? { current_page: 1, last_page: 1 };
+    const { resources = [], pagination = { current_page: 1, last_page: 1 } } = usePage<ResourcesPageProps>().props;
+
+    const { current_page, last_page } = pagination;
 
     return (
         <AppLayout>
             <Head title="Biblioteca de Artículos Científicos" />
-            <div className="mx-auto w-full max-w-7xl px-4 py-6">
+            <div className="mx-auto max-w-6xl space-y-16 p-6 pt-16">
                 <header className="mb-6">
-                    <h1 className="mt-6 text-center text-3xl font-bold lg:mt-8">Biblioteca de Artículos Científicos</h1>
-                    <p className="mt-2 text-center text-muted-foreground">Selección curada de publicaciones del área.</p>
+                    <div className="flex flex-col items-center justify-center space-y-4">
+                        <h1 className="text-center text-3xl md:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+                            Biblioteca de Artículos Científicos
+                        </h1>
+                        <p className="mx-auto max-w-3xl text-center md:text-xl text-gray-600 dark:text-gray-400">
+                            Selección curada de publicaciones del área.
+                        </p>
+                    </div>
                 </header>
 
                 <ResourceGrid>
-                    {items.map((r) => (
+                    {resources.map((r) => (
                         <ResourceCard key={r.id} titulo={r.titulo} tipo={r.tipo} fecha={r.fecha} enlace={r.enlace} />
                     ))}
                 </ResourceGrid>
