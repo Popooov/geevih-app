@@ -14,6 +14,10 @@ Route::get('/sobre', function () {
     return Inertia::render('about');
 })->name('about');
 
+Route::get('/sobre/equipo', function () {
+    return Inertia::render('members');
+})->name('members');
+
 Route::get('/areas', function () {
     return Inertia::render('areas');
 })->name('areas');
