@@ -117,22 +117,6 @@ export default function Equipo() {
                         </Card>
                     ))}
                 </div>
-
-                {/* Bloque de pie de página (Rojo VIH) */}
-                <div className="group relative mt-24 overflow-hidden rounded-[2rem] bg-primary p-12 text-center text-white shadow-2xl shadow-primary/20">
-                    <div className="absolute top-0 right-0 h-64 w-64 translate-x-1/2 -translate-y-1/2 rounded-full bg-white/10 blur-3xl transition-transform duration-1000 group-hover:scale-150"></div>
-
-                    <h2 className="relative z-10 mb-4 text-3xl font-black">¿Tienes alguna propuesta?</h2>
-                    <p className="relative z-10 mx-auto mb-8 max-w-xl text-lg font-light text-red-100">
-                        Nuestro equipo está abierto a nuevas colaboraciones, proyectos de investigación y formación.
-                    </p>
-                    <a
-                        href="mailto:info@geevih.es"
-                        className="relative z-10 inline-flex items-center justify-center rounded-full bg-white px-10 py-4 text-sm font-black text-primary shadow-xl transition-all hover:scale-105 active:scale-95"
-                    >
-                        Contáctanos ahora
-                    </a>
-                </div>
             </div>
         </AppLayout>
     );
