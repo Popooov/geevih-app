@@ -27,7 +27,7 @@ export default function ResourceCard({ titulo, tipo, fecha, enlace, imagen }: Re
             {/* Image / Placeholder Header */}
             <div className="h-40 w-full overflow-hidden">
                 {imagen ? (
-                    <img src={imagen} alt={`Imagen ${titulo}`} className="h-full w-full object-cover transition duration-500 hover:scale-105" />
+                    <img src={imagen} alt={`Imagen ${titulo}`} className="h-full w-full object-cover" />
                 ) : (
                     <div className="flex h-full items-center justify-center bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400">
                         <FileText className="mr-2 h-8 w-8" />
