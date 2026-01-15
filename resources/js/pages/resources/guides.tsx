@@ -1,4 +1,4 @@
-import CategoryPagination from '@/components/category-pagination';
+import PaginationBar from '@/components/category-pagination';
 import ResourceCard from '@/components/resource-card';
 import AppLayout from '@/layouts/app-layout';
 import { type ResourcesPageProps } from '@/types';
@@ -43,7 +43,7 @@ export default function Guides() {
                     ))}
                 </ResourceGrid>
 
-                <CategoryPagination basePath="/recursos/guias" current={current_page} last={last_page} />
+                <PaginationBar basePath="/recursos/guias" current={current_page} last={last_page} />
             </div>
         </AppLayout>
     );

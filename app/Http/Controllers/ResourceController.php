@@ -115,7 +115,7 @@ class ResourceController extends Controller
             },
             'fecha'  => $fecha,
             'imagen' => Storage::disk('cloudinary')->url($imageUrl),
-            'enlace' => $this->resolveCloudinaryUrl($r->file_url, 'raw'),
+            'enlace' => $this->resolveCloudinaryUrl($fileUrl, 'raw'),
         ];
     }
 

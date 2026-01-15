@@ -14,8 +14,9 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpenText, Calendar, Home, Info, LayoutGrid, Link2, Mail, Menu, Newspaper } from 'lucide-react';
+import { BookOpenText, Calendar, Home, Info, LayoutGrid, Mail, Menu, Newspaper } from 'lucide-react';
 import AppLogo from './app-logo';
+import AppearanceToggleDropdown from './appearance-dropdown';
 
 const mainNavItems: NavItem[] = [
     { title: 'Inicio', href: '/', icon: Home },
@@ -25,7 +26,6 @@ const mainNavItems: NavItem[] = [
     { title: 'Recursos', href: '/recursos', icon: BookOpenText },
     { title: 'Noticias', href: '/noticias', icon: Newspaper },
     { title: 'Contacto', href: '/contacto', icon: Mail },
-    { title: 'Enlaces', href: '/enlaces', icon: Link2 },
 ];
 
 const recursosItems = [
@@ -33,7 +33,7 @@ const recursosItems = [
     { title: 'Herramientas Prácticas', href: '/recursos/herramientas' },
     { title: 'Últimas Evidencias Científicas', href: '/recursos/biblioteca' },
     { title: 'Material de Apoyo al Paciente', href: '/recursos/material' },
-    // { title: 'Links de interés', href: '/recursos/enlaces' },
+    { title: 'Enlaces de Interés', href: '/recursos/enlaces' },
 ];
 
 const activeItemStyles = 'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
@@ -145,7 +145,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
 
                                     if (isRecursos) {
                                         return (
-                                            <NavigationMenuItem key={index} className="relative flex h-full items-center z-10">
+                                            <NavigationMenuItem key={index} className="relative z-10 flex h-full items-center">
                                                 <NavigationMenuTrigger
                                                     className={cn(
                                                         navigationMenuTriggerStyle(),
@@ -211,6 +211,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                 })}
                             </NavigationMenuList>
                         </NavigationMenu>
+                        <AppearanceToggleDropdown />
                     </div>
                 </div>
             </div>

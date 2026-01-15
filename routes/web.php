@@ -33,7 +33,7 @@ Route::prefix('recursos')->name('resources.')->group(function () {
     Route::get('/herramientas', [ResourceController::class, 'tools'])->name('tools');
     Route::get('/biblioteca', [ResourceController::class, 'library'])->name('library');
     Route::get('/material', [ResourceController::class, 'material'])->name('material');
-    // Route::get('/enlaces', [ResourceController::class, 'enlaces'])->name('enlaces');
+    Route::get('/enlaces', [ResourceController::class, 'links'])->name('enlaces');
 });
 
 Route::get('/noticias', [NewsController::class, 'index'])
@@ -45,16 +45,6 @@ Route::get('/noticias/{news}', [NewsController::class, 'show'])
 Route::get('/contacto', function () {
     return Inertia::render('contact');
 })->name('contact');
-
-Route::get('/enlaces', function () {
-    return Inertia::render('links');
-})->name('links');
-
-// Route::middleware(['auth', 'verified'])->group(function () {
-//     Route::get('dashboard', function () {
-//         return Inertia::render('dashboard');
-//     })->name('dashboard');
-// });
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
