@@ -111,6 +111,7 @@ class ResourceController extends Controller
                 'herramientas' => 'Herramienta',
                 'biblioteca' => 'Artículo',
                 'material' => 'Material',
+                'links' => 'Enlace',
                 default => ucfirst((string) $r->type),
             },
             'fecha'  => $fecha,
@@ -177,5 +178,10 @@ class ResourceController extends Controller
     public function material()
     {
         return Inertia::render('resources/material', $this->paginateCategory('material'));
+    }
+
+    public function links()
+    {
+        return Inertia::render('resources/links', $this->paginateCategory('enlaces'));
     }
 }

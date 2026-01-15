@@ -39,6 +39,7 @@ class ResourceResource extends Resource
                         'herramientas' => 'Herramientas Prácticas',
                         'biblioteca' => 'Biblioteca de Artículos Científicos',
                         'material' => 'Material de Apoyo al Paciente',
+                        'enlaces' => 'Enlaces de Interés',
                     ])
                     ->required(),
 
