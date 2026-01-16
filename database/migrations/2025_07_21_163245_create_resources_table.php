@@ -14,8 +14,10 @@ return new class extends Migration
         Schema::create('resources', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->enum('type', ['guias', 'protocolos', 'herramientas', 'biblioteca', 'material']);
-            $table->string('file_url');
+            $table->text('summary')->nullable();
+            $table->enum('type', ['guias', 'protocolos', 'herramientas', 'biblioteca', 'material', 'enlaces']);
+            $table->string('file_url')->nullable();
+            $table->string('link_url')->nullable();
             $table->string('image_url')->nullable();
             $table->date('published_at')->nullable();
             $table->timestamps();

@@ -12,6 +12,8 @@ class ResourceController extends Controller
     /**
      * Helper: intenta resolver Storage::disk('cloudinary')->url($path)
      * Si falla, intenta construir una URL pública CDN básica como fallback.
+     *
+     * $type: 'image' or 'raw'
      */
     private function resolveCloudinaryUrl(?string $path, string $type = 'raw'): ?string
     {
@@ -19,7 +21,7 @@ class ResourceController extends Controller
             return null;
         }
 
-        // si ya es URL absoluta, devolvemos
+        // Si ya es una URL absoluta -> devolver tal cual
         if (str_starts_with($path, 'http')) {
             return $path;
         }
@@ -31,7 +33,6 @@ class ResourceController extends Controller
                 return $url;
             }
         } catch (\Throwable $e) {
-            // log para depuración y seguir al fallback
             logger()->warning('Cloudinary adapter failed to resolve url', [
                 'path' => $path,
                 'error' => $e->getMessage(),
@@ -39,7 +40,6 @@ class ResourceController extends Controller
         }
 
         // 2) Fallback: construir CDN URL explícita
-        // Preferimos CLOUDINARY_CLOUD_NAME en .env
         $cloud = env('CLOUDINARY_CLOUD_NAME') ?: null;
         if (! $cloud) {
             $cloudly = env('CLOUDINARY_URL', env('CLOUDINARY_API_URL', ''));
@@ -47,7 +47,6 @@ class ResourceController extends Controller
                 $parts = explode('@', $cloudly, 2);
                 $cloud = $parts[1] ?? null;
             } else {
-                // intentar extraer de /v1_1/<cloud>/
                 try {
                     $parsed = parse_url($cloudly);
                     if (! empty($parsed['path'])) {
@@ -67,7 +66,6 @@ class ResourceController extends Controller
 
         $publicPath = ltrim($path, '/');
 
-        // forzamos raw para documentos; image para imágenes
         $resourceType = $type === 'image' ? 'image' : 'raw';
 
         return "https://res.cloudinary.com/{$cloud}/{$resourceType}/upload/{$publicPath}";
@@ -98,25 +96,36 @@ class ResourceController extends Controller
             }
         }
 
-        // Ahora usamos $r->file_url y $r->image_url que devuelven la URL pública gracias a los accessors
-        $fileUrl = $r->file_url ?? null;
-        $imageUrl = $r->image_url ?? null;
+        // description: preferimos summary, si no existe usamos content
+        $descripcion = $r->summary ?? $r->content ?? null;
+
+        // Decide enlace / archivo según tipo
+        if ($r->type === 'enlaces') {
+            // Enlaces externos: usamos el campo `link` tal cual
+            $fileUrl = $r->link_url ?? null;
+            // Imagen (opcional) puede existir; resolvemos si hay valor
+            $imageUrl = $this->resolveCloudinaryUrl($r->image_url, 'image');
+        } else {
+            $fileUrl = $this->resolveCloudinaryUrl($r->file_url, 'raw');
+            $imageUrl = $this->resolveCloudinaryUrl($r->image_url, 'image');
+        }
 
         return [
-            'id'     => $r->id,
-            'titulo' => $r->title,
-            'tipo'   => match ($r->type) {
+            'id'        => $r->id,
+            'titulo'    => $r->title,
+            'tipo'      => match ($r->type) {
                 'guias' => 'Guía',
                 'protocolos' => 'Protocolo',
                 'herramientas' => 'Herramienta',
                 'biblioteca' => 'Artículo',
                 'material' => 'Material',
-                'links' => 'Enlace',
+                'enlaces' => 'Enlace de interés',
                 default => ucfirst((string) $r->type),
             },
-            'fecha'  => $fecha,
-            'imagen' => Storage::disk('cloudinary')->url($imageUrl),
-            'enlace' => $this->resolveCloudinaryUrl($fileUrl, 'raw'),
+            'fecha'     => $fecha,
+            'descripcion' => $descripcion,
+            'imagen'    => $imageUrl,
+            'enlace'    => $fileUrl,
         ];
     }
 

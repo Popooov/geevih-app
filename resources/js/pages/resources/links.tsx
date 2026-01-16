@@ -1,25 +1,10 @@
-import LinkCard from '@/components/ui/link-card';
+import LinkCard from '@/components/link-card';
 import AppLayout from '@/layouts/app-layout';
-import { Head } from '@inertiajs/react';
+import { type ResourcesPageProps } from '@/types';
+import { Head, usePage } from '@inertiajs/react';
 
 export default function Links() {
-    const externalLinks = [
-        {
-            title: 'SEISIDA',
-            description: 'Sociedad Española Interdisciplinaria del Sida',
-            href: 'https://www.seisida.net',
-        },
-        {
-            title: 'Ministerio de Sanidad',
-            description: 'Estrategia del VIH y otras ITS en España',
-            href: 'https://www.mscbs.gob.es',
-        },
-        {
-            title: 'ONUSIDA',
-            description: 'Programa de las Naciones Unidas sobre el VIH/Sida',
-            href: 'https://www.unaids.org/',
-        },
-    ];
+    const { resources = [] } = usePage<ResourcesPageProps>().props;
 
     return (
         <AppLayout>
@@ -38,8 +23,13 @@ export default function Links() {
                 </header>
 
                 <section className="space-y-4">
-                    {externalLinks.map((link, index) => (
-                        <LinkCard key={index} {...link} />
+                    {resources.map((r, index) => (
+                        <LinkCard
+                            key={index}
+                            href={r.enlace}
+                            titulo={r.titulo}
+                            descripcion={r.descripcion}
+                        />
                     ))}
                 </section>
             </div>

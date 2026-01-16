@@ -17,6 +17,7 @@ class Resource extends Model
         'image_url',
         'summary',
         'content',
+        'link_url',
         'published_at',
     ];
 
