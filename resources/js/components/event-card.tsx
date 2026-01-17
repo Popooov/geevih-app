@@ -18,6 +18,7 @@ export default function EventCard ({ titulo, fecha, hora, descripcion, lugar, en
     const formattedDate = new Date(fecha).toLocaleDateString('es-ES', {
         year: 'numeric', month: 'long', day: 'numeric'
     });
+    console.log(imagen);
 
     const primaryColor = isPast ? 'text-gray-500' : 'text-amber-600 dark:text-amber-400';
     const hoverStyles = isPast

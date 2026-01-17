@@ -5,6 +5,7 @@ use Inertia\Inertia;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\NewsController;
 use App\Http\Controllers\ResourceController;
+use App\Http\Controllers\MemberController;
 
 Route::get('/', function () {
     return Inertia::render('home');
@@ -14,9 +15,7 @@ Route::get('/sobre', function () {
     return Inertia::render('about');
 })->name('about');
 
-Route::get('/sobre/equipo', function () {
-    return Inertia::render('members');
-})->name('members');
+Route::get('/sobre/equipo', [MemberController::class, 'members'])->name('members');
 
 Route::get('/areas', function () {
     return Inertia::render('areas');
