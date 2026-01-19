@@ -107,9 +107,10 @@ export interface Resource {
     id: number;
     titulo: string;
     tipo: string;
-    fecha: string; // render-ready
-    enlace: string; // URL final (Cloudinary o http)
-    imagen?: string; // URL de la imagen asociada (opcional)
+    fecha: string;
+    enlace: string;
+    imagen?: string;
+    descripcion?: string;
 }
 
 export interface PaginationMeta {
