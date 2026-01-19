@@ -95,7 +95,7 @@ export default function Home() {
                             {/* Card 4: Join Us */}
                             <div className="group cursor-pointer">
                                 <a href="https://seisida.typeform.com/to/kZwwPgdK" target="_blank" rel="noopener noreferrer" aria-label={`Abrir enlace: https://seisida.typeform.com/to/kZwwPgdK`}>
-                                    <Card className="h-full border-dashed bg-muted/30 transition-all duration-300 hover:-translate-y-1 hover:border-primary hover:bg-background hover:shadow-lg">
+                                    <Card className="h-full border-dashed transition-all duration-300 hover:-translate-y-1 hover:border-primary hover:bg-background hover:shadow-lg">
                                         <CardHeader className="flex flex-row items-center gap-4 space-y-0">
                                             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-purple-100 text-purple-600 transition-transform group-hover:scale-110 dark:bg-purple-900/30 dark:text-purple-400">
                                                 <UserPlus className="h-6 w-6" />

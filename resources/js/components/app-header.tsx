@@ -37,6 +37,8 @@ const recursosItems = [
 ];
 
 const activeItemStyles = 'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
+const activeAccent = 'text-red-600 dark:text-red-400';
+const hoverBg = 'hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-150';
 
 interface AppHeaderProps {
     breadcrumbs?: BreadcrumbItem[];
@@ -54,17 +56,25 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                         <AppLogo />
                     </Link>
 
-                    {/* Mobile Menu */}
-                    <div className="lg:hidden">
+                    {/* Mobile controls: Appearance toggle + Menu button */}
+                    <div className="flex items-center gap-2 lg:hidden">
+                        {/* Appearance toggle next to menu button (mobile) */}
+                        <div className="flex items-center">
+                            <AppearanceToggleDropdown />
+                        </div>
+
+                        {/* Mobile Menu */}
                         <Sheet>
                             <SheetTrigger asChild>
-                                <Button variant="ghost" size="icon" className="h-[34px] w-[34px]">
+                                <Button aria-label="Abrir navegación" variant="ghost" size="icon" className="h-[34px] w-[34px]">
                                     <Menu className="h-5 w-5" />
                                 </Button>
                             </SheetTrigger>
+
                             <SheetContent side="right" className="flex h-full w-64 flex-col items-stretch justify-between bg-sidebar">
                                 <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                                 <SheetHeader className="flex justify-start text-left" />
+
                                 <div className="flex h-full flex-1 flex-col space-y-4 p-4">
                                     <div className="flex h-full flex-col justify-between text-sm">
                                         <div className="flex flex-col space-y-1.5">
@@ -73,13 +83,13 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                                 const isActive = page.url === item.href || (isRecursos && page.url.startsWith('/recursos'));
 
                                                 if (isRecursos) {
-                                                    // 🔒 Sin enlace al índice /recursos en móvil
                                                     return (
                                                         <div key={item.title} className="flex flex-col">
                                                             <div
                                                                 className={cn(
-                                                                    'flex items-center gap-3 rounded-md px-4 py-3 text-base font-medium',
-                                                                    isActive ? 'text-primary' : 'text-muted-foreground',
+                                                                    'flex cursor-pointer items-center gap-3 rounded-md px-4 py-3 text-base font-medium',
+                                                                    isActive ? activeAccent : 'text-neutral-600 dark:text-neutral-300',
+                                                                    hoverBg,
                                                                 )}
                                                                 aria-current={isActive ? 'true' : undefined}
                                                             >
@@ -87,7 +97,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                                                 <span>Recursos</span>
                                                             </div>
 
-                                                            {/* Solo sub-enlaces */}
+                                                            {/* Sub-enlaces */}
                                                             <div className="mt-2 ml-7 flex flex-col space-y-2 text-[0.95rem]">
                                                                 {recursosItems.map((sub) => (
                                                                     <Link
@@ -95,10 +105,10 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                                                         prefetch
                                                                         href={sub.href}
                                                                         className={cn(
-                                                                            'rounded-md px-2 py-1.5 transition-colors',
+                                                                            'rounded-md px-2 py-1.5 ' + hoverBg,
                                                                             page.url.startsWith(sub.href)
-                                                                                ? 'bg-accent text-foreground'
-                                                                                : 'text-neutral-400 hover:bg-accent/60 hover:text-foreground',
+                                                                                ? 'bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400'
+                                                                                : 'text-neutral-400 dark:text-neutral-400',
                                                                         )}
                                                                     >
                                                                         {sub.title}
@@ -109,17 +119,15 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                                     );
                                                 }
 
-                                                // Resto de items: siguen siendo enlaces
                                                 return (
                                                     <div key={item.title} className="flex flex-col">
                                                         <Link
                                                             prefetch
                                                             href={item.href}
                                                             className={cn(
-                                                                'flex items-center gap-3 rounded-md px-4 py-3 text-base font-medium transition-colors',
-                                                                page.url === item.href
-                                                                    ? 'bg-muted text-primary'
-                                                                    : 'text-muted-foreground hover:bg-accent hover:text-foreground',
+                                                                'flex items-center gap-3 rounded-md px-4 py-3 text-base font-medium',
+                                                                page.url === item.href ? `bg-muted ${activeAccent}` : 'text-muted-foreground',
+                                                                hoverBg,
                                                             )}
                                                         >
                                                             {item.icon && <Icon iconNode={item.icon} className="h-5 w-5" />}
@@ -131,6 +139,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                         </div>
                                     </div>
                                 </div>
+
                             </SheetContent>
                         </Sheet>
                     </div>
@@ -143,6 +152,8 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                     const isRecursos = item.title === 'Recursos';
                                     const isActive = page.url === item.href || (isRecursos && page.url.startsWith('/recursos'));
 
+                                    const triggerHoverBg = hoverBg;
+
                                     if (isRecursos) {
                                         return (
                                             <NavigationMenuItem key={index} className="relative z-10 flex h-full items-center">
@@ -151,10 +162,22 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                                         navigationMenuTriggerStyle(),
                                                         'h-9 cursor-pointer lg:px-3 xl:px-5',
                                                         isActive && activeItemStyles,
-                                                        'data-[state=open]:bg-accent data-[state=open]:text-foreground',
+                                                        'data-[state=open]:bg-red-50 data-[state=open]:text-neutral-900 dark:data-[state=open]:bg-red-900/20 dark:data-[state=open]:text-neutral-100',
+                                                        triggerHoverBg,
+                                                        'focus-visible:ring-2 focus-visible:ring-red-300 dark:focus-visible:ring-red-600/40',
                                                     )}
                                                 >
-                                                    {item.icon && <Icon iconNode={item.icon} className="mr-1 hidden h-4 w-4 lg:mr-2 xl:block" />}
+                                                    {item.icon && (
+                                                        <Icon
+                                                            iconNode={item.icon}
+                                                            className={cn(
+                                                                'mr-1 hidden h-4 w-4 lg:mr-2 xl:block',
+                                                                isActive
+                                                                    ? 'text-red-600 dark:text-red-400'
+                                                                    : 'text-neutral-400 dark:text-neutral-400',
+                                                            )}
+                                                        />
+                                                    )}
                                                     {item.title}
                                                 </NavigationMenuTrigger>
 
@@ -169,8 +192,9 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                                                             href={sub.href}
                                                                             prefetch
                                                                             className={cn(
-                                                                                'block rounded-md px-3 py-3 text-sm leading-none transition-colors outline-none select-none hover:bg-accent focus:bg-accent',
-                                                                                isActiveSub && 'bg-accent/60',
+                                                                                'block rounded-md px-3 py-3 text-sm leading-none outline-none select-none',
+                                                                                hoverBg,
+                                                                                isActiveSub && 'bg-red-50',
                                                                             )}
                                                                         >
                                                                             {sub.title}
@@ -183,7 +207,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                                 </NavigationMenuContent>
 
                                                 {isActive && (
-                                                    <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white" />
+                                                    <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-red-600 dark:bg-red-400" />
                                                 )}
                                             </NavigationMenuItem>
                                         );
@@ -198,20 +222,33 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                                     navigationMenuTriggerStyle(),
                                                     isActive && activeItemStyles,
                                                     'h-9 cursor-pointer lg:px-3 xl:px-5',
+                                                    triggerHoverBg,
                                                 )}
                                             >
-                                                {item.icon && <Icon iconNode={item.icon} className="mr-1 hidden h-4 w-4 lg:mr-2 xl:block" />}
+                                                {item.icon && (
+                                                    <Icon
+                                                        iconNode={item.icon}
+                                                        className={cn(
+                                                            'mr-1 hidden h-4 w-4 lg:mr-2 xl:block',
+                                                            isActive ? 'text-red-600 dark:text-red-400' : 'text-neutral-400 dark:text-neutral-400',
+                                                        )}
+                                                    />
+                                                )}
                                                 {item.title}
                                             </Link>
                                             {isActive && (
-                                                <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-black dark:bg-white" />
+                                                <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-red-600 dark:bg-red-400" />
                                             )}
                                         </NavigationMenuItem>
                                     );
                                 })}
                             </NavigationMenuList>
+
+                            {/* Dropdown de apariencia (desktop) */}
+                            <div className="ml-4 flex items-center">
+                                <AppearanceToggleDropdown />
+                            </div>
                         </NavigationMenu>
-                        <AppearanceToggleDropdown />
                     </div>
                 </div>
             </div>
