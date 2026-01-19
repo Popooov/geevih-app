@@ -174,7 +174,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                                                 'mr-1 hidden h-4 w-4 lg:mr-2 xl:block',
                                                                 isActive
                                                                     ? 'text-red-600 dark:text-red-400'
-                                                                    : 'text-neutral-400 dark:text-neutral-400',
+                                                                    : 'text-neutral-800 dark:text-neutral-200',
                                                             )}
                                                         />
                                                     )}
@@ -230,7 +230,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                                         iconNode={item.icon}
                                                         className={cn(
                                                             'mr-1 hidden h-4 w-4 lg:mr-2 xl:block',
-                                                            isActive ? 'text-red-600 dark:text-red-400' : 'text-neutral-400 dark:text-neutral-400',
+                                                            isActive ? 'text-red-600 dark:text-red-400' : 'text-neutral-800 dark:text-neutral-200',
                                                         )}
                                                     />
                                                 )}
