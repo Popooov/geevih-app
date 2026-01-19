@@ -1,18 +1,13 @@
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, type ShowNewsPageProps } from '@/types';
+import { type ShowNewsPageProps } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { ArrowLeft } from 'lucide-react';
 
 export default function Show() {
     const { singleNews } = usePage<ShowNewsPageProps>().props;
 
-    const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Noticias', href: '/noticias' },
-        { title: singleNews.titulo, href: '' },
-    ];
-
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout>
             <Head title={singleNews.titulo} />
 
             <div className="mx-auto mb-12 max-w-3xl space-y-6 p-6">

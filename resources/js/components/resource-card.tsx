@@ -21,7 +21,7 @@ export default function ResourceCard({ titulo, tipo, fecha, enlace, imagen }: Re
         // Enhanced Card Styling: shadow-lg, rounded-xl, subtle transition, and primary color hover effect
         <Card
             className={`flex h-full w-xs flex-col overflow-hidden rounded-xl shadow-lg transition-all duration-300 ease-in-out ${
-                isAvailable ? 'cursor-pointer hover:-translate-y-0.5 hover:border-amber-500 hover:shadow-xl' : 'opacity-80'
+                isAvailable ? 'cursor-pointer hover:-translate-y-0.5 hover:border-red-600 hover:shadow-xl' : 'opacity-80'
             } `}
         >
             {/* Image / Placeholder Header */}
@@ -41,7 +41,7 @@ export default function ResourceCard({ titulo, tipo, fecha, enlace, imagen }: Re
                 {/* Type and Date Metadata in a single line */}
                 <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
                     {/* Tipo (Highlighted with a custom color for emphasis) */}
-                    <span className="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
+                    <span className="inline-flex items-center gap-1.5 text-red-600 dark:text-red-400">
                         <FileText className="h-4 w-4" />
                         {tipo}
                     </span>
@@ -67,7 +67,7 @@ export default function ResourceCard({ titulo, tipo, fecha, enlace, imagen }: Re
                         href={enlace}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition hover:opacity-80"
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition hover:text-red-600"
                     >
                         <ActionIcon className="h-4 w-4" />
                         {linkText} →

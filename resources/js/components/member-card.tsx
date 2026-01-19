@@ -16,8 +16,7 @@ interface MemberCardProps {
 }
 
 export default function MemberCard({ member, index = 0 }: MemberCardProps) {
-    const src = member.foto?.trim() ? member.foto : '/images/member-placeholder.svg';
-    console.log(member);
+    const src = member.foto?.trim() ? member.foto : 'public/images/member-placeholder.svg';
 
     return (
         <Card

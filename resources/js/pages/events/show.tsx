@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, type ShowEventPageProps } from '@/types';
+import { type ShowEventPageProps } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { ArrowLeft, Calendar, Clock, MapPin } from 'lucide-react';
 
@@ -14,15 +14,10 @@ const getFormattedDate = (dateString: string) => {
 export default function Show() {
     const { event } = usePage<ShowEventPageProps>().props;
 
-    const breadcrumbs: BreadcrumbItem[] = [
-        { title: 'Eventos', href: '/eventos' },
-        { title: event.titulo, href: '' },
-    ];
-
     const dateFormatted = getFormattedDate(event.fecha);
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout>
             <Head title={event.titulo} />
 
             <div className="mx-auto mt-2 max-w-5xl space-y-8 p-6 md:mt-7 lg:p-0">
