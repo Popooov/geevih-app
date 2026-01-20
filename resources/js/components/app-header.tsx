@@ -1,6 +1,6 @@
-import { Breadcrumbs } from '@/components/breadcrumbs';
 import { Icon } from '@/components/icon';
 import { Button } from '@/components/ui/button';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
     NavigationMenu,
     NavigationMenuContent,
@@ -12,9 +12,10 @@ import {
 } from '@/components/ui/navigation-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
-import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
+import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpenText, Calendar, Home, Info, LayoutGrid, Mail, Menu, Newspaper } from 'lucide-react';
+import { BookOpenText, Calendar, ChevronDown, Home, Info, LayoutGrid, Mail, Menu, Newspaper } from 'lucide-react';
+import * as React from 'react';
 import AppLogo from './app-logo';
 import AppearanceToggleDropdown from './appearance-dropdown';
 
@@ -40,12 +41,17 @@ const activeItemStyles = 'text-neutral-900 dark:bg-neutral-800 dark:text-neutral
 const activeAccent = 'text-red-600 dark:text-red-400';
 const hoverBg = 'hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-150';
 
-interface AppHeaderProps {
-    breadcrumbs?: BreadcrumbItem[];
-}
-
-export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
+export function AppHeader() {
     const page = usePage<SharedData>();
+
+    const isRecursosRoute = page.url.startsWith('/recursos');
+
+    const [recursosOpen, setRecursosOpen] = React.useState(isRecursosRoute);
+
+    // Si navegas a /recursos/... (Inertia) y quieres que se abra automáticamente:
+    React.useEffect(() => {
+        if (isRecursosRoute) setRecursosOpen(true);
+    }, [isRecursosRoute]);
 
     return (
         <>
@@ -84,38 +90,53 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
 
                                                 if (isRecursos) {
                                                     return (
-                                                        <div key={item.title} className="flex flex-col">
-                                                            <div
-                                                                className={cn(
-                                                                    'flex cursor-pointer items-center gap-3 rounded-md px-4 py-3 text-base font-medium',
-                                                                    isActive ? activeAccent : 'text-neutral-600 dark:text-neutral-300',
-                                                                    hoverBg,
-                                                                )}
-                                                                aria-current={isActive ? 'true' : undefined}
-                                                            >
-                                                                {item.icon && <Icon iconNode={item.icon} className="h-5 w-5" />}
-                                                                <span>Recursos</span>
-                                                            </div>
+                                                        <Collapsible
+                                                            key={item.title}
+                                                            open={recursosOpen}
+                                                            onOpenChange={setRecursosOpen}
+                                                            className="flex flex-col"
+                                                        >
+                                                            <CollapsibleTrigger asChild>
+                                                                <button
+                                                                    type="button"
+                                                                    className={cn(
+                                                                        'flex w-full items-center justify-between rounded-md px-4 py-3 text-base font-medium',
+                                                                        isActive ? activeAccent : 'text-neutral-600 dark:text-neutral-300',
+                                                                        hoverBg,
+                                                                    )}
+                                                                    aria-current={isActive ? 'true' : undefined}
+                                                                >
+                                                                    <span className="flex items-center gap-3">
+                                                                        {item.icon && <Icon iconNode={item.icon} className="h-5 w-5" />}
+                                                                        <span>Recursos</span>
+                                                                    </span>
 
-                                                            {/* Sub-enlaces */}
-                                                            <div className="mt-2 ml-7 flex flex-col space-y-2 text-[0.95rem]">
-                                                                {recursosItems.map((sub) => (
-                                                                    <Link
-                                                                        key={sub.href}
-                                                                        prefetch
-                                                                        href={sub.href}
-                                                                        className={cn(
-                                                                            'rounded-md px-2 py-1.5 ' + hoverBg,
-                                                                            page.url.startsWith(sub.href)
-                                                                                ? 'bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400'
-                                                                                : 'text-neutral-400 dark:text-neutral-400',
-                                                                        )}
-                                                                    >
-                                                                        {sub.title}
-                                                                    </Link>
-                                                                ))}
-                                                            </div>
-                                                        </div>
+                                                                    <ChevronDown
+                                                                        className={cn('h-4 w-4 transition-transform', recursosOpen && 'rotate-180')}
+                                                                    />
+                                                                </button>
+                                                            </CollapsibleTrigger>
+
+                                                            <CollapsibleContent>
+                                                                <div className="mt-2 ml-7 flex flex-col space-y-2 text-[0.95rem]">
+                                                                    {recursosItems.map((sub) => (
+                                                                        <Link
+                                                                            key={sub.href}
+                                                                            prefetch
+                                                                            href={sub.href}
+                                                                            className={cn(
+                                                                                'rounded-md px-2 py-1.5 ' + hoverBg,
+                                                                                page.url.startsWith(sub.href)
+                                                                                    ? 'bg-muted text-red-600 dark:text-red-400'
+                                                                                    : 'text-neutral-500 dark:text-neutral-400',
+                                                                            )}
+                                                                        >
+                                                                            {sub.title}
+                                                                        </Link>
+                                                                    ))}
+                                                                </div>
+                                                            </CollapsibleContent>
+                                                        </Collapsible>
                                                     );
                                                 }
 
@@ -139,7 +160,6 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                                         </div>
                                     </div>
                                 </div>
-
                             </SheetContent>
                         </Sheet>
                     </div>
@@ -253,13 +273,13 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                 </div>
             </div>
 
-            {breadcrumbs.length > 1 && (
+            {/* {breadcrumbs.length > 1 && (
                 <div className="flex w-full border-b border-sidebar-border/70">
                     <div className="mx-auto flex h-12 w-full items-center justify-start px-4 text-neutral-500 md:max-w-7xl">
                         <Breadcrumbs breadcrumbs={breadcrumbs} />
                     </div>
                 </div>
-            )}
+            )} */}
         </>
     );
 }
