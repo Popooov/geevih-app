@@ -1,7 +1,7 @@
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link } from '@inertiajs/react';
-import { ArrowRight, BookOpenText, Calendar, Newspaper, UserPlus } from 'lucide-react';
+import { ArrowRight, BookOpenText, Calendar, FileText, Newspaper, UserPlus } from 'lucide-react';
 
 export default function Home() {
     return (
@@ -14,6 +14,7 @@ export default function Home() {
                         <div className="flex justify-center drop-shadow-sm">
                             <img src="images/geevih-logo.png" alt="Logo GEEVIH SEISIDA" className="mx-auto w-64 md:w-72" />
                         </div>
+
                         <div className="max-w-3xl space-y-4">
                             <h1 className="text-4xl font-extrabold tracking-tight text-foreground lg:text-5xl">
                                 Grupo de Enfermería Experta en <span className="text-primary">VIH</span>
@@ -23,6 +24,7 @@ export default function Home() {
                                 los derechos de las personas con VIH.
                             </p>
                         </div>
+
                         <div className="pt-2">
                             <Link
                                 href="/sobre"
@@ -41,7 +43,53 @@ export default function Home() {
                         </div>
 
                         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                            {/* Card 1: News */}
+                            <a
+                                href="https://www.seisida.net/wp-content/uploads/2025/10/Documento-para-el-cuidado-enfermero-experto-de-personas-con-VIH.pdf"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="group md:col-span-2"
+                                aria-label="Abrir PDF: Documento para el cuidado enfermero experto de personas con VIH (Proyecto National Policy)"
+                            >
+                                <Card
+                                    className={[
+                                        'relative h-full overflow-hidden border-primary/40 transition-all duration-300',
+                                        'hover:-translate-y-1 hover:border-primary hover:shadow-xl',
+                                        // Gradient estilo imagen
+                                        'bg-[linear-gradient(120deg,rgba(125,211,252,0.35)_0%,rgba(167,139,250,0.25)_45%,rgba(251,113,133,0.28)_100%)]',
+                                        'dark:bg-[linear-gradient(120deg,rgba(56,189,248,0.16)_0%,rgba(139,92,246,0.14)_45%,rgba(244,63,94,0.14)_100%)]',
+                                    ].join(' ')}
+                                >
+                                    {/* <div className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-primary/20 blur-3xl" /> */}
+
+                                    <div className="pointer-events-none absolute inset-0 bg-background/30 dark:bg-background/40" />
+
+                                    <CardHeader className="relative flex flex-row items-start gap-4 space-y-0">
+                                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground transition-transform group-hover:scale-110">
+                                            <FileText className="h-6 w-6" />
+                                        </div>
+
+                                        <div className="flex-1">
+                                            <div className="mb-2 inline-flex items-center rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground">
+                                                PDF
+                                            </div>
+
+                                            <CardTitle className="text-lg leading-snug transition-colors group-hover:text-primary">
+                                                Documento para el cuidado enfermero experto de personas con VIH
+                                            </CardTitle>
+
+                                            <CardDescription className="mt-2 line-clamp-2">
+                                                Proyecto National Policy.
+                                            </CardDescription>
+
+                                            <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary">
+                                                Abrir documento <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                                            </div>
+                                        </div>
+                                    </CardHeader>
+                                </Card>
+                            </a>
+
+                            {/* Card 1: News (igual que antes) */}
                             <Link href="/noticias" prefetch className="group">
                                 <Card className="h-full transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg">
                                     <CardHeader className="flex flex-row items-center gap-4 space-y-0">
@@ -58,7 +106,7 @@ export default function Home() {
                                 </Card>
                             </Link>
 
-                            {/* Card 2: Events */}
+                            {/* Card 2: Events (igual que antes) */}
                             <Link href="/eventos" prefetch className="group">
                                 <Card className="h-full transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg">
                                     <CardHeader className="flex flex-row items-center gap-4 space-y-0">
@@ -75,7 +123,7 @@ export default function Home() {
                                 </Card>
                             </Link>
 
-                            {/* Card 3: Publications */}
+                            {/* Card 3: Publications (igual que antes) */}
                             <Link href="/recursos/guias" className="group">
                                 <Card className="h-full transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:shadow-lg">
                                     <CardHeader className="flex flex-row items-center gap-4 space-y-0">
@@ -92,9 +140,14 @@ export default function Home() {
                                 </Card>
                             </Link>
 
-                            {/* Card 4: Join Us */}
+                            {/* Card 4: Join Us (igual que antes) */}
                             <div className="group cursor-pointer">
-                                <a href="https://seisida.typeform.com/to/kZwwPgdK" target="_blank" rel="noopener noreferrer" aria-label={`Abrir enlace: https://seisida.typeform.com/to/kZwwPgdK`}>
+                                <a
+                                    href="https://seisida.typeform.com/to/kZwwPgdK"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    aria-label="Abrir enlace: https://seisida.typeform.com/to/kZwwPgdK"
+                                >
                                     <Card className="h-full border-dashed transition-all duration-300 hover:-translate-y-1 hover:border-primary hover:bg-background hover:shadow-lg">
                                         <CardHeader className="flex flex-row items-center gap-4 space-y-0">
                                             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-purple-100 text-purple-600 transition-transform group-hover:scale-110 dark:bg-purple-900/30 dark:text-purple-400">
