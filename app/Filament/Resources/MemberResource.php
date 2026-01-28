@@ -3,15 +3,12 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\MemberResource\Pages;
-use App\Filament\Resources\MemberResource\RelationManagers;
 use App\Models\Member;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class MemberResource extends Resource
 {
@@ -32,21 +29,46 @@ class MemberResource extends Resource
                         ->required()
                         ->maxLength(255),
 
+                    Forms\Components\TextInput::make('role')
+                        ->label('Rol / Cargo')
+                        ->maxLength(255)
+                        ->nullable(),
+
                     Forms\Components\TextInput::make('affiliation')
                         ->label('Filiación')
-                        ->required()
-                        ->maxLength(255),
+                        ->maxLength(255)
+                        ->nullable(),
 
                     Forms\Components\Textarea::make('summary')
                         ->label('Resumen')
-                        ->required()
-                        ->rows(6)
-                        ->maxLength(2000),
+                        ->rows(5)
+                        ->maxLength(2000)
+                        ->nullable()
+                        ->columnSpanFull(),
+
+                    Forms\Components\RichEditor::make('bio')
+                        ->label('Bio (opcional)')
+                        ->columnSpanFull()
+                        ->disableToolbarButtons(['attachFiles'])
+                        ->nullable(),
 
                     Forms\Components\TextInput::make('email')
                         ->label('Email')
                         ->email()
-                        ->maxLength(255),
+                        ->maxLength(255)
+                        ->nullable(),
+
+                    Forms\Components\TextInput::make('website_url')
+                        ->label('Web')
+                        ->url()
+                        ->maxLength(255)
+                        ->nullable(),
+
+                    Forms\Components\TextInput::make('linkedin_url')
+                        ->label('LinkedIn')
+                        ->url()
+                        ->maxLength(255)
+                        ->nullable(),
 
                     Forms\Components\FileUpload::make('photo_url')
                         ->label('Foto')
@@ -54,8 +76,12 @@ class MemberResource extends Resource
                         ->disk('cloudinary')
                         ->directory('members')
                         ->visibility('public')
-                        ->maxSize(4096) // 4MB
-                        ->helperText('Sube una foto. Se guardará en Cloudinary dentro de /members.'),
+                        ->maxSize(4096),
+
+                    Forms\Components\TextInput::make('photo_alt')
+                        ->label('ALT foto')
+                        ->maxLength(255)
+                        ->nullable(),
 
                     Forms\Components\TextInput::make('sort_order')
                         ->label('Orden')
@@ -75,36 +101,19 @@ class MemberResource extends Resource
         return $table
             ->defaultSort('sort_order')
             ->columns([
-                Tables\Columns\TextColumn::make('sort_order')
-                    ->label('Orden')
-                    ->sortable()
-                    ->toggleable(),
+                Tables\Columns\TextColumn::make('sort_order')->label('Orden')->sortable(),
 
-                Tables\Columns\TextColumn::make('name')
-                    ->label('Nombre')
-                    ->searchable()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('name')->label('Nombre')->searchable()->sortable(),
 
-                Tables\Columns\TextColumn::make('affiliation')
-                    ->label('Filiación')
-                    ->searchable()
-                    ->sortable()
-                    ->limit(35),
+                Tables\Columns\TextColumn::make('role')->label('Rol')->toggleable()->limit(30),
 
-                Tables\Columns\ImageColumn::make('photo_url')
-                    ->label('Foto')
-                    ->square()
-                    ->toggleable(),
+                Tables\Columns\TextColumn::make('affiliation')->label('Filiación')->searchable()->sortable()->limit(35),
 
-                Tables\Columns\IconColumn::make('is_published')
-                    ->label('Publicado')
-                    ->boolean()
-                    ->sortable(),
+                Tables\Columns\ImageColumn::make('photo_url')->label('Foto')->square(),
 
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->label('Actualizado')
-                    ->dateTime('d/m/Y H:i')
-                    ->sortable(),
+                Tables\Columns\IconColumn::make('is_published')->label('Publicado')->boolean()->sortable(),
+
+                Tables\Columns\TextColumn::make('updated_at')->label('Actualizado')->dateTime('d/m/Y H:i')->sortable(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

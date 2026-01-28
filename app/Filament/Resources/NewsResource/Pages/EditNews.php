@@ -16,4 +16,19 @@ class EditNews extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        $data['slug'] = NewsResource::uniqueSlug(
+            $data['slug'] ?? $data['title'],
+            \App\Models\News::class,
+            $this->record->getKey()
+        );
+
+        if (($data['is_published'] ?? false) && empty($data['published_at'])) {
+            $data['published_at'] = now();
+        }
+
+        return $data;
+    }
 }

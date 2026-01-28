@@ -28,7 +28,7 @@ export default function Index() {
                                 fecha={item.fecha}
                                 resumen={item.descripcion}
                                 imagen={item.imagen}
-                                enlace={`/noticias/${item.id}`}
+                                enlace={`/noticias/${item.slug ?? item.id}`}
                             />
                         ))
                     ) : (

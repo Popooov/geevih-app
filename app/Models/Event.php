@@ -3,31 +3,49 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Event extends Model
 {
-    protected $casts = [
-        'date' => 'datetime',
-        'time' => 'datetime:H:i',
-    ];
+    use SoftDeletes;
 
     protected $fillable = [
         'title',
-        'date',
-        'time',
+        'slug',
+        'start_at',
+        'end_at',
         'location',
+        'is_online',
+        'online_url',
+        'registration_url',
         'description',
         'content',
         'image_url',
+        'image_alt',
+        'is_published',
+        'published_at',
     ];
 
-    /**
-     * Get the formatted date for the event.
-     *
-     * @return string
-     */
-    public function getFormattedDateAttribute()
+    protected $casts = [
+        'start_at' => 'datetime',
+        'end_at' => 'datetime',
+        'is_online' => 'boolean',
+        'is_published' => 'boolean',
+        'published_at' => 'datetime',
+    ];
+
+    public function getFormattedDateAttribute(): string
     {
-        return $this->date->format('d M Y');
+        return $this->start_at?->toFormattedDateString() ?? '';
+    }
+
+    public function getFormattedTimeAttribute(): ?string
+    {
+        return $this->start_at?->format('H:i');
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
     }
 }

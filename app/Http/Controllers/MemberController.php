@@ -18,15 +18,15 @@ class MemberController extends Controller
 
         return Inertia::render('members', [
             'members' => $members->map(fn ($m) => [
-                'id'         => $m->id,
-                'nombre'     => $m->name,
-                'filiacion'  => $m->affiliation,
-                'resumen'    => $m->summary,
-                'email'      => $m->email,
-                // Convertimos public_id -> URL real (Cloudinary)
-                'foto'       => $m->photo_url
-                    ? Storage::disk('cloudinary')->url($m->photo_url)
-                    : null,
+                'id'          => $m->id,
+                'name'        => $m->name,
+                'role'        => $m->role,
+                'affiliation' => $m->affiliation,
+                'summary'     => $m->summary,
+                'email'       => $m->email,
+                'photo_url'   => $m->photo_url ? Storage::disk('cloudinary')->url($m->photo_url) : null,
+                'website_url' => $m->website_url,
+                'linkedin_url'=> $m->linkedin_url,
             ]),
         ]);
     }

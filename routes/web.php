@@ -22,9 +22,9 @@ Route::get('/areas', function () {
 })->name('areas');
 
 Route::get('/eventos', [EventController::class, 'index'],
-)->name('events');
+)->name('events.index');
 
-Route::get('/eventos/{event}', [EventController::class, 'show'])
+Route::get('/eventos/{event:slug}', [EventController::class, 'show'])
      ->name('events.show');
 
 Route::prefix('recursos')->name('resources.')->group(function () {
@@ -38,7 +38,7 @@ Route::prefix('recursos')->name('resources.')->group(function () {
 Route::get('/noticias', [NewsController::class, 'index'])
 ->name('news.index');
 
-Route::get('/noticias/{news}', [NewsController::class, 'show'])
+Route::get('/noticias/{news:slug}', [NewsController::class, 'show'])
 ->name('news.show');
 
 Route::get('/contacto', function () {

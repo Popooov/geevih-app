@@ -5,28 +5,30 @@ interface NoticiaCardProps {
     titulo: string;
     fecha: string;
     resumen: string;
-    imagen?: string;
-    enlace?: string;
+    imagen?: string | null;
+    enlace?: string | null;
 }
 
 export default function NewsCard({ titulo, fecha, resumen, imagen, enlace }: NoticiaCardProps) {
+    const imageSrc = imagen?.trim() ? imagen : '/images/noticia-placeholder.jpg';
+
     return (
         <Link href={enlace ?? '#'} className="group relative block">
-            <div
-                className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-500 animate-in fade-in slide-in-from-bottom-2 hover:-translate-y-1 hover:shadow-1xl dark:border-slate-800 dark:bg-slate-900"
-            >
-                {/* Зображення з ефектом зуму */}
+            <div className="hover:shadow-1xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition-all duration-500 animate-in fade-in slide-in-from-bottom-2 hover:-translate-y-1 dark:border-slate-800 dark:bg-slate-900">
                 <div className="relative h-56 w-full overflow-hidden">
                     <img
-                        src={imagen ?? 'public/images/noticia-placeholder.jpg'}
+                        src={imageSrc}
                         alt={titulo}
-                        className="h-full w-full object-cover"
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                        onError={(e) => {
+                            e.currentTarget.onerror = null;
+                            e.currentTarget.src = '/images/noticia-placeholder.jpg';
+                        }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-                    {/* Дата поверх зображення */}
                     <div className="absolute top-4 left-4">
-                        <div className="flex items-center gap-2 rounded-lg bg-white/90 px-3 py-1.5 text-[11px] font-bold tracking-wider text-slate-700 uppercase shadow-sm backdrop-blur-md dark:bg-slate-900/90 dark:text-slate-300">
+                        <div className="flex items-center gap-2 rounded-lg bg-white/90 px-3 py-1.5 text-[11px] font-bold tracking-wider text-slate-700 shadow-sm backdrop-blur-md dark:bg-slate-900/90 dark:text-slate-300">
                             <Calendar className="h-3 w-3 text-red-600" />
                             {fecha}
                         </div>
