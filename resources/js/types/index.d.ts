@@ -69,6 +69,7 @@ export interface EventItem {
 
     // opcional: si en algún momento quieres mostrar rangos
     end_at?: string | null; // ISO string si lo mandas así (recomendado), o texto formateado
+    isOngoing?: boolean;
 }
 
 export interface SingleEvent {
