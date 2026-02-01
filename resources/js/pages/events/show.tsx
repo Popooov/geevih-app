@@ -7,10 +7,6 @@ export default function Show() {
     const { event } = usePage<ShowEventPageProps>().props;
 
     const imageSrc = event.imagen?.trim() ? event.imagen : '/images/evento-placeholder.jpg';
-
-    // Acento VIH (sutil, pro)
-    const vihGradient = 'bg-[linear-gradient(90deg,rgba(239,68,68,0.95),rgba(34,211,238,0.95),rgba(168,85,247,0.95))]';
-
     const hasCtas = Boolean(event.registration_url || event.online_url);
 
     return (
@@ -29,95 +25,90 @@ export default function Show() {
                     </Link>
                 </div>
 
-                {/* HERO */}
+                {/* HERO (simple) */}
                 <header className="mt-4 overflow-hidden rounded-2xl border border-border/70 bg-background shadow-xl animate-in fade-in slide-in-from-bottom-6 motion-reduce:transform-none motion-reduce:animate-none">
-                    {/* top accent */}
-                    <div className={`h-1 w-full ${vihGradient}`} />
-
                     <div className="relative">
-                        {/* Background image */}
-                        <div className="relative h-[320px] w-full sm:h-[380px]">
-                            <img
-                                src={imageSrc}
-                                alt={`Imagen de ${event.titulo}`}
-                                className="h-full w-full object-cover"
-                                onError={(e) => {
-                                    e.currentTarget.onerror = null;
-                                    e.currentTarget.src = '/images/evento-placeholder.jpg';
-                                }}
-                            />
-                            {/* overlays */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-black/10" />
-                            <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.10),transparent_45%)]" />
-                        </div>
+                        <img
+                            src={imageSrc}
+                            alt={`Imagen de ${event.titulo}`}
+                            className="h-[260px] w-full object-cover sm:h-[340px]"
+                            onError={(e) => {
+                                e.currentTarget.onerror = null;
+                                e.currentTarget.src = '/images/evento-placeholder.jpg';
+                            }}
+                        />
 
-                        {/* Hero content */}
-                        <div className="absolute inset-0 flex items-end">
-                            <div className="w-full p-6 sm:p-10">
-                                {/* chips row */}
-                                <div className="mb-3 flex flex-wrap items-center gap-2">
-                                    {event.is_online && (
-                                        <span className="inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-900 shadow-sm">
-                                            <Globe className="h-3.5 w-3.5" />
-                                            Online
-                                        </span>
-                                    )}
-                                    {event.registration_url && (
-                                        <span className="inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-slate-900 shadow-sm">
-                                            <Ticket className="h-3.5 w-3.5" />
-                                            Inscripción abierta
-                                        </span>
-                                    )}
-                                </div>
+                        {/* Badges (mínimos) */}
+                        <div className="absolute top-4 left-4 flex flex-wrap items-center gap-2">
+                            {event.is_online && (
+                                <span className="inline-flex items-center gap-2 rounded-full bg-background/90 px-3 py-1 text-xs font-semibold text-foreground shadow-sm backdrop-blur">
+                                    <Globe className="h-3.5 w-3.5 text-primary" />
+                                    Online
+                                </span>
+                            )}
 
-                                <h1 className="max-w-4xl text-4xl leading-tight font-extrabold text-white sm:text-5xl">{event.titulo}</h1>
-
-                                {/* accent underline */}
-                                <div className="mt-4 flex items-center gap-3">
-                                    <div className={`h-1.5 w-24 rounded-full ${vihGradient}`} />
-                                    <p className="text-sm font-semibold text-white/85">
-                                        {event.fecha}
-                                        {event.hora ? ` · ${event.hora}` : ''}
-                                    </p>
-                                </div>
-                            </div>
+                            {event.registration_url && (
+                                <span className="inline-flex items-center gap-2 rounded-full bg-background/90 px-3 py-1 text-xs font-semibold text-foreground shadow-sm backdrop-blur">
+                                    <Ticket className="h-3.5 w-3.5 text-primary" />
+                                    Inscripción
+                                </span>
+                            )}
                         </div>
                     </div>
 
-                    {/* Short intro strip */}
-                    {event.descripcion && (
-                        <div className="border-t border-border/70 bg-background/60 p-6 sm:p-8">
-                            <p className="max-w-4xl text-base leading-relaxed text-muted-foreground sm:text-lg">{event.descripcion}</p>
+                    <div className="space-y-4 p-6 sm:p-10">
+                        <h1 className="text-4xl leading-tight font-extrabold text-foreground sm:text-5xl">{event.titulo}</h1>
+
+                        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm font-semibold text-muted-foreground">
+                            <span className="inline-flex items-center gap-2">
+                                <Calendar className="h-4 w-4 text-primary" />
+                                {event.fecha}
+                            </span>
+
+                            {event.hora && (
+                                <span className="inline-flex items-center gap-2">
+                                    <Clock className="h-4 w-4 text-primary" />
+                                    {event.hora}
+                                </span>
+                            )}
+
+                            <span className="inline-flex items-center gap-2">
+                                <MapPin className="h-4 w-4 text-primary" />
+                                {event.is_online ? 'Online' : event.lugar || '—'}
+                            </span>
                         </div>
-                    )}
+
+                        {event.descripcion && (
+                            <p className="max-w-4xl border-l-4 border-primary/50 pl-4 text-base leading-relaxed text-muted-foreground sm:text-lg">
+                                {event.descripcion}
+                            </p>
+                        )}
+                    </div>
                 </header>
 
-                {/* MAIN LAYOUT */}
+                {/* MAIN */}
                 <main className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-12">
-                    {/* CONTENT */}
+                    {/* Content */}
                     <section className="lg:col-span-8">
                         <div className="rounded-2xl border border-border/70 bg-background shadow-lg animate-in fade-in slide-in-from-bottom-6 motion-reduce:transform-none motion-reduce:animate-none">
                             <div className="p-6 sm:p-10">
-                                <div className="mb-6 flex items-center gap-3">
-                                    <div className={`h-10 w-1.5 rounded-full ${vihGradient}`} />
-                                    <div>
-                                        <h2 className="text-2xl font-bold text-foreground">Detalles</h2>
-                                        <p className="text-sm text-muted-foreground">Información completa del evento</p>
-                                    </div>
-                                </div>
+                                <h2 className="text-2xl font-bold text-foreground">Detalles del evento</h2>
+                                <p className="mt-1 text-sm text-muted-foreground">Información completa y recursos relacionados.</p>
 
-                                {event.contenido ? (
-                                    <div className="prose prose-slate dark:prose-invert max-w-none">
-                                        <div dangerouslySetInnerHTML={{ __html: event.contenido }} />
-                                    </div>
-                                ) : (
-                                    <p className="text-muted-foreground">No hay contenido adicional para este evento.</p>
-                                )}
+                                <div className="mt-6">
+                                    {event.contenido ? (
+                                        <div className="prose prose-slate dark:prose-invert max-w-none">
+                                            <div dangerouslySetInnerHTML={{ __html: event.contenido }} />
+                                        </div>
+                                    ) : (
+                                        <p className="text-muted-foreground">No hay contenido adicional para este evento.</p>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </section>
 
-                    {/* SIDEBAR */}
+                    {/* Sidebar */}
                     <aside className="lg:col-span-4">
                         <div className="space-y-6 lg:sticky lg:top-6">
                             {/* CTAs */}
@@ -125,7 +116,7 @@ export default function Show() {
                                 <div className="rounded-2xl border border-border/70 bg-background shadow-lg">
                                     <div className="p-6">
                                         <h3 className="text-base font-bold text-foreground">Acciones</h3>
-                                        <p className="mt-1 text-sm text-muted-foreground">Accede rápidamente a inscripción o sesión online.</p>
+                                        <p className="mt-1 text-sm text-muted-foreground">Acceso rápido a enlaces del evento.</p>
 
                                         <div className="mt-4 flex flex-col gap-3">
                                             {event.registration_url && (
@@ -146,7 +137,7 @@ export default function Show() {
                                                     href={event.online_url}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-primary/60 bg-background px-4 py-3 text-sm font-bold text-primary transition hover:bg-primary/10"
+                                                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-border/70 bg-background px-4 py-3 text-sm font-bold text-foreground transition hover:border-primary/50 hover:text-primary"
                                                 >
                                                     <Globe className="h-4 w-4" />
                                                     Acceder online
@@ -155,15 +146,14 @@ export default function Show() {
                                             )}
                                         </div>
                                     </div>
-                                    <div className={`h-1 w-full ${vihGradient}`} />
                                 </div>
                             )}
 
-                            {/* INFO CARD */}
+                            {/* Info */}
                             <div className="rounded-2xl border border-border/70 bg-background shadow-lg">
                                 <div className="p-6">
-                                    <h3 className="text-base font-bold text-foreground">Ficha del evento</h3>
-                                    <p className="mt-1 text-sm text-muted-foreground">Datos principales</p>
+                                    <h3 className="text-base font-bold text-foreground">Ficha</h3>
+                                    <p className="mt-1 text-sm text-muted-foreground">Datos principales del evento.</p>
 
                                     <div className="mt-5 space-y-4">
                                         <InfoRow icon={<Calendar className="h-5 w-5 text-primary" />} label="Fecha" value={event.fecha} />
@@ -183,21 +173,9 @@ export default function Show() {
                                         ) : null}
                                     </div>
                                 </div>
-
-                                {/* soft divider */}
-                                <div className="border-t border-border/70" />
-
-                                <div className="p-6">
-                                    <div className="rounded-xl bg-muted/40 p-4">
-                                        <p className="text-sm font-semibold text-foreground">Tip</p>
-                                        <p className="mt-1 text-sm text-muted-foreground">
-                                            Puedes compartir este evento copiando la URL desde tu navegador.
-                                        </p>
-                                    </div>
-                                </div>
                             </div>
 
-                            {/* EXTRA: back to list */}
+                            {/* Back to list */}
                             <div className="rounded-2xl border border-border/70 bg-background shadow-lg">
                                 <div className="p-6">
                                     <Link

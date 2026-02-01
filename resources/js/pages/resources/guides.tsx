@@ -24,17 +24,6 @@ export default function Guides() {
                         </p>
                     </div>
 
-                    {/* Simple Search Mockup (for better design) */}
-                    {/* <div className="mt-8 flex justify-center">
-                        <div className="relative w-full max-w-md">
-                            <input
-                                type="text"
-                                placeholder="Buscar por título, tipo o fecha..."
-                                className="w-full rounded-full border border-gray-300 bg-gray-50 py-3 pl-12 pr-4 text-base transition focus:border-amber-500 focus:ring-amber-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
-                            />
-                            <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
-                        </div>
-                    </div> */}
                 </header>
 
                 <ResourceGrid>

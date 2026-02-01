@@ -53,9 +53,6 @@ export default function EventCard({
 
     const isExternal = Boolean((registration_url || online_url) && !enlace);
 
-    // Acentos “VIH”
-    const vihGradient = 'bg-[linear-gradient(90deg,rgba(239,68,68,0.88),rgba(34,211,238,0.88),rgba(168,85,247,0.88))]';
-
     const hoverLift = isPast ? '' : 'hover:-translate-y-1';
     const hoverBorder = isPast ? 'hover:border-border/80' : 'hover:border-primary/50';
     const hoverShadow = isPast ? 'hover:shadow-lg' : 'hover:shadow-2xl hover:shadow-primary/10';
@@ -82,8 +79,8 @@ export default function EventCard({
                     'animate-in fade-in slide-in-from-bottom-8 motion-reduce:transform-none motion-reduce:animate-none',
                 ].join(' ')}
             >
-                {/* Barra superior estilo VIH */}
-                <div className={['h-1 w-full', isPast ? 'bg-border' : vihGradient].join(' ')} />
+                {/* Barra superior */}
+                <div className={['h-1 w-full', isPast ? 'bg-border' : 'bg-primary'].join(' ')} />
 
                 <CardHeader className={`relative ${headerHeight} p-0`}>
                     <img
@@ -106,7 +103,7 @@ export default function EventCard({
                         {isPast && <span className="rounded-full bg-black/65 px-3 py-1 text-xs font-semibold text-white shadow-sm">Finalizado</span>}
 
                         {!isPast && isOngoing && (
-                            <span className={['rounded-full px-3 py-1 text-xs font-semibold text-white shadow-sm', vihGradient].join(' ')}>
+                            <span className="rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground shadow-sm">
                                 En curso
                             </span>
                         )}
@@ -216,7 +213,7 @@ export default function EventCard({
                             {online_url && (
                                 <button
                                     type="button"
-                                    className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-border/70 bg-background px-3 py-1 text-xs font-semibold text-foreground/90 transition hover:border-primary/50 hover:text-primary"
+                                    className="inline-flex items-center gap-2 rounded-full border border-border/70 bg-background px-3 py-1 text-xs font-semibold text-foreground/90 transition hover:border-primary/50 hover:text-primary"
                                     onClick={(e) => {
                                         e.preventDefault();
                                         e.stopPropagation();
