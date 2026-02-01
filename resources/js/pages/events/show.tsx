@@ -18,7 +18,7 @@ export default function Show() {
                 <div className="pt-6">
                     <Link
                         href="/eventos"
-                        className="group inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground transition hover:text-primary"
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground transition hover:text-red-600 dark:hover:text-red-400"
                     >
                         <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
                         Volver a Eventos

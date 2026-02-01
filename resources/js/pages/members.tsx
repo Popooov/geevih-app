@@ -19,7 +19,7 @@ export default function Equipo() {
                     <div className="mb-4 flex justify-center">
                         <Link
                             href="/sobre"
-                            className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground transition-colors hover:text-primary"
+                            className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground transition hover:text-red-600 dark:hover:text-red-400"
                         >
                             <ArrowLeft className="h-4 w-4" />
                             Volver a Sobre GEEVIH

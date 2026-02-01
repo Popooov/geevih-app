@@ -43,12 +43,11 @@ function FilterPills({ value, onChange }: { value: FilterMode; onChange: (v: Fil
     );
 }
 
-function EventCardSkeleton({ variant = 'default' }: { variant?: 'default' | 'featured' }) {
-    const headerH = variant === 'featured' ? 'h-60' : 'h-52';
+function EventCardSkeleton() {
     return (
         <Card className="overflow-hidden rounded-xl border border-border/70 bg-background shadow-sm">
             <div className="h-1 w-full bg-border" />
-            <div className={`relative ${headerH}`}>
+            <div className="relative h-52">
                 <Skeleton className="h-full w-full" />
             </div>
             <div className="space-y-4 p-6">
@@ -87,10 +86,6 @@ export default function Index() {
         return list.filter((e) => !e.is_online);
     }, [pastEvents, filter]);
 
-    // Evento destacado: el primero del listado filtrado de próximos
-    const featured = filteredUpcoming.length > 0 ? filteredUpcoming[0] : null;
-    const restUpcoming = featured ? filteredUpcoming.slice(1) : [];
-
     const isLoading = !upcomingEvents || !pastEvents;
 
     return (
@@ -117,29 +112,13 @@ export default function Index() {
 
                         {isLoading ? (
                             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                                {Array.from({ length: 3 }).map((_, i) => (
-                                    <EventCardSkeleton key={i} variant={i === 0 ? 'featured' : 'default'} />
+                                {Array.from({ length: 6 }).map((_, i) => (
+                                    <EventCardSkeleton key={i} />
                                 ))}
                             </div>
-                        ) : featured ? (
+                        ) : filteredUpcoming.length > 0 ? (
                             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                                {/* Destacado (misma grid, solo cambia variant) */}
-                                <EventCard
-                                    variant="featured"
-                                    titulo={featured.titulo}
-                                    fecha={featured.fecha}
-                                    hora={featured.hora}
-                                    descripcion={featured.descripcion}
-                                    imagen={featured.imagen}
-                                    enlace={featured.link}
-                                    lugar={featured.lugar}
-                                    is_online={featured.is_online}
-                                    registration_url={featured.registration_url}
-                                    online_url={featured.online_url}
-                                    isOngoing={featured.isOngoing}
-                                />
-
-                                {restUpcoming.map((event) => (
+                                {filteredUpcoming.map((event) => (
                                     <EventCard
                                         key={event.id}
                                         titulo={event.titulo}
@@ -153,6 +132,7 @@ export default function Index() {
                                         registration_url={event.registration_url}
                                         online_url={event.online_url}
                                         isOngoing={event.isOngoing}
+                                        isPast={event.isPast}
                                     />
                                 ))}
                             </div>
@@ -183,7 +163,7 @@ export default function Index() {
                                         imagen={event.imagen}
                                         enlace={event.link}
                                         lugar={event.lugar}
-                                        isPast
+                                        isPast={true} // o event.isPast si lo mandas ya del backend
                                         is_online={event.is_online}
                                         registration_url={event.registration_url}
                                         online_url={event.online_url}

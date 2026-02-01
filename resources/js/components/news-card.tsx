@@ -25,7 +25,7 @@ export default function NewsCard({ titulo, fecha, resumen, imagen, enlace }: Not
                 className={[
                     'relative flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-background shadow-sm transition-all duration-300',
                     'animate-in fade-in slide-in-from-bottom-8 motion-reduce:transform-none motion-reduce:animate-none',
-                    'hover:-translate-y-1 hover:shadow-xl',
+                    'hover:-translate-y-1 hover:shadow-xl hover:shadow-red-500/10 dark:hover:border-red-400/40',
                     accentBorderHover,
                 ].join(' ')}
             >

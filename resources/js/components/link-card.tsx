@@ -9,15 +9,27 @@ interface LinksCardProps {
 
 export default function LinkCard({ href, titulo, descripcion }: LinksCardProps) {
     return (
-        <a href={href} target="_blank" rel="noopener noreferrer" className="group block transition-colors" aria-label={`Abrir enlace: ${titulo}`}>
-            <Card className="border-slate-200 transition-colors group-hover:bg-slate-50 dark:border-slate-800 dark:group-hover:bg-slate-800/50">
-                <div className="flex items-center justify-between p-6">
-                    <div className="space-y-1">
-                        <h3 className="text-lg font-semibold text-slate-900 transition-colors group-hover:text-red-600 dark:text-white">{titulo}</h3>
-                        {descripcion && <p className="text-sm text-slate-500 dark:text-slate-400">{descripcion}</p>}
+        <a href={href} target="_blank" rel="noopener noreferrer" className="group block h-full" aria-label={`Abrir enlace: ${titulo}`}>
+            <Card
+                className={[
+                    'overflow-hidden rounded-xl border border-border/70 bg-background shadow-sm transition-all duration-300',
+                    'animate-in fade-in slide-in-from-bottom-8 motion-reduce:transform-none motion-reduce:animate-none',
+                    'hover:-translate-y-1 hover:border-red-600/50 hover:shadow-xl hover:shadow-red-500/10 dark:hover:border-red-400/40',
+                ].join(' ')}
+            >
+                <div className="flex items-start justify-between gap-4 p-6">
+                    <div className="min-w-0 space-y-2">
+                        <h3 className="line-clamp-2 text-lg font-semibold text-foreground transition-colors duration-300 group-hover:text-red-600 dark:group-hover:text-red-400">
+                            {titulo}
+                        </h3>
+
+                        {descripcion ? <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">{descripcion}</p> : null}
                     </div>
 
-                    <div className="text-slate-300 transition-colors group-hover:text-red-600 dark:text-slate-600" aria-hidden>
+                    <div
+                        className="shrink-0 text-muted-foreground transition-colors duration-300 group-hover:text-red-600 dark:group-hover:text-red-400"
+                        aria-hidden
+                    >
                         <ExternalLink className="h-5 w-5" />
                     </div>
                 </div>

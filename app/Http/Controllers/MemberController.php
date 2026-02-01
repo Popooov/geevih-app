@@ -23,6 +23,7 @@ class MemberController extends Controller
                 'role'        => $m->role,
                 'affiliation' => $m->affiliation,
                 'summary'     => $m->summary,
+                'bio'         => $m->bio,
                 'email'       => $m->email,
                 'photo_url'   => $m->photo_url ? Storage::disk('cloudinary')->url($m->photo_url) : null,
                 'website_url' => $m->website_url,
