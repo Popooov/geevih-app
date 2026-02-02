@@ -12,6 +12,7 @@ use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Storage;
 
 class EventResource extends Resource
 {
@@ -94,7 +95,12 @@ class EventResource extends Resource
                         ->disk('cloudinary')
                         ->directory('events')
                         ->image()
-                        ->label('Imagen'),
+                        ->label('Imagen')
+                        ->afterStateUpdated(function ($state, $old, $record) {
+                            if ($record?->image_url && $old && $old !== $state) {
+                                Storage::disk('cloudinary')->delete($old);
+                            }
+                        }),
 
                     Forms\Components\TextInput::make('image_alt')
                         ->label('Texto alternativo (ALT)')
