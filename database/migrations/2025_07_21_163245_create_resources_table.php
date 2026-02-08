@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('link_url')->nullable();
             $table->string('image_url')->nullable();
             $table->date('published_at')->nullable();
+            $table->date('deleted_at')->nullable();
             $table->timestamps();
         });
     }

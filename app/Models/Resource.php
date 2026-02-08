@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Resource extends Model
 {
+    use SoftDeletes;
+
     protected $casts = [
         'published_at' => 'datetime',
     ];
@@ -19,6 +22,7 @@ class Resource extends Model
         'content',
         'link_url',
         'published_at',
+        'deleted_at',
     ];
 
     /**
