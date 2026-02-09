@@ -17,29 +17,13 @@ class ResourceController extends Controller
      */
     private function resolveCloudinaryUrl(?string $path, string $type = 'raw'): ?string
     {
-        if (! $path) {
-            return null;
-        }
+        if (! $path) return null;
 
         // Si ya es una URL absoluta -> devolver tal cual
-        if (str_starts_with($path, 'http')) {
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
             return $path;
         }
 
-        // 1) Intento con el adapter (puede lanzar NotFound o 401)
-        try {
-            $url = Storage::disk('cloudinary')->url($path);
-            if ($url) {
-                return $url;
-            }
-        } catch (\Throwable $e) {
-            logger()->warning('Cloudinary adapter failed to resolve url', [
-                'path' => $path,
-                'error' => $e->getMessage(),
-            ]);
-        }
-
-        // 2) Fallback: construir CDN URL explícita
         $cloud = env('CLOUDINARY_CLOUD_NAME') ?: null;
         if (! $cloud) {
             $cloudly = env('CLOUDINARY_URL', env('CLOUDINARY_API_URL', ''));
@@ -56,18 +40,25 @@ class ResourceController extends Controller
                             $cloud = $segments[$idx + 1];
                         }
                     }
-                } catch (\Throwable $ee) { /* ignore */ }
+                } catch (\Throwable $ee) {
+                    // ignore
+                }
             }
         }
 
-        if (! $cloud) {
-            return null;
-        }
+        if (! $cloud) return null;
 
         $publicPath = ltrim($path, '/');
 
+        // ✅ Si es RAW y NO hay extensión, añadimos ".pdf"
+        // (como ahora guardas public_id sin extensión en BD)
+        if ($type !== 'image' && ! preg_match('/\.[a-z0-9]+$/i', $publicPath)) {
+            $publicPath .= '.pdf';
+        }
+
         $resourceType = $type === 'image' ? 'image' : 'raw';
 
+        // ✅ Para PDFs/RAW, mejor devolver directo sin pasar por el adapter
         return "https://res.cloudinary.com/{$cloud}/{$resourceType}/upload/{$publicPath}";
     }
 

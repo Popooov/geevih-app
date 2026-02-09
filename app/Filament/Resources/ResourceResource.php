@@ -4,197 +4,195 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ResourceResource\Pages;
 use App\Models\Resource as ContentResource;
-use Filament\Forms;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Illuminate\Support\HtmlString;
 
 class ResourceResource extends Resource
 {
     protected static ?string $model = ContentResource::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Contenido';
+    protected static ?string $modelLabel = 'Recurso';
+    protected static ?string $pluralModelLabel = 'Recursos';
+    protected static ?int $navigationSort = 30;
+
+    public static function pdfUrl(?string $fileUrl): ?string
+    {
+        if (! $fileUrl) return null;
+
+        if (str_starts_with($fileUrl, 'http://') || str_starts_with($fileUrl, 'https://')) {
+            return $fileUrl;
+        }
+
+        $cloud = env('CLOUDINARY_CLOUD_NAME');
+        $publicId = preg_replace('/\.pdf$/i', '', ltrim($fileUrl, '/')); // por si acaso llega con .pdf
+
+        return "https://res.cloudinary.com/{$cloud}/raw/upload/{$publicId}.pdf";
+    }
 
     public static function form(Form $form): Form
     {
-        return $form
-            ->schema([
-                TextInput::make('title')
-                    ->label('Título')
-                    ->required()
-                    ->maxLength(255),
+        return $form->schema([
+            TextInput::make('title')
+                ->label('Título')
+                ->required()
+                ->maxLength(255),
 
-                Select::make('type')
-                    ->label('Tipo')
-                    ->options([
-                        'guias' => 'Guías',
-                        'protocolos' => 'Protocolos',
-                        'herramientas' => 'Herramientas Prácticas',
-                        'biblioteca' => 'Biblioteca de Artículos Científicos',
-                        'material' => 'Material de Apoyo al Paciente',
-                        'enlaces' => 'Enlaces de Interés',
-                    ])
-                    ->required()
-                    ->reactive(),
+            Select::make('type')
+                ->label('Tipo')
+                ->options([
+                    'guias' => 'Guías',
+                    'protocolos' => 'Protocolos',
+                    'herramientas' => 'Herramientas Prácticas',
+                    'biblioteca' => 'Biblioteca de Artículos Científicos',
+                    'material' => 'Material de Apoyo al Paciente',
+                    'enlaces' => 'Enlaces de Interés',
+                ])
+                ->required()
+                ->reactive(),
 
-                Textarea::make('summary')
-                    ->label('Descripción breve')
-                    ->rows(3)
-                    ->columnSpanFull(),
+            Textarea::make('summary')
+                ->label('Descripción breve')
+                ->rows(3)
+                ->columnSpanFull(),
 
-                TextInput::make('link_url')
-                    ->label('Enlace (URL)')
-                    ->url()
-                    ->visible(fn (callable $get) => $get('type') === 'enlaces')
-                    ->required(fn (callable $get) => $get('type') === 'enlaces'),
+            TextInput::make('link_url')
+                ->label('Enlace (URL)')
+                ->url()
+                ->visible(fn (callable $get) => $get('type') === 'enlaces')
+                ->required(fn (callable $get) => $get('type') === 'enlaces'),
 
-                FileUpload::make('file_url')
-                    ->label('Archivo (PDF / Documentos)')
-                    ->disk('cloudinary')
-                    ->directory('resources')
-                    ->acceptedFileTypes(['application/pdf'])
-                    ->preserveFilenames(false)
-                    ->openable()
-                    ->downloadable()
-                    ->nullable()
-                    ->visible(fn (callable $get) => $get('type') !== 'enlaces'),
+            FileUpload::make('file_tmp')
+                ->label('Archivo (PDF)')
+                ->disk('public')
+                ->directory('tmp/resources')
+                ->acceptedFileTypes(['application/pdf'])
+                ->preserveFilenames(false)
+                ->multiple(false)
+                ->storeFiles(true)
+                ->nullable()
+                ->dehydrated(fn ($state) => filled($state))
+                ->default(null)
+                ->visible(fn (callable $get) => $get('type') !== 'enlaces'),
 
-                FileUpload::make('image_url')
-                    ->label('Imagen (miniatura)')
-                    ->image()
-                    ->disk('cloudinary')
-                    ->directory('resources/images')
-                    ->acceptedFileTypes(['image/*'])
-                    ->preserveFilenames(false)
-                    ->openable()
-                    ->downloadable()
-                    ->nullable()
-                    ->visible(fn (callable $get) => $get('type') !== 'enlaces'),
+            Placeholder::make('file_link')
+                ->label('Documento actual')
+                ->content(fn ($record) => filled($record?->file_url)
+                    ? new HtmlString('
+                        <a
+                            href="' . e(self::pdfUrl($record->file_url)) . '"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="inline-flex items-center justify-center rounded-md bg-primary-600 px-3 py-2 text-sm font-medium text-white hover:bg-primary-500"
+                        >
+                            Abrir PDF
+                        </a>
+                    ')
+                    : '—'
+                )
+                ->visible(fn ($record) => filled($record?->file_url)),
 
-                DatePicker::make('published_at')
-                    ->label('Fecha de publicación')
-                    ->native(false)
-                    ->displayFormat('Y-m-d')
-                    ->placeholder('YYYY-MM-DD'),
-            ]);
-    }
+            FileUpload::make('image_url')
+                ->label('Imagen (miniatura)')
+                ->image()
+                ->disk('cloudinary')
+                ->directory('resources/images')
+                ->acceptedFileTypes(['image/*'])
+                ->preserveFilenames(false)
+                ->openable()
+                ->downloadable()
+                ->nullable()
+                ->visible(fn (callable $get) => $get('type') !== 'enlaces'),
 
-    /**
-     * Antes de crear: si el tipo es 'enlaces' limpiamos file/image para no guardar uploads.
-     */
-    public static function mutateFormDataBeforeCreate(array $data): array
-    {
-        if (($data['type'] ?? null) === 'enlaces') {
-            $data['file_url'] = null;
-            $data['image_url'] = null;
-        }
-        return $data;
-    }
-
-    /**
-     * Antes de guardar (create/update): si cambiamos a 'enlaces' intentamos borrar ficheros previos y limpiamos.
-     */
-    public static function mutateFormDataBeforeSave(array $data): array
-    {
-        if (($data['type'] ?? null) === 'enlaces') {
-            // Si vienen valores temporales (por seguridad) los anulamos
-            if (! empty($data['file_url'])) {
-                try {
-                    Storage::disk('cloudinary')->delete($data['file_url']);
-                } catch (\Throwable $e) {
-                    logger()->warning('Failed to delete cloudinary file on type change', ['file' => $data['file_url'], 'err' => $e->getMessage()]);
-                }
-                $data['file_url'] = null;
-            }
-            if (! empty($data['image_url'])) {
-                try {
-                    Storage::disk('cloudinary')->delete($data['image_url']);
-                } catch (\Throwable $e) {
-                    logger()->warning('Failed to delete cloudinary image on type change', ['image' => $data['image_url'], 'err' => $e->getMessage()]);
-                }
-                $data['image_url'] = null;
-            }
-        }
-
-        return $data;
+            DatePicker::make('published_at')
+                ->label('Fecha de publicación')
+                ->native(false)
+                ->displayFormat('Y-m-d')
+                ->placeholder('YYYY-MM-DD'),
+        ]);
     }
 
     public static function table(Table $table): Table
     {
-        return $table
-            ->columns([
-                TextColumn::make('title')
-                    ->label('Título')
-                    ->searchable()
-                    ->limit(50),
+        return $table->columns([
+            TextColumn::make('title')
+                ->label('Título')
+                ->searchable()
+                ->limit(50),
 
-                TextColumn::make('type')
-                    ->label('Tipo')
-                    ->formatStateUsing(fn($state) => ucfirst((string) $state)),
+            TextColumn::make('type')
+                ->label('Tipo')
+                ->formatStateUsing(fn ($state) => ucfirst((string) $state)),
 
-                TextColumn::make('published_at')
-                    ->label('Fecha')
-                    ->date('Y-m-d')
-                    ->sortable(),
+            TextColumn::make('published_at')
+                ->label('Fecha')
+                ->date('Y-m-d')
+                ->sortable(),
 
-                // Miniatura: resuelve vía disco cloudinary
-                ImageColumn::make('image_url')
-                    ->label('Imagen')
-                    ->disk('cloudinary')
-                    // visible solo si existe record y no es 'enlaces'
-                    ->visible(fn ($record) => $record && ($record->type ?? '') !== 'enlaces')
-                    ->toggleable(),
+            ImageColumn::make('image_url')
+                ->label('Imagen')
+                ->disk('cloudinary')
+                ->visible(fn ($record) => $record && ($record->type ?? '') !== 'enlaces')
+                ->toggleable(),
 
-                TextColumn::make('link_url')
-                    ->label('Enlace')
-                    ->url(fn ($record) => $record?->link_url ?? null)
-                    ->openUrlInNewTab()
-                    ->visible(fn ($record) => $record && ($record->type ?? '') === 'enlaces'),
+            TextColumn::make('link_url')
+                ->label('Enlace')
+                ->url(fn ($record) => $record?->link_url ?? null)
+                ->openUrlInNewTab()
+                ->visible(fn ($record) => $record && ($record->type ?? '') === 'enlaces'),
 
-                TextColumn::make('file_url')
-                    ->label('Archivo')
-                    ->wrap(false)
-                    ->url(fn ($record) => is_string($record?->file_url ?? null) && str_starts_with($record->file_url, 'http') ? $record->file_url : null)
-                    ->openUrlInNewTab()
-                    ->visible(fn ($record) => $record && ($record->type ?? '') !== 'enlaces'),
+            TextColumn::make('file_url')
+                ->label('Archivo')
+                ->formatStateUsing(fn ($state) => $state ? 'Abrir' : '—')
+                ->url(fn ($record) => $record?->file_url ? self::pdfUrl($record->file_url) : null)
+                ->openUrlInNewTab()
+                ->visible(fn ($record) => $record && ($record->type ?? '') !== 'enlaces'),
 
-                TextColumn::make('created_at')
-                    ->label('Creado')
-                    ->dateTime()
-                    ->toggleable(isToggledHiddenByDefault: true),
+            TextColumn::make('created_at')
+                ->label('Creado')
+                ->dateTime()
+                ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('updated_at')
-                    ->label('Actualizado')
-                    ->dateTime()
-                    ->toggleable(isToggledHiddenByDefault: true),
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
-            ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
+            TextColumn::make('updated_at')
+                ->label('Actualizado')
+                ->dateTime()
+                ->toggleable(isToggledHiddenByDefault: true),
+        ])
+        ->filters([
+            Tables\Filters\TrashedFilter::make(),
+        ])
+        ->actions([
+            Tables\Actions\EditAction::make(),
+            Tables\Actions\DeleteAction::make(),
+            Tables\Actions\RestoreAction::make(),
+            Tables\Actions\ForceDeleteAction::make(),
+        ])
+        ->bulkActions([
+            Tables\Actions\BulkActionGroup::make([
+                Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\RestoreBulkAction::make(),
+                Tables\Actions\ForceDeleteBulkAction::make(),
+            ]),
+        ]);
     }
 
     public static function getPages(): array
@@ -204,5 +202,45 @@ class ResourceResource extends Resource
             'create' => Pages\CreateResource::route('/create'),
             'edit' => Pages\EditResource::route('/{record}/edit'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->withoutGlobalScopes([
+            SoftDeletingScope::class,
+        ]);
+    }
+
+    public static function uploadPdfToCloudinary(mixed $value, ?string $publicId = null): ?string
+    {
+        if (is_array($value)) $value = Arr::first($value);
+
+        if ($value instanceof TemporaryUploadedFile) {
+            $value = $value->store('tmp/resources', 'public');
+        }
+
+        if (is_array($value)) {
+            $value = $value['path'] ?? $value['file'] ?? $value['tmp'] ?? null;
+        }
+
+        if (! is_string($value) || $value === '') return null;
+
+        $absolute = Storage::disk('public')->path($value);
+        if (! file_exists($absolute)) return null;
+
+        // publicId SIN extensión
+        $publicId = $publicId ?: ('resources/' . (string) Str::ulid());
+
+        Cloudinary::uploadApi()->upload($absolute, [
+            'resource_type' => 'raw',
+            'public_id'     => $publicId,
+            'overwrite'     => true,
+            'invalidate'    => true,
+        ]);
+
+        Storage::disk('public')->delete($value);
+
+        // ✅ guardamos SOLO el public_id, SIN ".pdf"
+        return $publicId;
     }
 }
