@@ -89,7 +89,7 @@ export default function MemberCard({ member, index = 0 }: MemberCardProps) {
 
                     {member.affiliation ? (
                         <div className="flex items-center gap-2 text-sm font-semibold text-primary transition-colors duration-300 group-hover:text-red-600 dark:group-hover:text-red-400">
-                            <span className="line-clamp-1">{member.affiliation}</span>
+                            <span className="line-clamp-2">{member.affiliation}</span>
                         </div>
                     ) : null}
                 </div>
