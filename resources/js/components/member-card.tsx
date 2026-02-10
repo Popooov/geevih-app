@@ -1,6 +1,6 @@
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Briefcase, Globe, Linkedin, Mail, MapPin } from 'lucide-react';
+import { Briefcase, Globe, Linkedin, Mail } from 'lucide-react';
 
 export interface Member {
     id: number;
@@ -89,7 +89,6 @@ export default function MemberCard({ member, index = 0 }: MemberCardProps) {
 
                     {member.affiliation ? (
                         <div className="flex items-center gap-2 text-sm font-semibold text-primary transition-colors duration-300 group-hover:text-red-600 dark:group-hover:text-red-400">
-                            <MapPin className="h-4 w-4 shrink-0" />
                             <span className="line-clamp-1">{member.affiliation}</span>
                         </div>
                     ) : null}
@@ -130,7 +129,6 @@ export default function MemberCard({ member, index = 0 }: MemberCardProps) {
 
                                             {member.affiliation ? (
                                                 <div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
-                                                    <MapPin className="h-4 w-4" />
                                                     <span>{member.affiliation}</span>
                                                 </div>
                                             ) : null}
