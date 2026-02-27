@@ -1,31 +1,31 @@
 import { Card, CardContent } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
-import { Head, Link } from '@inertiajs/react';
-import { ArrowRight, BookOpen, HeartPulse, Quote, ShieldCheck, Target, Users } from 'lucide-react';
+import { Head } from '@inertiajs/react';
+import { BookOpen, HeartPulse, Quote, ShieldCheck, Target } from 'lucide-react';
 
-export default function About() {
+export default function Mission() {
     return (
         <AppLayout>
-            <Head title="Sobre" />
+            <Head title="Misión y Objetivos | GEEVIH" />
 
             <div className="mx-auto max-w-5xl space-y-16 px-6 py-12">
                 {/* Header Section */}
                 <section className="space-y-6 text-center">
-                    <h1 className="text-4xl font-bold tracking-tight text-foreground lg:text-5xl">Sobre el GEEVIH</h1>
+                    <h1 className="text-4xl font-bold tracking-tight text-foreground lg:text-5xl">Misión y Objetivos</h1>
                     <p className="mx-auto max-w-2xl text-lg leading-relaxed text-muted-foreground">
                         El Grupo de Enfermería Experta en VIH (GEEVIH), integrado en SEISIDA, trabaja para potenciar la educación, la investigación y
                         la calidad de vida de las personas con VIH.
                     </p>
 
-                    <div className="flex justify-center pt-4">
+                    {/* <div className="flex justify-center pt-4">
                         <Link
-                            href="/sobre/equipo"
+                            href="/sobre/sobre-nosotros"
                             className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground shadow-md transition-all hover:gap-3 hover:bg-primary/90 hover:shadow-lg"
                         >
                             <Users className="h-4 w-4" />
                             Conoce a nuestro equipo <ArrowRight className="h-4 w-4" />
                         </Link>
-                    </div>
+                    </div> */}
                 </section>
 
                 <div className="grid gap-12 md:grid-cols-1">

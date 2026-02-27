@@ -16,7 +16,7 @@ class MemberController extends Controller
             ->orderBy('id')
             ->get();
 
-        return Inertia::render('members', [
+        return Inertia::render('about/about', [
             'members' => $members->map(fn ($m) => [
                 'id'          => $m->id,
                 'name'        => $m->name,

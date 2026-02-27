@@ -45,7 +45,7 @@ export default function Areas() {
 
     return (
         <AppLayout>
-            <Head title="Áreas" />
+            <Head title="Áreas | GEEVIH" />
 
             <div className="mx-auto max-w-6xl space-y-16 p-6 py-12">
                 <header className="space-y-3 text-center">
