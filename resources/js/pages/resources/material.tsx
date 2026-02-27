@@ -12,7 +12,7 @@ export default function Material() {
 
     return (
         <AppLayout>
-            <Head title="Material de Apoyo al Paciente" />
+            <Head title="Material de Apoyo al Paciente | GEEVIH" />
             <div className="mx-auto max-w-6xl space-y-16 p-6 pt-16">
                 <header className="mb-6">
                     <div className="flex flex-col items-center justify-center space-y-4">

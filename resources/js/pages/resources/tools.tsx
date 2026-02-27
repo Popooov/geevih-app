@@ -12,7 +12,7 @@ export default function Herramientas() {
 
     return (
         <AppLayout>
-            <Head title="Herramientas Prácticas" />
+            <Head title="Herramientas Prácticas | GEEVIH" />
             <div className="mx-auto max-w-6xl space-y-16 p-6 pt-16">
                 <header className="space-y-3 text-center">
                     <div className="flex flex-col items-center justify-center space-y-4">
