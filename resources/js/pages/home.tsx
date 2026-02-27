@@ -78,7 +78,7 @@ export default function Home() {
                                             </CardTitle>
 
                                             <CardDescription className="mt-2 line-clamp-2">
-                                                Proyecto National Policy.
+                                                Proyecto National Policy
                                             </CardDescription>
 
                                             <div className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-primary">
