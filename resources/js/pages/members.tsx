@@ -18,7 +18,7 @@ export default function Equipo() {
                 <section className="space-y-6 text-center">
                     <div className="mb-4 flex justify-center">
                         <Link
-                            href="/sobre"
+                            href="/sobre/sobre-nosotros"
                             className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground transition hover:text-red-600 dark:hover:text-red-400"
                         >
                             <ArrowLeft className="h-4 w-4" />
