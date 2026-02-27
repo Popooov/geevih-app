@@ -27,7 +27,7 @@ export default function Home() {
 
                         <div className="pt-2">
                             <Link
-                                href="/sobre"
+                                href="/sobre/sobre-nosotros"
                                 className="inline-flex items-center gap-2 rounded-full bg-primary px-8 py-3 text-sm font-semibold text-primary-foreground shadow-md transition-all hover:gap-3 hover:bg-primary/90 hover:shadow-lg"
                             >
                                 Conoce más sobre GEEVIH <ArrowRight className="h-4 w-4" />
