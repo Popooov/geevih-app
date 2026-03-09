@@ -7,39 +7,32 @@ use App\Http\Controllers\NewsController;
 use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\MemberController;
 
-Route::get('/', function () {
-    return Inertia::render('home');
-})->name('home');
+Route::get('/', fn () => Inertia::render('home'))->name('home');
 
-Route::get('/sobre', function () {
-    return Inertia::render('about');
-})->name('about');
+Route::prefix('sobre')->name('about.')->group(function () {
+    Route::inertia('/mision-y-objetivos', 'about/mission')->name('mission');
+    Route::get('/sobre-nosotros', [MemberController::class, 'members'])->name('about');
+    Route::inertia('/hacerte-socio', 'about/membership')->name('membership');
+    Route::inertia('/areas-de-trabajo', 'about/areas')->name('areas');
+});
 
-Route::get('/sobre/equipo', [MemberController::class, 'members'])->name('members');
-
-Route::get('/areas', function () {
-    return Inertia::render('areas');
-})->name('areas');
-
-Route::get('/eventos', [EventController::class, 'index'],
-)->name('events.index');
-
-Route::get('/eventos/{event:slug}', [EventController::class, 'show'])
-     ->name('events.show');
+Route::prefix('eventos')->name('eventos.')->group(function () {
+    Route::get('/', [EventController::class, 'index'])->name('events.index');
+    Route::get('/{event:slug}', [EventController::class, 'show'])->name('events.show');
+});
 
 Route::prefix('recursos')->name('resources.')->group(function () {
     Route::get('/guias', [ResourceController::class, 'guides'])->name('guides');
     Route::get('/herramientas', [ResourceController::class, 'tools'])->name('tools');
     Route::get('/biblioteca', [ResourceController::class, 'library'])->name('library');
     Route::get('/material', [ResourceController::class, 'material'])->name('material');
-    Route::get('/enlaces', [ResourceController::class, 'links'])->name('enlaces');
+    Route::get('/enlaces', [ResourceController::class, 'links'])->name('links');
 });
 
-Route::get('/noticias', [NewsController::class, 'index'])
-->name('news.index');
-
-Route::get('/noticias/{news:slug}', [NewsController::class, 'show'])
-->name('news.show');
+Route::prefix('noticias')->name('noticias.')->group(function () {
+    Route::get('/', [NewsController::class, 'index'])->name('news.index');
+    Route::get('/{news:slug}', [NewsController::class, 'show'])->name('news.show');
+});
 
 Route::get('/contacto', function () {
     return Inertia::render('contact');
