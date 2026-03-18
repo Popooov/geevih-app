@@ -16,9 +16,13 @@ Route::prefix('sobre')->name('about.')->group(function () {
     Route::inertia('/areas-de-trabajo', 'about/areas')->name('areas');
 });
 
-Route::prefix('eventos')->name('eventos.')->group(function () {
-    Route::get('/', [EventController::class, 'index'])->name('events.index');
-    Route::get('/{event:slug}', [EventController::class, 'show'])->name('events.show');
+Route::prefix('eventos')->name('events.')->group(function () {
+    Route::get('/', [EventController::class, 'index'])->name('index');
+    Route::get('/{event:slug}', [EventController::class, 'show'])->name('show');
+});
+
+Route::prefix('formacion')->name('training.')->group(function () {
+    Route::get('/{category:slug}', [EventController::class, 'index'])->name('category');
 });
 
 Route::prefix('recursos')->name('resources.')->group(function () {
@@ -29,9 +33,9 @@ Route::prefix('recursos')->name('resources.')->group(function () {
     Route::get('/enlaces', [ResourceController::class, 'links'])->name('links');
 });
 
-Route::prefix('noticias')->name('noticias.')->group(function () {
-    Route::get('/', [NewsController::class, 'index'])->name('news.index');
-    Route::get('/{news:slug}', [NewsController::class, 'show'])->name('news.show');
+Route::prefix('noticias')->name('news.')->group(function () {
+    Route::get('/', [NewsController::class, 'index'])->name('index');
+    Route::get('/{news:slug}', [NewsController::class, 'show'])->name('show');
 });
 
 Route::get('/contacto', function () {

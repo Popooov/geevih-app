@@ -38,6 +38,13 @@ class EventResource extends Resource
                             }
                         }),
 
+                    Forms\Components\Select::make('event_category_id')
+                        ->label('Categoría de formación')
+                        ->relationship('category', 'name', fn ($query) => $query->where('is_active', true)->orderBy('sort_order'))
+                        ->searchable()
+                        ->preload()
+                        ->nullable()
+                        ->helperText('Clasifica el contenido en Cursos, Webinars, Congresos / Jornadas, Material Docente o Aval de GEEVIH.'),
                     Forms\Components\TextInput::make('slug')
                         ->label('Slug')
                         ->required()
@@ -135,6 +142,11 @@ class EventResource extends Resource
 
                 Tables\Columns\TextColumn::make('title')->searchable()->sortable(),
 
+                Tables\Columns\TextColumn::make('category.name')
+                    ->label('Categoría')
+                    ->sortable()
+                    ->toggleable(),
+
                 Tables\Columns\TextColumn::make('start_at')
                     ->label('Inicio')
                     ->dateTime('d/m/Y H:i')
@@ -163,6 +175,9 @@ class EventResource extends Resource
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
+                Tables\Filters\SelectFilter::make('event_category_id')
+                    ->label('Categoría')
+                    ->relationship('category', 'name'),
             ])
 
             ->actions([

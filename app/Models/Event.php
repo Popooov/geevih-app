@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Event extends Model
 {
@@ -24,6 +25,7 @@ class Event extends Model
         'image_alt',
         'is_published',
         'published_at',
+        'event_category_id'
     ];
 
     protected $casts = [
@@ -33,6 +35,11 @@ class Event extends Model
         'is_published' => 'boolean',
         'published_at' => 'datetime',
     ];
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(EventCategory::class, 'event_category_id');
+    }
 
     public function getFormattedDateAttribute(): string
     {

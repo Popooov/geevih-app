@@ -3,18 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\EventCategory;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class EventController extends Controller
 {
-    public function index()
+    public function index(?EventCategory $category = null)
     {
         $now = now();
 
         $base = Event::query()
-            ->where('is_published', true);
+            ->with('category')
+            ->where('is_published', true)
+            ->when($category, fn ($q) => $q->where('event_category_id', $category->id));
 
         // Próximos o en curso: (end_at >= now) o (sin end_at y start_at >= now)
         $upcoming = (clone $base)
@@ -80,12 +83,19 @@ class EventController extends Controller
                 // 👇 nuevos flags para la tarjeta (opcional)
                 'isPast'     => $isPast,
                 'isOngoing'  => $isOngoing,
+
+                'category' => $event->category?->name,
+                'category_slug' => $event->category?->slug
             ];
         };
 
         return Inertia::render('events/index', [
             'upcomingEvents' => $upcoming->map($mapEvent)->values(),
             'pastEvents'     => $past->map($mapEvent)->values(),
+            'currentCategory' => $category ? [
+                'name' => $category->name,
+                'slug' => $category->slug,
+            ] : null,
         ]);
     }
 
@@ -108,6 +118,8 @@ class EventController extends Controller
                 'registration_url' => $event->registration_url,
                 'online_url'       => $event->online_url,
                 'is_online'        => $event->is_online,
+                'category' => $event->category?->name,
+                'category_slug' => $event->category?->slug,
             ],
         ]);
     }
