@@ -63,15 +63,15 @@ class EventController extends Controller
             $timeRange = $end
                 ? ($start->isSameDay($end)
                     ? $time . ' – ' . $endTime
-                    : $time) // si es multi-día, mejor solo hora inicio
+                    : $time)
                 : $time;
 
             return [
                 'id'          => $event->id,
                 'titulo'      => $event->title,
                 'lugar'       => $event->is_online ? 'Online' : $event->location,
-                'fecha'       => $dateRange,   // <- ahora más útil
-                'hora'        => $timeRange,   // <- ahora más útil
+                'fecha'       => $dateRange,
+                'hora'        => $timeRange,
                 'descripcion' => $event->description,
                 'imagen'      => $event->image_url ? Storage::disk('cloudinary')->url($event->image_url) : null,
                 'link'        => route('events.show', $event),
@@ -80,7 +80,6 @@ class EventController extends Controller
                 'online_url'       => $event->online_url,
                 'is_online'        => $event->is_online,
 
-                // 👇 nuevos flags para la tarjeta (opcional)
                 'isPast'     => $isPast,
                 'isOngoing'  => $isOngoing,
 
