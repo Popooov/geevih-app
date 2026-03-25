@@ -67,10 +67,83 @@ function EventCardSkeleton() {
     );
 }
 
+/**
+ * Returns the content configuration for each training category.
+ */
+function getCategoryContent(slug?: string | null) {
+    switch (slug) {
+        case 'cursos':
+            return {
+                title: 'Cursos',
+                description:
+                    'Explora la oferta de cursos orientados a la actualización y especialización de profesionales de enfermería en el ámbito del VIH.',
+                upcomingTitle: 'Próximos cursos',
+                pastTitle: 'Cursos anteriores',
+                emptyUpcoming: 'No hay cursos programados próximamente.',
+                emptyPast: 'No hay cursos anteriores registrados.',
+            };
+
+        case 'webinars':
+            return {
+                title: 'Webinars',
+                description:
+                    'Consulta los próximos webinars y sesiones online promovidos por GEEVIH para compartir conocimiento, evidencia y buenas prácticas.',
+                upcomingTitle: 'Próximos webinars',
+                pastTitle: 'Webinars anteriores',
+                emptyUpcoming: 'No hay webinars programados próximamente.',
+                emptyPast: 'No hay webinars anteriores registrados.',
+            };
+
+        case 'congresos-jornadas':
+            return {
+                title: 'Congresos y Jornadas',
+                description:
+                    'Consulta la agenda de congresos, jornadas, encuentros y actividades científicas relacionadas con la enfermería y el VIH.',
+                upcomingTitle: 'Próximos congresos y eventos',
+                pastTitle: 'Congresos y eventos anteriores',
+                emptyUpcoming: 'No hay congresos o eventos programados próximamente.',
+                emptyPast: 'No hay congresos o eventos anteriores registrados.',
+            };
+
+        case 'material-docente':
+            return {
+                title: 'Material Docente',
+                description:
+                    'Accede a actividades formativas y contenidos vinculados al material docente de apoyo para la práctica clínica y la formación continuada.',
+                upcomingTitle: 'Próximo material docente',
+                pastTitle: 'Material docente anterior',
+                emptyUpcoming: 'No hay material docente publicado próximamente.',
+                emptyPast: 'No hay material docente anterior registrado.',
+            };
+
+        case 'aval-de-geevih':
+            return {
+                title: 'Aval de GEEVIH',
+                description: 'Consulta iniciativas, actividades y propuestas formativas relacionadas con el aval y respaldo institucional de GEEVIH.',
+                upcomingTitle: 'Próximas actividades con aval',
+                pastTitle: 'Actividades avaladas anteriores',
+                emptyUpcoming: 'No hay actividades con aval programadas próximamente.',
+                emptyPast: 'No hay actividades avaladas anteriores registradas.',
+            };
+
+        default:
+            return {
+                title: 'Formación',
+                description: 'Consulta la agenda de cursos, webinars, congresos, material docente y actividades avaladas del Grupo GEEVIH.',
+                upcomingTitle: 'Próximas actividades formativas',
+                pastTitle: 'Actividades formativas anteriores',
+                emptyUpcoming: 'No hay actividades formativas programadas.',
+                emptyPast: 'No hay actividades formativas anteriores registradas.',
+            };
+    }
+}
+
 export default function Index() {
-    const { upcomingEvents, pastEvents } = usePage<EventPageProps>().props;
+    const { upcomingEvents, pastEvents, currentCategory } = usePage<EventPageProps>().props;
 
     const [filter, setFilter] = useState<FilterMode>('all');
+
+    const content = getCategoryContent(currentCategory?.slug);
 
     const filteredUpcoming = useMemo(() => {
         const list = upcomingEvents ?? [];
@@ -90,91 +163,88 @@ export default function Index() {
 
     return (
         <AppLayout>
-            <Head title="Eventos" />
+            <Head title={content.title} />
 
-            <div className="pt-10">
-                <div className="mx-auto max-w-6xl space-y-16 p-6">
-                    {/* Header */}
-                    <header className="space-y-4 text-center">
-                        <h1 className="text-5xl font-extrabold tracking-tight text-foreground">Eventos y Actividades</h1>
-                        <p className="mx-auto max-w-3xl text-xl text-muted-foreground">
-                            Consulta la agenda de congresos, seminarios, talleres y oportunidades de colaboración del Grupo GEEVIH.
-                        </p>
+            <div className="mx-auto max-w-6xl space-y-16 px-6 py-12">
+                {/* Page header */}
+                <header className="space-y-4 text-center">
+                    <h1 className="text-5xl font-extrabold tracking-tight text-foreground">{content.title}</h1>
 
-                        <div className="pt-4">
-                            <FilterPills value={filter} onChange={setFilter} />
+                    <p className="mx-auto max-w-3xl text-xl text-muted-foreground">{content.description}</p>
+
+                    <div className="pt-8">
+                        <FilterPills value={filter} onChange={setFilter} />
+                    </div>
+                </header>
+
+                {/* Upcoming section */}
+                <section className="space-y-8">
+                    <SectionHeader icon={CalendarCheck} title={content.upcomingTitle} />
+
+                    {isLoading ? (
+                        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                            {Array.from({ length: 6 }).map((_, i) => (
+                                <EventCardSkeleton key={i} />
+                            ))}
                         </div>
-                    </header>
+                    ) : filteredUpcoming.length > 0 ? (
+                        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                            {filteredUpcoming.map((event) => (
+                                <EventCard
+                                    key={event.id}
+                                    titulo={event.titulo}
+                                    fecha={event.fecha}
+                                    hora={event.hora}
+                                    descripcion={event.descripcion}
+                                    imagen={event.imagen}
+                                    enlace={event.link}
+                                    lugar={event.lugar}
+                                    is_online={event.is_online}
+                                    registration_url={event.registration_url}
+                                    online_url={event.online_url}
+                                    isOngoing={event.isOngoing}
+                                    isPast={event.isPast}
+                                />
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="py-10 text-center text-lg text-muted-foreground">{content.emptyUpcoming}</p>
+                    )}
+                </section>
 
-                    {/* Próximos */}
-                    <section className="space-y-8">
-                        <SectionHeader icon={CalendarCheck} title="Próximos eventos" />
+                {/* Past section */}
+                <section className="space-y-8">
+                    <SectionHeader icon={Archive} title={content.pastTitle} />
 
-                        {isLoading ? (
-                            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                                {Array.from({ length: 6 }).map((_, i) => (
-                                    <EventCardSkeleton key={i} />
-                                ))}
-                            </div>
-                        ) : filteredUpcoming.length > 0 ? (
-                            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                                {filteredUpcoming.map((event) => (
-                                    <EventCard
-                                        key={event.id}
-                                        titulo={event.titulo}
-                                        fecha={event.fecha}
-                                        hora={event.hora}
-                                        descripcion={event.descripcion}
-                                        imagen={event.imagen}
-                                        enlace={event.link}
-                                        lugar={event.lugar}
-                                        is_online={event.is_online}
-                                        registration_url={event.registration_url}
-                                        online_url={event.online_url}
-                                        isOngoing={event.isOngoing}
-                                        isPast={event.isPast}
-                                    />
-                                ))}
-                            </div>
-                        ) : (
-                            <p className="py-10 text-center text-lg text-muted-foreground">No hay próximos eventos programados.</p>
-                        )}
-                    </section>
-
-                    {/* Pasados */}
-                    <section className="space-y-8">
-                        <SectionHeader icon={Archive} title="Eventos pasados" />
-
-                        {isLoading ? (
-                            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                                {Array.from({ length: 6 }).map((_, i) => (
-                                    <EventCardSkeleton key={i} />
-                                ))}
-                            </div>
-                        ) : filteredPast.length > 0 ? (
-                            <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                                {filteredPast.map((event) => (
-                                    <EventCard
-                                        key={event.id}
-                                        titulo={event.titulo}
-                                        fecha={event.fecha}
-                                        hora={event.hora}
-                                        descripcion={event.descripcion}
-                                        imagen={event.imagen}
-                                        enlace={event.link}
-                                        lugar={event.lugar}
-                                        isPast={true} // o event.isPast si lo mandas ya del backend
-                                        is_online={event.is_online}
-                                        registration_url={event.registration_url}
-                                        online_url={event.online_url}
-                                    />
-                                ))}
-                            </div>
-                        ) : (
-                            <p className="py-10 text-center text-lg text-muted-foreground">No hay eventos pasados registrados.</p>
-                        )}
-                    </section>
-                </div>
+                    {isLoading ? (
+                        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                            {Array.from({ length: 6 }).map((_, i) => (
+                                <EventCardSkeleton key={i} />
+                            ))}
+                        </div>
+                    ) : filteredPast.length > 0 ? (
+                        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+                            {filteredPast.map((event) => (
+                                <EventCard
+                                    key={event.id}
+                                    titulo={event.titulo}
+                                    fecha={event.fecha}
+                                    hora={event.hora}
+                                    descripcion={event.descripcion}
+                                    imagen={event.imagen}
+                                    enlace={event.link}
+                                    lugar={event.lugar}
+                                    isPast={true}
+                                    is_online={event.is_online}
+                                    registration_url={event.registration_url}
+                                    online_url={event.online_url}
+                                />
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="py-10 text-center text-lg text-muted-foreground">{content.emptyPast}</p>
+                    )}
+                </section>
             </div>
         </AppLayout>
     );
