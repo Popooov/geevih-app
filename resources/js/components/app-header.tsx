@@ -39,7 +39,7 @@ const trainingItems: NavChild[] = [
     { title: 'Webinars', href: '/formacion/webinars' },
     { title: 'Congresos / Jornadas', href: '/formacion/congresos-jornadas' },
     { title: 'Material Docente', href: '/formacion/material-docente' },
-    { title: 'Aval de GEEVIH', href: '/formacion/aval-de-geeviih' },
+    { title: 'Aval de GEEVIH', href: '/formacion/aval-de-geevih' },
 ];
 
 const recursosItems: NavChild[] = [
