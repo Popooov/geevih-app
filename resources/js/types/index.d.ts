@@ -76,6 +76,11 @@ export interface EventItem {
     category_slug?: string | null;
 }
 
+export interface EventCategoryInfo {
+    name: string;
+    slug: string;
+}
+
 export interface SingleEvent {
     id: number;
     titulo: string;
@@ -105,12 +110,12 @@ export interface NewsItem {
 
     titulo: string;
     fecha: string;
-    descripcion: string; // ahora viene de summary
+    descripcion: string;
 
     imagen?: string | null;
 
     // navegación
-    link?: string | null; // si lo sigues usando
+    link?: string | null;
     slug?: string; // recomendado para /noticias/{slug}
 }
 
@@ -124,7 +129,6 @@ export interface SingleNews {
 
     imagen?: string | null;
 
-    // nuevos
     source_url?: string | null;
     slug?: string;
 }
@@ -135,6 +139,7 @@ export interface SingleNews {
 export interface EventPageProps {
     upcomingEvents: EventItem[];
     pastEvents: EventItem[];
+    currentCategory?: EventCategoryInfo | null;
     [key: string]: unknown;
 }
 
