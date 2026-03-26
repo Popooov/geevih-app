@@ -180,7 +180,7 @@ export function AppHeader() {
                                                                                 className={cn(
                                                                                     'rounded-md px-2 py-1.5 ' + hoverBg,
                                                                                     isActiveSub
-                                                                                        ? 'bg-muted text-red-600 dark:text-red-400'
+                                                                                        ? 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-100'
                                                                                         : 'text-neutral-500 dark:text-neutral-400',
                                                                                 )}
                                                                             >
@@ -272,7 +272,7 @@ export function AppHeader() {
                                                                             className={cn(
                                                                                 'block rounded-md px-3 py-3 text-sm leading-none outline-none select-none',
                                                                                 hoverBg,
-                                                                                isActiveSub && 'bg-red-50',
+                                                                                isActiveSub && 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-100',
                                                                             )}
                                                                         >
                                                                             {sub.title}
