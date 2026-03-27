@@ -39,9 +39,6 @@ export default function EventCard({
             <div className="relative">
                 <img src={imageSrc} alt={titulo} className="h-52 w-full object-cover transition duration-500 group-hover:scale-105" />
 
-                {/* Overlay suave solo sobre la imagen */}
-                <div className="pointer-events-none absolute inset-0 bg-black/10" />
-
                 <div className="absolute top-3 left-3 flex gap-2">
                     {is_online && <Badge variant="secondary">Online</Badge>}
                     {isOngoing && <Badge className="bg-green-600 text-white">En curso</Badge>}
