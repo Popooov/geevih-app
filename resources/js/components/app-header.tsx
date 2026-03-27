@@ -14,7 +14,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/co
 import { cn } from '@/lib/utils';
 import { type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpenText, Presentation, ChevronDown, Home, Info, Mail, Menu, Newspaper } from 'lucide-react';
+import { BookOpenText, ChevronDown, Home, Info, Mail, Menu, Newspaper, Presentation } from 'lucide-react';
 import * as React from 'react';
 import AppLogo from './app-logo';
 import AppearanceToggleDropdown from './appearance-dropdown';
@@ -272,7 +272,8 @@ export function AppHeader() {
                                                                             className={cn(
                                                                                 'block rounded-md px-3 py-3 text-sm leading-none outline-none select-none',
                                                                                 hoverBg,
-                                                                                isActiveSub && 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-100',
+                                                                                isActiveSub &&
+                                                                                    'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-100',
                                                                             )}
                                                                         >
                                                                             {sub.title}
