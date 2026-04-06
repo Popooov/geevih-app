@@ -20,6 +20,7 @@ import AppLogo from './app-logo';
 import AppearanceToggleDropdown from './appearance-dropdown';
 
 type NavChild = { title: string; href: string };
+
 type HeaderNavItem = {
     title: string;
     href?: string;
@@ -59,12 +60,9 @@ const mainNavItems: HeaderNavItem[] = [
     { title: 'Contacto', href: '/contacto', icon: Mail },
 ];
 
-const activeItemStyles = 'text-neutral-900 dark:bg-neutral-800 dark:text-neutral-100';
-const activeAccent = 'text-red-600 dark:text-red-400';
-const hoverBg = 'hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-150';
-
 function isActiveByHref(currentUrl: string, href?: string) {
     if (!href) return false;
+    if (href === '/') return currentUrl === '/';
     return currentUrl === href || currentUrl.startsWith(href + '/');
 }
 
@@ -77,7 +75,6 @@ export function AppHeader() {
     const page = usePage<SharedData>();
     const currentUrl = page.url;
 
-    // Auto-open en móvil cuando estás dentro de una sección
     const [aboutOpen, setAboutOpen] = React.useState(() => isActiveByChildren(currentUrl, aboutItems));
     const [trainingOpen, setTrainingOpen] = React.useState(() => isActiveByChildren(currentUrl, trainingItems));
     const [recursosOpen, setRecursosOpen] = React.useState(() => isActiveByChildren(currentUrl, recursosItems));
@@ -95,244 +92,242 @@ export function AppHeader() {
         return false;
     };
 
-    const setMobileOpenState = (title: string, v: boolean) => {
-        if (title === 'Sobre GEEVIH') return setAboutOpen(v);
-        if (title === 'Formación') return setTrainingOpen(v);
-        if (title === 'Recursos') return setRecursosOpen(v);
+    const setMobileOpenState = (title: string, value: boolean) => {
+        if (title === 'Sobre GEEVIH') return setAboutOpen(value);
+        if (title === 'Formación') return setTrainingOpen(value);
+        if (title === 'Recursos') return setRecursosOpen(value);
     };
 
+    const desktopItemBase = 'h-10 rounded-full border border-transparent bg-transparent px-4 xl:px-5 text-[15px] font-medium transition-colors';
+
+    const desktopItemInactive =
+        'text-foreground/80 hover:bg-muted hover:text-foreground dark:text-foreground/75 dark:hover:bg-white/8 dark:hover:text-foreground';
+
+    const desktopItemActive = 'bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-200';
+
+    const dropdownItemBase = 'block rounded-xl px-3 py-2.5 text-sm transition-colors outline-none';
+
     return (
-        <>
-            <div className="border-b border-sidebar-border/80">
-                <div className="mx-auto flex h-16 items-center justify-between px-4 md:max-w-7xl">
-                    {/* Logo */}
-                    <Link href="/" prefetch className="flex items-center space-x-2">
-                        <AppLogo />
-                    </Link>
+        <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-xl supports-[backdrop-filter]:bg-background/75">
+            <div className="mx-auto flex h-[72px] items-center justify-between px-4 md:max-w-7xl lg:px-6">
+                <Link href="/" prefetch className="flex items-center">
+                    <AppLogo />
+                </Link>
 
-                    {/* Mobile controls */}
-                    <div className="flex items-center gap-2 lg:hidden">
-                        <div className="flex items-center">
-                            <AppearanceToggleDropdown />
-                        </div>
+                <div className="flex items-center gap-2 lg:hidden">
+                    <AppearanceToggleDropdown />
 
-                        <Sheet>
-                            <SheetTrigger asChild>
-                                <Button aria-label="Abrir navegación" variant="ghost" size="icon" className="h-[34px] w-[34px]">
-                                    <Menu className="h-5 w-5" />
-                                </Button>
-                            </SheetTrigger>
+                    <Sheet>
+                        <SheetTrigger asChild>
+                            <Button
+                                aria-label="Abrir navegación"
+                                variant="outline"
+                                size="icon"
+                                className="h-10 w-10 rounded-full border-border/70 bg-background/80 shadow-sm"
+                            >
+                                <Menu className="h-5 w-5" />
+                            </Button>
+                        </SheetTrigger>
 
-                            <SheetContent side="right" className="flex h-full w-64 flex-col items-stretch justify-between bg-sidebar">
-                                <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-                                <SheetHeader className="flex justify-start text-left" />
+                        <SheetContent side="right" className="flex h-full w-72 flex-col bg-background p-0">
+                            <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
 
-                                <div className="flex h-full flex-1 flex-col space-y-4 p-4">
-                                    <div className="flex h-full flex-col justify-between text-sm">
-                                        <div className="flex flex-col space-y-1.5">
-                                            {mainNavItems.map((item) => {
-                                                const hasChildren = !!item.children?.length;
-                                                const isActive =
-                                                    (!hasChildren && isActiveByHref(currentUrl, item.href)) ||
-                                                    (hasChildren && isActiveByChildren(currentUrl, item.children));
+                            <SheetHeader className="border-b px-5 py-4 text-left">
+                                <Link href="/" prefetch className="flex items-center">
+                                    <AppLogo />
+                                </Link>
+                            </SheetHeader>
 
-                                                // Secciones con desplegable (móvil)
-                                                if (hasChildren) {
-                                                    const open = getMobileOpenState(item.title);
+                            <div className="flex flex-1 flex-col overflow-y-auto p-4">
+                                <nav className="flex flex-col space-y-1.5 text-sm">
+                                    {mainNavItems.map((item) => {
+                                        const hasChildren = !!item.children?.length;
+                                        const isActive =
+                                            (!hasChildren && isActiveByHref(currentUrl, item.href)) ||
+                                            (hasChildren && isActiveByChildren(currentUrl, item.children));
 
-                                                    return (
-                                                        <Collapsible
-                                                            key={item.title}
-                                                            open={open}
-                                                            onOpenChange={(v) => setMobileOpenState(item.title, v)}
-                                                            className="flex flex-col"
-                                                        >
-                                                            <CollapsibleTrigger asChild>
-                                                                <button
-                                                                    type="button"
-                                                                    className={cn(
-                                                                        'flex w-full items-center justify-between rounded-md px-4 py-3 text-base font-medium',
-                                                                        isActive ? activeAccent : 'text-neutral-600 dark:text-neutral-300',
-                                                                        hoverBg,
-                                                                    )}
-                                                                    aria-current={isActive ? 'true' : undefined}
-                                                                >
-                                                                    <span className="flex items-center gap-3">
-                                                                        {item.icon && <Icon iconNode={item.icon as any} className="h-5 w-5" />}
-                                                                        <span>{item.title}</span>
-                                                                    </span>
+                                        if (hasChildren) {
+                                            const open = getMobileOpenState(item.title);
 
-                                                                    <ChevronDown
-                                                                        className={cn('h-4 w-4 transition-transform', open && 'rotate-180')}
-                                                                    />
-                                                                </button>
-                                                            </CollapsibleTrigger>
-
-                                                            <CollapsibleContent>
-                                                                <div className="mt-2 ml-7 flex flex-col space-y-2 text-[0.95rem]">
-                                                                    {item.children!.map((sub) => {
-                                                                        const isActiveSub = isActiveByHref(currentUrl, sub.href);
-                                                                        return (
-                                                                            <Link
-                                                                                key={sub.href}
-                                                                                prefetch
-                                                                                href={sub.href}
-                                                                                className={cn(
-                                                                                    'rounded-md px-2 py-1.5 ' + hoverBg,
-                                                                                    isActiveSub
-                                                                                        ? 'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-100'
-                                                                                        : 'text-neutral-500 dark:text-neutral-400',
-                                                                                )}
-                                                                            >
-                                                                                {sub.title}
-                                                                            </Link>
-                                                                        );
-                                                                    })}
-                                                                </div>
-                                                            </CollapsibleContent>
-                                                        </Collapsible>
-                                                    );
-                                                }
-
-                                                // Links simples (móvil)
-                                                return (
-                                                    <div key={item.title} className="flex flex-col">
-                                                        <Link
-                                                            prefetch
-                                                            href={item.href!}
-                                                            className={cn(
-                                                                'flex items-center gap-3 rounded-md px-4 py-3 text-base font-medium',
-                                                                isActive ? `bg-muted ${activeAccent}` : 'text-muted-foreground',
-                                                                hoverBg,
-                                                            )}
-                                                        >
-                                                            {item.icon && <Icon iconNode={item.icon as any} className="h-5 w-5" />}
-                                                            <span>{item.title}</span>
-                                                        </Link>
-                                                    </div>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-                                </div>
-                            </SheetContent>
-                        </Sheet>
-                    </div>
-
-                    {/* Desktop Navigation */}
-                    <div className="ml-6 hidden h-full items-center space-x-6 lg:flex">
-                        <NavigationMenu viewport={false} className="relative flex h-full items-stretch">
-                            <NavigationMenuList className="flex h-full items-stretch space-x-2">
-                                {mainNavItems.map((item, index) => {
-                                    const hasChildren = !!item.children?.length;
-                                    const isActive =
-                                        (!hasChildren && isActiveByHref(currentUrl, item.href)) ||
-                                        (hasChildren && isActiveByChildren(currentUrl, item.children));
-
-                                    const triggerHoverBg = hoverBg;
-
-                                    // Dropdown (desktop)
-                                    if (hasChildren) {
-                                        return (
-                                            <NavigationMenuItem key={index} className="relative z-10 flex h-full items-center">
-                                                <NavigationMenuTrigger
-                                                    className={cn(
-                                                        navigationMenuTriggerStyle(),
-                                                        'h-9 cursor-pointer lg:px-3 xl:px-5',
-                                                        isActive && activeItemStyles,
-                                                        'data-[state=open]:bg-red-50 data-[state=open]:text-neutral-900 dark:data-[state=open]:bg-red-900/20 dark:data-[state=open]:text-neutral-100',
-                                                        triggerHoverBg,
-                                                        'focus-visible:ring-2 focus-visible:ring-red-300 dark:focus-visible:ring-red-600/40',
-                                                    )}
+                                            return (
+                                                <Collapsible
+                                                    key={item.title}
+                                                    open={open}
+                                                    onOpenChange={(value) => setMobileOpenState(item.title, value)}
+                                                    className="flex flex-col"
                                                 >
-                                                    {item.icon && (
-                                                        <Icon
-                                                            iconNode={item.icon as any}
+                                                    <CollapsibleTrigger asChild>
+                                                        <button
+                                                            type="button"
                                                             className={cn(
-                                                                'mr-1 hidden h-4 w-4 lg:mr-2 xl:block',
+                                                                'flex w-full items-center justify-between rounded-2xl px-4 py-3 text-base font-medium transition-colors',
                                                                 isActive
-                                                                    ? 'text-red-600 dark:text-red-400'
-                                                                    : 'text-neutral-800 dark:text-neutral-200',
+                                                                    ? 'bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-200'
+                                                                    : 'text-foreground/80 hover:bg-muted hover:text-foreground',
                                                             )}
-                                                        />
-                                                    )}
-                                                    {item.title}
-                                                </NavigationMenuTrigger>
+                                                            aria-current={isActive ? 'page' : undefined}
+                                                        >
+                                                            <span className="flex items-center gap-3">
+                                                                {item.icon && (
+                                                                    <Icon iconNode={item.icon as any} className="h-[18px] w-[18px] opacity-80" />
+                                                                )}
+                                                                <span>{item.title}</span>
+                                                            </span>
 
-                                                <NavigationMenuContent>
-                                                    <ul className="grid w-[260px] gap-3">
-                                                        {item.children!.map((sub) => {
-                                                            const isActiveSub = isActiveByHref(currentUrl, sub.href);
-                                                            return (
-                                                                <li key={sub.href}>
-                                                                    <NavigationMenuLink asChild>
-                                                                        <Link
-                                                                            href={sub.href}
-                                                                            prefetch
-                                                                            className={cn(
-                                                                                'block rounded-md px-3 py-3 text-sm leading-none outline-none select-none',
-                                                                                hoverBg,
-                                                                                isActiveSub &&
-                                                                                    'bg-red-50 text-red-700 dark:bg-red-900/20 dark:text-red-100',
-                                                                            )}
-                                                                        >
-                                                                            {sub.title}
-                                                                        </Link>
-                                                                    </NavigationMenuLink>
-                                                                </li>
-                                                            );
-                                                        })}
-                                                    </ul>
-                                                </NavigationMenuContent>
+                                                            <ChevronDown
+                                                                className={cn('h-4 w-4 transition-transform duration-200', open && 'rotate-180')}
+                                                            />
+                                                        </button>
+                                                    </CollapsibleTrigger>
 
-                                                {isActive && (
-                                                    <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-red-600 dark:bg-red-400" />
-                                                )}
-                                            </NavigationMenuItem>
-                                        );
-                                    }
+                                                    <CollapsibleContent>
+                                                        <div className="mt-2 ml-4 flex flex-col space-y-1 border-l border-border/60 pl-4">
+                                                            {item.children!.map((sub) => {
+                                                                const isActiveSub = isActiveByHref(currentUrl, sub.href);
 
-                                    // Link simple (desktop)
-                                    return (
-                                        <NavigationMenuItem key={index} className="relative flex h-full items-center">
+                                                                return (
+                                                                    <Link
+                                                                        key={sub.href}
+                                                                        prefetch
+                                                                        href={sub.href}
+                                                                        className={cn(
+                                                                            'rounded-xl px-3 py-2 text-sm transition-colors',
+                                                                            isActiveSub
+                                                                                ? 'bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-200'
+                                                                                : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                                                                        )}
+                                                                    >
+                                                                        {sub.title}
+                                                                    </Link>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    </CollapsibleContent>
+                                                </Collapsible>
+                                            );
+                                        }
+
+                                        return (
                                             <Link
-                                                href={item.href!}
+                                                key={item.title}
                                                 prefetch
+                                                href={item.href!}
+                                                className={cn(
+                                                    'flex items-center gap-3 rounded-2xl px-4 py-3 text-base font-medium transition-colors',
+                                                    isActive
+                                                        ? 'bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-200'
+                                                        : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                                                )}
+                                                aria-current={isActive ? 'page' : undefined}
+                                            >
+                                                {item.icon && <Icon iconNode={item.icon as any} className="h-[18px] w-[18px] opacity-80" />}
+                                                <span>{item.title}</span>
+                                            </Link>
+                                        );
+                                    })}
+                                </nav>
+                            </div>
+                        </SheetContent>
+                    </Sheet>
+                </div>
+
+                <div className="ml-6 hidden h-full items-center lg:flex">
+                    <NavigationMenu viewport={false} className="relative flex h-full items-center">
+                        <NavigationMenuList className="flex h-full items-center gap-1 xl:gap-2">
+                            {mainNavItems.map((item, index) => {
+                                const hasChildren = !!item.children?.length;
+                                const isActive =
+                                    (!hasChildren && isActiveByHref(currentUrl, item.href)) ||
+                                    (hasChildren && isActiveByChildren(currentUrl, item.children));
+
+                                if (hasChildren) {
+                                    return (
+                                        <NavigationMenuItem key={index} className="relative">
+                                            <NavigationMenuTrigger
                                                 className={cn(
                                                     navigationMenuTriggerStyle(),
-                                                    isActive && activeItemStyles,
-                                                    'h-9 cursor-pointer lg:px-3 xl:px-5',
-                                                    triggerHoverBg,
+                                                    desktopItemBase,
+                                                    isActive ? desktopItemActive : desktopItemInactive,
+                                                    'data-[state=open]:bg-red-50 data-[state=open]:text-red-700 dark:data-[state=open]:bg-red-950/40 dark:data-[state=open]:text-red-200',
+                                                    'focus-visible:ring-2 focus-visible:ring-red-300 dark:focus-visible:ring-red-700/40',
                                                 )}
                                             >
                                                 {item.icon && (
                                                     <Icon
                                                         iconNode={item.icon as any}
                                                         className={cn(
-                                                            'mr-1 hidden h-4 w-4 lg:mr-2 xl:block',
-                                                            isActive ? 'text-red-600 dark:text-red-400' : 'text-neutral-800 dark:text-neutral-200',
+                                                            'mr-2 hidden h-4 w-4 xl:block',
+                                                            isActive ? 'text-red-600 dark:text-red-400' : 'text-muted-foreground',
                                                         )}
                                                     />
                                                 )}
                                                 {item.title}
-                                            </Link>
+                                            </NavigationMenuTrigger>
 
-                                            {isActive && (
-                                                <div className="absolute bottom-0 left-0 h-0.5 w-full translate-y-px bg-red-600 dark:bg-red-400" />
-                                            )}
+                                            <NavigationMenuContent className="top-full mt-2 rounded-2xl border border-border/60 bg-popover p-2 shadow-xl">
+                                                <ul className="grid w-[260px] gap-1">
+                                                    {item.children!.map((sub) => {
+                                                        const isActiveSub = isActiveByHref(currentUrl, sub.href);
+
+                                                        return (
+                                                            <li key={sub.href}>
+                                                                <NavigationMenuLink asChild>
+                                                                    <Link
+                                                                        href={sub.href}
+                                                                        prefetch
+                                                                        className={cn(
+                                                                            dropdownItemBase,
+                                                                            isActiveSub
+                                                                                ? 'bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-200'
+                                                                                : 'text-foreground/80 hover:bg-muted hover:text-foreground dark:text-foreground/75 dark:hover:bg-white/8',
+                                                                        )}
+                                                                    >
+                                                                        {sub.title}
+                                                                    </Link>
+                                                                </NavigationMenuLink>
+                                                            </li>
+                                                        );
+                                                    })}
+                                                </ul>
+                                            </NavigationMenuContent>
                                         </NavigationMenuItem>
                                     );
-                                })}
-                            </NavigationMenuList>
+                                }
 
-                            {/* Dropdown de apariencia (desktop) */}
-                            <div className="ml-4 flex items-center">
-                                <AppearanceToggleDropdown />
-                            </div>
-                        </NavigationMenu>
-                    </div>
+                                return (
+                                    <NavigationMenuItem key={index} className="relative">
+                                        <Link
+                                            href={item.href!}
+                                            prefetch
+                                            className={cn(
+                                                navigationMenuTriggerStyle(),
+                                                desktopItemBase,
+                                                isActive ? desktopItemActive : desktopItemInactive,
+                                            )}
+                                            aria-current={isActive ? 'page' : undefined}
+                                        >
+                                            {item.icon && (
+                                                <Icon
+                                                    iconNode={item.icon as any}
+                                                    className={cn(
+                                                        'mr-2 hidden h-4 w-4 xl:block',
+                                                        isActive ? 'text-red-600 dark:text-red-400' : 'text-muted-foreground',
+                                                    )}
+                                                />
+                                            )}
+                                            {item.title}
+                                        </Link>
+                                    </NavigationMenuItem>
+                                );
+                            })}
+                        </NavigationMenuList>
+
+                        <div className="ml-4 flex items-center">
+                            <AppearanceToggleDropdown />
+                        </div>
+                    </NavigationMenu>
                 </div>
             </div>
-        </>
+        </header>
     );
 }
