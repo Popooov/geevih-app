@@ -98,17 +98,17 @@ export function AppHeader() {
         if (title === 'Recursos') return setRecursosOpen(value);
     };
 
-    const desktopItemBase = 'h-10 rounded-full border border-transparent bg-transparent px-4 xl:px-5 text-[15px] font-medium transition-colors';
+    const desktopItemBase = 'h-10 rounded-full rounded-full px-4 xl:px-5 text-[15px] font-medium transition-all duration-200 bg-transparent px-4 xl:px-5 text-[15px] font-medium transition-colors';
 
     const desktopItemInactive =
-        'text-foreground/80 hover:bg-muted hover:text-foreground dark:text-foreground/75 dark:hover:bg-white/8 dark:hover:text-foreground';
+        'text-foreground/80 hover:bg-muted hover:text-foreground dark:text-foreground/75 dark:hover:bg-white/10 dark:hover:text-foreground';
 
-    const desktopItemActive = 'bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-200';
+    const desktopItemActive = 'bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-200';
 
-    const dropdownItemBase = 'block rounded-xl px-3 py-2.5 text-sm transition-colors outline-none';
+    // const dropdownItemBase = 'block rounded-xl px-3 py-2.5 text-sm transition-colors outline-none';
 
     return (
-        <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-xl supports-[backdrop-filter]:bg-background/75">
+        <header className="sticky top-0 z-50 border-b border-border/60 bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80">
             <div className="mx-auto flex h-[72px] items-center justify-between px-4 md:max-w-7xl lg:px-6">
                 <Link href="/" prefetch className="flex items-center">
                     <AppLogo />
@@ -162,8 +162,8 @@ export function AppHeader() {
                                                             className={cn(
                                                                 'flex w-full items-center justify-between rounded-2xl px-4 py-3 text-base font-medium transition-colors',
                                                                 isActive
-                                                                    ? 'bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-200'
-                                                                    : 'text-foreground/80 hover:bg-muted hover:text-foreground',
+                                                                    ? 'bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-200'
+                                                                    : 'text-foreground/85 hover:bg-muted hover:text-foreground',
                                                             )}
                                                             aria-current={isActive ? 'page' : undefined}
                                                         >
@@ -193,8 +193,8 @@ export function AppHeader() {
                                                                         className={cn(
                                                                             'rounded-xl px-3 py-2 text-sm transition-colors',
                                                                             isActiveSub
-                                                                                ? 'bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-200'
-                                                                                : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                                                                                ? 'bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-200'
+                                                                                : 'text-foreground/85 hover:bg-muted hover:text-foreground',
                                                                         )}
                                                                     >
                                                                         {sub.title}
@@ -213,9 +213,9 @@ export function AppHeader() {
                                                 prefetch
                                                 href={item.href!}
                                                 className={cn(
-                                                    'flex items-center gap-3 rounded-2xl px-4 py-3 text-base font-medium transition-colors',
+                                                    'flex items-center gap-3 rounded-2xl px-4 py-3 text-base font-medium transition-all duration-200',
                                                     isActive
-                                                        ? 'bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-200'
+                                                        ? 'bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-200'
                                                         : 'text-muted-foreground hover:bg-muted hover:text-foreground',
                                                 )}
                                                 aria-current={isActive ? 'page' : undefined}
@@ -233,7 +233,7 @@ export function AppHeader() {
 
                 <div className="ml-6 hidden h-full items-center lg:flex">
                     <NavigationMenu viewport={false} className="relative flex h-full items-center">
-                        <NavigationMenuList className="flex h-full items-center gap-1 xl:gap-2">
+                        <NavigationMenuList className="flex h-full items-center gap-2 xl:gap-3">
                             {mainNavItems.map((item, index) => {
                                 const hasChildren = !!item.children?.length;
                                 const isActive =
@@ -246,10 +246,12 @@ export function AppHeader() {
                                             <NavigationMenuTrigger
                                                 className={cn(
                                                     navigationMenuTriggerStyle(),
-                                                    desktopItemBase,
-                                                    isActive ? desktopItemActive : desktopItemInactive,
+                                                    'h-10 rounded-full transition-colors bg-transparent px-4 text-[15px] font-medium xl:px-5',
+                                                    isActive
+                                                        ? 'bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-200'
+                                                        : 'text-foreground/85 hover:bg-muted hover:text-foreground dark:text-foreground/80 dark:hover:bg-white/10',
                                                     'data-[state=open]:bg-red-50 data-[state=open]:text-red-700 dark:data-[state=open]:bg-red-950/40 dark:data-[state=open]:text-red-200',
-                                                    'focus-visible:ring-2 focus-visible:ring-red-300 dark:focus-visible:ring-red-700/40',
+                                                    'transition-colors duration-200',
                                                 )}
                                             >
                                                 {item.icon && (
@@ -257,14 +259,14 @@ export function AppHeader() {
                                                         iconNode={item.icon as any}
                                                         className={cn(
                                                             'mr-2 hidden h-4 w-4 xl:block',
-                                                            isActive ? 'text-red-600 dark:text-red-400' : 'text-muted-foreground',
+                                                            isActive ? 'text-red-600 dark:text-red-400' : 'text-foreground/50',
                                                         )}
                                                     />
                                                 )}
                                                 {item.title}
                                             </NavigationMenuTrigger>
 
-                                            <NavigationMenuContent className="top-full mt-2 rounded-2xl border border-border/60 bg-popover p-2 shadow-xl">
+                                            <NavigationMenuContent className="top-full mt-2 rounded-2xl border border-border/60 bg-background/95 p-2 shadow-[0_24px_70px_rgba(0,0,0,0.12)] backdrop-blur-xl dark:bg-neutral-950/95">
                                                 <ul className="grid w-[260px] gap-1">
                                                     {item.children!.map((sub) => {
                                                         const isActiveSub = isActiveByHref(currentUrl, sub.href);
@@ -276,10 +278,10 @@ export function AppHeader() {
                                                                         href={sub.href}
                                                                         prefetch
                                                                         className={cn(
-                                                                            dropdownItemBase,
+                                                                            'block rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200',
                                                                             isActiveSub
-                                                                                ? 'bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-200'
-                                                                                : 'text-foreground/80 hover:bg-muted hover:text-foreground dark:text-foreground/75 dark:hover:bg-white/8',
+                                                                                ? 'bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-200'
+                                                                                : 'text-foreground/85 hover:bg-muted hover:text-foreground dark:text-foreground/80 dark:hover:bg-white/10',
                                                                         )}
                                                                     >
                                                                         {sub.title}
@@ -311,7 +313,7 @@ export function AppHeader() {
                                                     iconNode={item.icon as any}
                                                     className={cn(
                                                         'mr-2 hidden h-4 w-4 xl:block',
-                                                        isActive ? 'text-red-600 dark:text-red-400' : 'text-muted-foreground',
+                                                        isActive ? 'text-red-600 dark:text-red-400' : 'text-foreground/50',
                                                     )}
                                                 />
                                             )}
