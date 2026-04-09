@@ -7,7 +7,7 @@ export default function Areas() {
     const areasData = [
         {
             title: 'Investigación',
-            description: 'Liderazgo en proyectos científicos para el avance del conocimiento en cuidados de VIH.',
+            description: 'Generamos evidencia científica en cuidados de VIH.',
             accentColor: 'text-blue-600 dark:text-blue-400',
             accentBar: 'bg-blue-600 dark:bg-blue-400',
             points: [
@@ -15,10 +15,11 @@ export default function Areas() {
                 'Publicaciones científicas en revistas de alto impacto.',
                 'Colaboraciones estratégicas con entidades nacionales.',
             ],
+            cta: 'Saber más',
         },
         {
             title: 'Formación',
-            description: 'Garantizamos la excelencia profesional a través de recursos educativos y capacitación continua de nuestros miembros.',
+            description: 'Impulsamos formación continua y actualización profesional.',
             accentColor: 'text-green-600 dark:text-green-400',
             accentBar: 'bg-green-600 dark:bg-green-400',
             points: [
@@ -26,10 +27,11 @@ export default function Areas() {
                 'Talleres y jornadas de actualización profesional.',
                 'Elaboración de guías de buenas prácticas y protocolos.',
             ],
+            cta: 'Saber más',
         },
         {
-            title: 'Transferencia a la Comunidad',
-            description: 'Fomentamos la prevención, la sensibilización y la difusión de información clave para la salud pública.',
+            title: 'Comunidad',
+            description: 'Acercamos el conocimiento a la práctica y al entorno social.',
             accentColor: 'text-purple-600 dark:text-purple-400',
             accentBar: 'bg-purple-600 dark:bg-purple-400',
             points: [
@@ -37,6 +39,7 @@ export default function Areas() {
                 'Creación de materiales informativos accesibles para pacientes.',
                 'Alianzas con asociaciones de pacientes y salud pública.',
             ],
+            cta: 'Saber más',
         },
     ];
 
@@ -44,7 +47,7 @@ export default function Areas() {
         <AppLayout>
             <Head title="Áreas | GEEVIH" />
 
-            <div className="mx-auto max-w-6xl px-6 pt-6 pb-12 lg:px-8 lg:pt-12 lg:pb-14">
+            <div className="mx-auto max-w-6xl px-6 pt-6 pb-12 lg:px-8 lg:pt-10 lg:pb-14">
                 <div className="space-y-12">
                     <section className="relative overflow-hidden rounded-[2rem] bg-background/85 px-6 py-12 text-center backdrop-blur-xl sm:px-8 lg:px-12 lg:py-16 dark:bg-background/70">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.08),transparent_60%)] dark:bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.12),transparent_60%)]" />
@@ -76,28 +79,24 @@ export default function Areas() {
                                 ].join(' ')}
                                 style={{ animationDelay: `${index * 70}ms` }}
                             >
-                                <div className={['h-[3px] w-full', area.accentBar].join(' ')} />
+                                <div className={['h-[3px] w-full transition-all duration-300 group-hover:h-1', area.accentBar].join(' ')} />
 
                                 <div className="flex-1 p-6 pb-4 lg:p-7 lg:pb-5">
-                                    <div className="space-y-4">
-                                        <div className="flex min-h-[88px] items-start">
-                                            <CardTitle className="text-[2rem] leading-tight font-bold tracking-tight text-foreground">
-                                                {area.title}
-                                            </CardTitle>
-                                        </div>
+                                    <div className="space-y-3">
+                                        <CardTitle className="text-3xl leading-tight font-bold tracking-tight text-foreground">
+                                            {area.title}
+                                        </CardTitle>
 
-                                        <div className="min-h-[96px]">
-                                            <CardDescription className="text-[15px] leading-7 text-muted-foreground">
-                                                {area.description}
-                                            </CardDescription>
-                                        </div>
+                                        <CardDescription className="max-w-sm text-[15px] leading-7 text-foreground/75">
+                                            {area.description}
+                                        </CardDescription>
                                     </div>
                                 </div>
 
                                 <CardContent className="px-6 pt-0 pb-6 lg:px-7 lg:pb-7">
                                     <p className="mb-5 text-xs font-medium tracking-[0.16em] text-muted-foreground uppercase">Detalles clave</p>
 
-                                    <ul className="space-y-5">
+                                    <ul className="space-y-4">
                                         {area.points.map((point, i) => (
                                             <li key={i} className="flex items-start gap-3">
                                                 <ArrowRight className={['mt-1 h-4 w-4 shrink-0', area.accentColor].join(' ')} />
@@ -105,6 +104,19 @@ export default function Areas() {
                                             </li>
                                         ))}
                                     </ul>
+
+                                    <div className="mt-8">
+                                        <a
+                                            href="#"
+                                            className={[
+                                                'inline-flex items-center gap-2 text-sm font-semibold transition-colors',
+                                                area.accentColor,
+                                            ].join(' ')}
+                                        >
+                                            {area.cta}
+                                            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                                        </a>
+                                    </div>
                                 </CardContent>
                             </Card>
                         ))}
