@@ -1,8 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import { Calendar, Clock, ExternalLink, MapPin } from 'lucide-react';
+import { Calendar, Clock3, ExternalLink, MapPin } from 'lucide-react';
 
 interface EventCardProps {
     titulo: string;
@@ -17,6 +16,43 @@ interface EventCardProps {
     online_url?: string | null;
     isOngoing?: boolean;
     isPast?: boolean;
+}
+
+function EventBadge({ children, variant = 'default' }: { children: React.ReactNode; variant?: 'default' | 'secondary' | 'live' | 'finished' }) {
+    const styles = {
+        default: 'bg-primary/10 text-primary',
+        secondary: 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300',
+        live: 'bg-emerald-600 text-white dark:bg-emerald-500',
+        finished: 'bg-zinc-900 text-white dark:bg-zinc-200 dark:text-zinc-900',
+    };
+
+    return (
+        <Badge className={cn('rounded-full border-0 px-3 py-1 text-[11px] font-semibold tracking-[0.14em] uppercase', styles[variant])}>
+            {children}
+        </Badge>
+    );
+}
+
+function MetaItem({ icon: Icon, children, muted }: { icon: React.ElementType; children: React.ReactNode; muted?: boolean }) {
+    return (
+        <div
+            className={cn(
+                'flex items-center gap-3 text-sm',
+                muted ? 'text-foreground/60 dark:text-zinc-400' : 'text-foreground/65 dark:text-zinc-300',
+            )}
+        >
+            <span
+                className={cn(
+                    'inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full',
+                    muted ? 'bg-muted text-muted-foreground' : 'bg-primary/10 text-primary',
+                )}
+            >
+                <Icon className="h-4 w-4" />
+            </span>
+
+            <span className="leading-6">{children}</span>
+        </div>
+    );
 }
 
 export default function EventCard({
@@ -34,97 +70,125 @@ export default function EventCard({
     isPast,
 }: EventCardProps) {
     const imageSrc = imagen ?? '/images/event-placeholder.jpg';
+    const showPhysicalLocation = !!lugar && !is_online;
 
     return (
-        <Card
+        <article
             className={cn(
-                'group overflow-hidden rounded-2xl border bg-background transition-all duration-300',
-                isPast ? 'border-border/50 bg-muted/20 opacity-85 shadow-sm' : 'border-border/70 shadow-sm hover:-translate-y-1 hover:shadow-xl',
+                'group h-full overflow-hidden rounded-[2rem] transition-all duration-300',
+                isPast
+                    ? 'bg-background/90 shadow-[0_12px_30px_rgba(0,0,0,0.03)] dark:bg-zinc-950/92'
+                    : isOngoing
+                      ? 'bg-primary/5 shadow-[0_20px_50px_rgba(175,16,26,0.08)] dark:bg-primary/10'
+                      : 'bg-background shadow-[0_16px_40px_rgba(175,16,26,0.05)] hover:-translate-y-0.5 hover:shadow-[0_22px_55px_rgba(175,16,26,0.10)] dark:bg-zinc-950/95',
             )}
         >
-            <div className="relative overflow-hidden">
-                <img
-                    src={imageSrc}
-                    alt={titulo}
-                    className={cn(
-                        'h-52 w-full object-cover transition duration-500',
-                        isPast ? 'brightness-[0.88] grayscale-[0.65]' : 'group-hover:scale-105',
-                    )}
-                />
+            <div className="grid h-full md:min-h-[360px] md:grid-cols-[0.9fr_1fr]">
+                <div className="relative min-h-[220px] overflow-hidden md:min-h-full">
+                    <img
+                        src={imageSrc}
+                        alt={titulo}
+                        className={cn(
+                            'h-full w-full object-cover transition duration-700',
+                            isPast ? 'brightness-[0.88] grayscale-[0.65]' : 'group-hover:scale-[1.02]',
+                        )}
+                    />
 
-                {isPast && <div className="absolute inset-0 bg-white/10 dark:bg-black/20" />}
+                    <div
+                        className={cn(
+                            'absolute inset-0',
+                            isPast
+                                ? 'bg-gradient-to-t from-black/20 via-black/5 to-transparent'
+                                : 'bg-gradient-to-t from-black/22 via-black/0 to-transparent',
+                        )}
+                    />
 
-                <div className="absolute top-3 left-3 flex flex-wrap gap-2">
-                    {is_online && !isPast && <Badge className="border-0 bg-sky-600 text-white shadow-sm dark:bg-sky-500">Online</Badge>}
-
-                    {isOngoing && !isPast && <Badge className="border-0 bg-green-600 text-white shadow-sm dark:bg-green-500">En curso</Badge>}
-
-                    {isPast && <Badge className="border-0 bg-zinc-800 text-white shadow-sm dark:bg-zinc-200 dark:text-zinc-900">Finalizado</Badge>}
-                </div>
-
-                {!isPast && <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-red-600 via-red-500 to-red-400" />}
-            </div>
-
-            <CardContent className="space-y-4 p-5">
-                <h3 className={cn('line-clamp-2 text-lg font-semibold', isPast ? 'text-foreground/75' : 'text-foreground')}>{titulo}</h3>
-
-                <div className={cn('space-y-1 text-sm', isPast ? 'text-muted-foreground/75' : 'text-muted-foreground')}>
-                    <div className="flex items-center gap-2">
-                        <Calendar className={cn('h-4 w-4', !isPast && 'text-red-500')} />
-                        {fecha}
+                    <div className="absolute top-4 left-4 flex flex-wrap gap-2">
+                        {is_online && !isPast && <EventBadge variant="secondary">Online</EventBadge>}
+                        {isOngoing && !isPast && <EventBadge variant="live">En curso</EventBadge>}
+                        {isPast && <EventBadge variant="finished">Finalizado</EventBadge>}
                     </div>
-
-                    {hora && (
-                        <div className="flex items-center gap-2">
-                            <Clock className={cn('h-4 w-4', !isPast && 'text-red-500')} />
-                            {hora}
-                        </div>
-                    )}
-
-                    {lugar && (
-                        <div className="flex items-center gap-2">
-                            <MapPin className={cn('h-4 w-4', !isPast && 'text-red-500')} />
-                            {lugar}
-                        </div>
-                    )}
                 </div>
 
-                {descripcion && (
-                    <p className={cn('line-clamp-3 text-sm leading-relaxed', isPast ? 'text-muted-foreground/75' : 'text-muted-foreground')}>
-                        {descripcion}
-                    </p>
-                )}
-            </CardContent>
+                <div className="flex h-full flex-col p-6 sm:p-7">
+                    <div className="flex min-h-0 flex-1 flex-col">
+                        <div className="space-y-3">
+                            <h3
+                                className={cn(
+                                    'text-2xl font-semibold tracking-tight',
+                                    isPast ? 'text-foreground/85 dark:text-zinc-100' : 'text-foreground dark:text-white',
+                                )}
+                            >
+                                {titulo}
+                            </h3>
 
-            <CardFooter className="flex flex-col gap-2 p-5 pt-0">
-                {!isPast && registration_url && (
-                    <a href={registration_url} target="_blank" rel="noopener noreferrer" className="w-full">
-                        <Button className="w-full cursor-pointer bg-zinc-950 text-white hover:bg-red-700 dark:bg-white dark:text-zinc-950 dark:hover:bg-red-500">
-                            Inscribirse
-                        </Button>
-                    </a>
-                )}
+                            {descripcion && (
+                                <p
+                                    className={cn(
+                                        'line-clamp-2 text-sm leading-7',
+                                        isPast ? 'text-foreground/60 dark:text-zinc-400' : 'text-foreground/65 dark:text-zinc-300',
+                                    )}
+                                >
+                                    {descripcion}
+                                </p>
+                            )}
+                        </div>
 
-                {enlace && (
-                    <a href={enlace} className="w-full">
-                        <Button
-                            variant={isPast ? 'outline' : 'secondary'}
-                            className={cn('w-full cursor-pointer', !isPast && 'hover:border-red-300 hover:bg-red-50 dark:hover:bg-red-950/20')}
-                        >
-                            {isPast ? 'Ver detalles' : 'Ver evento'}
-                            <ExternalLink className="ml-2 h-4 w-4" />
-                        </Button>
-                    </a>
-                )}
+                        <div className="mt-6 grid gap-3">
+                            <MetaItem icon={Calendar} muted={isPast}>
+                                {fecha}
+                            </MetaItem>
 
-                {!isPast && online_url && (
-                    <a href={online_url} target="_blank" rel="noopener noreferrer" className="w-full">
-                        <Button variant="outline" className="w-full cursor-pointer hover:border-red-300">
-                            Acceder online
-                        </Button>
-                    </a>
-                )}
-            </CardFooter>
-        </Card>
+                            {hora && (
+                                <MetaItem icon={Clock3} muted={isPast}>
+                                    {hora}
+                                </MetaItem>
+                            )}
+
+                            {showPhysicalLocation && (
+                                <MetaItem icon={MapPin} muted={isPast}>
+                                    {lugar}
+                                </MetaItem>
+                            )}
+                        </div>
+
+                        <div className="mt-auto pt-7">
+                            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+                                {!isPast && registration_url && (
+                                    <a href={registration_url} target="_blank" rel="noopener noreferrer">
+                                        <Button className="h-11 cursor-pointer rounded-xl bg-zinc-950 px-5 text-white hover:bg-primary dark:bg-white dark:text-zinc-950 dark:hover:bg-primary dark:hover:text-white">
+                                            Inscribirse
+                                        </Button>
+                                    </a>
+                                )}
+
+                                {enlace && (
+                                    <a href={enlace} target="_blank" rel="noopener noreferrer">
+                                        <Button
+                                            variant="outline"
+                                            className="h-11 cursor-pointer rounded-xl border-border/60 bg-background px-5 hover:border-primary/30 hover:bg-primary/5"
+                                        >
+                                            {isPast ? 'Ver detalles' : 'Ver actividad'}
+                                            <ExternalLink className="ml-2 h-4 w-4" />
+                                        </Button>
+                                    </a>
+                                )}
+
+                                {!isPast && online_url && is_online && (
+                                    <a href={online_url} target="_blank" rel="noopener noreferrer">
+                                        <Button
+                                            variant="ghost"
+                                            className="h-11 cursor-pointer rounded-xl px-3 text-[#005f7b] hover:bg-[#005f7b]/10 hover:text-[#005f7b] dark:text-sky-300 dark:hover:bg-sky-500/10 dark:hover:text-sky-200"
+                                        >
+                                            Acceder online
+                                        </Button>
+                                    </a>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
     );
 }
