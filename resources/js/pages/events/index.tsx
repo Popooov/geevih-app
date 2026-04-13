@@ -4,39 +4,33 @@ import { Skeleton } from '@/components/ui/skeleton';
 import AppLayout from '@/layouts/app-layout';
 import { type EventPageProps } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
-import { Archive, CalendarCheck, Filter } from 'lucide-react';
+import { Archive, CalendarCheck, Filter, Presentation } from 'lucide-react';
 import { useMemo, useState } from 'react';
 
 type FilterMode = 'all' | 'online' | 'presencial';
 
-function SectionHeader({ icon: Icon, title }: { icon: React.ElementType; title: string }) {
-    return (
-        <h2 className="mb-6 flex items-center gap-3 border-b border-border pb-2 text-2xl font-bold text-foreground">
-            <Icon className="h-7 w-7 text-primary" />
-            {title}
-        </h2>
-    );
-}
-
 function FilterPills({ value, onChange }: { value: FilterMode; onChange: (v: FilterMode) => void }) {
-    const pillBase = 'inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition';
-    const pillActive = 'border-primary/50 bg-primary/10 text-primary';
-    const pillIdle = 'border-border/70 bg-background text-foreground/80 hover:border-primary/40 hover:text-primary';
+    const base =
+        'inline-flex h-9 cursor-pointer items-center justify-center rounded-full px-4 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30';
+    const active = 'bg-zinc-950 text-white dark:bg-white dark:text-zinc-950';
+    const idle = 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground dark:bg-muted/60';
 
     return (
         <div className="flex flex-wrap items-center gap-2">
-            <span className="mr-1 inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+            <span className="inline-flex items-center gap-2 pr-1 text-sm font-medium text-muted-foreground">
                 <Filter className="h-4 w-4" />
-                Filtrar:
+                Filtrar
             </span>
 
-            <button type="button" onClick={() => onChange('all')} className={`${pillBase} ${value === 'all' ? pillActive : pillIdle}`}>
+            <button type="button" onClick={() => onChange('all')} className={`${base} ${value === 'all' ? active : idle}`}>
                 Todos
             </button>
-            <button type="button" onClick={() => onChange('online')} className={`${pillBase} ${value === 'online' ? pillActive : pillIdle}`}>
+
+            <button type="button" onClick={() => onChange('online')} className={`${base} ${value === 'online' ? active : idle}`}>
                 Online
             </button>
-            <button type="button" onClick={() => onChange('presencial')} className={`${pillBase} ${value === 'presencial' ? pillActive : pillIdle}`}>
+
+            <button type="button" onClick={() => onChange('presencial')} className={`${base} ${value === 'presencial' ? active : idle}`}>
                 Presenciales
             </button>
         </div>
@@ -45,40 +39,63 @@ function FilterPills({ value, onChange }: { value: FilterMode; onChange: (v: Fil
 
 function EventCardSkeleton() {
     return (
-        <Card className="overflow-hidden rounded-xl border border-border/70 bg-background shadow-sm">
-            <div className="h-1 w-full bg-border" />
-            <div className="relative h-52">
-                <Skeleton className="h-full w-full" />
-            </div>
-            <div className="space-y-4 p-6">
-                <div className="space-y-2">
-                    <Skeleton className="h-4 w-40" />
-                    <Skeleton className="h-4 w-56" />
+        <Card className="overflow-hidden rounded-[2rem] border-0 bg-background shadow-[0_16px_40px_rgba(175,16,26,0.05)]">
+            <div className="grid md:grid-cols-[0.92fr_1fr]">
+                <Skeleton className="h-56 w-full md:h-full" />
+                <div className="space-y-5 p-6 sm:p-7">
+                    <Skeleton className="h-5 w-24 rounded-full" />
+                    <Skeleton className="h-8 w-3/4" />
+                    <div className="space-y-3">
+                        <Skeleton className="h-4 w-40" />
+                        <Skeleton className="h-4 w-32" />
+                        <Skeleton className="h-4 w-44" />
+                    </div>
+                    <div className="flex gap-3 pt-2">
+                        <Skeleton className="h-11 w-32 rounded-xl" />
+                        <Skeleton className="h-11 w-32 rounded-xl" />
+                    </div>
                 </div>
-                <Skeleton className="h-6 w-3/4" />
-                <div className="space-y-2">
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-5/6" />
-                    <Skeleton className="h-4 w-2/3" />
-                </div>
-                <Skeleton className="mt-2 h-5 w-32" />
             </div>
         </Card>
     );
 }
 
-/**
- * Returns the content configuration for each training category.
- */
+function SectionIntro({ icon: Icon, badge, title, description }: { icon: React.ElementType; badge: string; title: string; description: string }) {
+    return (
+        <div className="max-w-2xl space-y-3">
+            <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] text-primary uppercase">
+                <Icon className="h-4 w-4" />
+                {badge}
+            </div>
+
+            <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">{title}</h2>
+
+            <p className="text-sm leading-7 text-muted-foreground sm:text-base">{description}</p>
+        </div>
+    );
+}
+
+function EmptyState({ text }: { text: string }) {
+    return (
+        <div className="rounded-[2rem] bg-background/70 px-6 py-10 text-center shadow-[0_14px_40px_rgba(175,16,26,0.03)] backdrop-blur sm:px-8">
+            <p className="mx-auto max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">{text}</p>
+        </div>
+    );
+}
+
 function getCategoryContent(slug?: string | null) {
     switch (slug) {
         case 'cursos':
             return {
                 title: 'Cursos',
-                description:
-                    'Explora la oferta de cursos orientados a la actualización y especialización de profesionales de enfermería en el ámbito del VIH.',
+                description: 'Formación especializada para la actualización clínica y el desarrollo profesional en el ámbito del VIH.',
+                eyebrow: 'Formación especializada',
+                upcomingBadge: 'Próximos',
                 upcomingTitle: 'Próximos cursos',
+                upcomingDescription: 'Actividades abiertas o próximas para seguir profundizando en el cuidado enfermero experto.',
+                pastBadge: 'Archivo',
                 pastTitle: 'Cursos anteriores',
+                pastDescription: 'Archivo de actividades ya celebradas, útil para consulta y seguimiento histórico.',
                 emptyUpcoming: 'No hay cursos programados próximamente.',
                 emptyPast: 'No hay cursos anteriores registrados.',
             };
@@ -86,10 +103,14 @@ function getCategoryContent(slug?: string | null) {
         case 'webinars':
             return {
                 title: 'Webinars',
-                description:
-                    'Consulta los próximos webinars y sesiones online promovidos por GEEVIH para compartir conocimiento, evidencia y buenas prácticas.',
+                description: 'Sesiones online para compartir evidencia, buenas prácticas y actualización científica en torno al VIH.',
+                eyebrow: 'Sesiones online',
+                upcomingBadge: 'Próximos',
                 upcomingTitle: 'Próximos webinars',
+                upcomingDescription: 'Encuentros virtuales y sesiones en directo impulsadas por GEEVIH.',
+                pastBadge: 'Archivo',
                 pastTitle: 'Webinars anteriores',
+                pastDescription: 'Repositorio de webinars ya celebrados y actividades previas.',
                 emptyUpcoming: 'No hay webinars programados próximamente.',
                 emptyPast: 'No hay webinars anteriores registrados.',
             };
@@ -97,10 +118,14 @@ function getCategoryContent(slug?: string | null) {
         case 'congresos-jornadas':
             return {
                 title: 'Congresos y Jornadas',
-                description:
-                    'Consulta la agenda de congresos, jornadas, encuentros y actividades científicas relacionadas con la enfermería y el VIH.',
-                upcomingTitle: 'Próximos congresos y eventos',
-                pastTitle: 'Congresos y eventos anteriores',
+                description: 'Agenda de encuentros científicos, jornadas y congresos vinculados a la enfermería y al VIH.',
+                eyebrow: 'Encuentros científicos',
+                upcomingBadge: 'Próximos',
+                upcomingTitle: 'Próximos congresos y jornadas',
+                upcomingDescription: 'Citas destacadas para la comunidad profesional y científica.',
+                pastBadge: 'Archivo',
+                pastTitle: 'Congresos y jornadas anteriores',
+                pastDescription: 'Consulta actividades ya celebradas y revisa su histórico.',
                 emptyUpcoming: 'No hay congresos o eventos programados próximamente.',
                 emptyPast: 'No hay congresos o eventos anteriores registrados.',
             };
@@ -108,10 +133,14 @@ function getCategoryContent(slug?: string | null) {
         case 'material-docente':
             return {
                 title: 'Material Docente',
-                description:
-                    'Accede a actividades formativas y contenidos vinculados al material docente de apoyo para la práctica clínica y la formación continuada.',
+                description: 'Contenidos formativos de apoyo para la práctica clínica, la docencia y la actualización continuada.',
+                eyebrow: 'Recursos docentes',
+                upcomingBadge: 'Próximos',
                 upcomingTitle: 'Próximo material docente',
+                upcomingDescription: 'Nuevos contenidos y publicaciones formativas disponibles para consulta.',
+                pastBadge: 'Archivo',
                 pastTitle: 'Material docente anterior',
+                pastDescription: 'Archivo de material formativo ya publicado.',
                 emptyUpcoming: 'No hay material docente publicado próximamente.',
                 emptyPast: 'No hay material docente anterior registrado.',
             };
@@ -119,9 +148,14 @@ function getCategoryContent(slug?: string | null) {
         case 'aval-de-geevih':
             return {
                 title: 'Aval de GEEVIH',
-                description: 'Consulta iniciativas, actividades y propuestas formativas relacionadas con el aval y respaldo institucional de GEEVIH.',
+                description: 'Actividades, iniciativas y propuestas formativas con respaldo institucional del grupo.',
+                eyebrow: 'Aval institucional',
+                upcomingBadge: 'Próximos',
                 upcomingTitle: 'Próximas actividades con aval',
+                upcomingDescription: 'Acciones futuras respaldadas o avaladas por GEEVIH.',
+                pastBadge: 'Archivo',
                 pastTitle: 'Actividades avaladas anteriores',
+                pastDescription: 'Histórico de propuestas avaladas y actividades ya realizadas.',
                 emptyUpcoming: 'No hay actividades con aval programadas próximamente.',
                 emptyPast: 'No hay actividades avaladas anteriores registradas.',
             };
@@ -129,9 +163,15 @@ function getCategoryContent(slug?: string | null) {
         default:
             return {
                 title: 'Formación',
-                description: 'Consulta la agenda de cursos, webinars, congresos, material docente y actividades avaladas del Grupo GEEVIH.',
+                description:
+                    'Consulta cursos, webinars, congresos, material docente y actividades avaladas orientadas al cuidado enfermero experto en VIH.',
+                eyebrow: 'Agenda y recursos formativos',
+                upcomingBadge: 'Próximos',
                 upcomingTitle: 'Próximas actividades formativas',
-                pastTitle: 'Actividades formativas anteriores',
+                upcomingDescription: 'Cursos, sesiones y encuentros próximos para la actualización profesional.',
+                pastBadge: 'Archivo',
+                pastTitle: 'Archivo formativo',
+                pastDescription: 'Repositorio histórico de actividades previas del grupo.',
                 emptyUpcoming: 'No hay actividades formativas programadas.',
                 emptyPast: 'No hay actividades formativas anteriores registradas.',
             };
@@ -140,7 +180,6 @@ function getCategoryContent(slug?: string | null) {
 
 export default function Index() {
     const { upcomingEvents, pastEvents, currentCategory } = usePage<EventPageProps>().props;
-
     const [filter, setFilter] = useState<FilterMode>('all');
 
     const content = getCategoryContent(currentCategory?.slug);
@@ -165,86 +204,124 @@ export default function Index() {
         <AppLayout>
             <Head title={content.title} />
 
-            <div className="mx-auto max-w-6xl space-y-16 px-6 py-12">
-                {/* Page header */}
-                <header className="space-y-4 text-center">
-                    <h1 className="text-5xl font-extrabold tracking-tight text-foreground">{content.title}</h1>
+            <div className="mx-auto max-w-7xl px-6 pt-6 pb-16 lg:px-8 lg:pt-10 lg:pb-20">
+                <div className="space-y-12 lg:space-y-14">
+                    <section className="relative overflow-hidden rounded-[2rem] bg-background/92 px-6 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] backdrop-blur-xl dark:bg-zinc-950/85 sm:px-8 sm:py-7 lg:px-10">
+                        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.08),transparent_46%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.12),transparent_46%)]" />
 
-                    <p className="mx-auto max-w-3xl text-xl text-muted-foreground">{content.description}</p>
+                        <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1.25fr)_280px] lg:items-start">
+                            <div className="space-y-5">
+                                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold tracking-[0.2em] text-primary uppercase">
+                                    <Presentation className="h-4 w-4" />
+                                    {content.eyebrow}
+                                </div>
 
-                    <div className="pt-8">
-                        <FilterPills value={filter} onChange={setFilter} />
-                    </div>
-                </header>
+                                <div className="max-w-3xl space-y-3">
+                                    <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">{content.title}</h1>
 
-                {/* Upcoming section */}
-                <section className="space-y-8">
-                    <SectionHeader icon={CalendarCheck} title={content.upcomingTitle} />
+                                    <p className="max-w-2xl text-sm leading-8 text-foreground/70 dark:text-zinc-300 sm:text-lg">{content.description}</p>
+                                </div>
+                            </div>
 
-                    {isLoading ? (
-                        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                            {Array.from({ length: 6 }).map((_, i) => (
-                                <EventCardSkeleton key={i} />
-                            ))}
+                            <div className="rounded-[1.5rem] bg-background p-5 shadow-[0_16px_40px_rgba(175,16,26,0.05)] dark:bg-zinc-950/95">
+                                <p className="text-[11px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">Vista actual</p>
+
+                                <div className="mt-4 space-y-4">
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-sm text-muted-foreground">Próximas</span>
+                                        <span className="text-lg font-semibold text-foreground">{filteredUpcoming.length}</span>
+                                    </div>
+
+                                    <div className="flex items-center justify-between">
+                                        <span className="text-sm text-muted-foreground">Archivo</span>
+                                        <span className="text-lg font-semibold text-foreground">{filteredPast.length}</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    ) : filteredUpcoming.length > 0 ? (
-                        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                            {filteredUpcoming.map((event) => (
-                                <EventCard
-                                    key={event.id}
-                                    titulo={event.titulo}
-                                    fecha={event.fecha}
-                                    hora={event.hora}
-                                    descripcion={event.descripcion}
-                                    imagen={event.imagen}
-                                    enlace={event.link}
-                                    lugar={event.lugar}
-                                    is_online={event.is_online}
-                                    registration_url={event.registration_url}
-                                    online_url={event.online_url}
-                                    isOngoing={event.isOngoing}
-                                    isPast={event.isPast}
-                                />
-                            ))}
-                        </div>
-                    ) : (
-                        <p className="py-10 text-center text-lg text-muted-foreground">{content.emptyUpcoming}</p>
-                    )}
-                </section>
 
-                {/* Past section */}
-                <section className="space-y-8">
-                    <SectionHeader icon={Archive} title={content.pastTitle} />
+                        <div className="relative mt-6 pt-5">
+                            <div className="h-px bg-border/40" />
+                            <div className="pt-5">
+                                <FilterPills value={filter} onChange={setFilter} />
+                            </div>
+                        </div>
+                    </section>
 
-                    {isLoading ? (
-                        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                            {Array.from({ length: 6 }).map((_, i) => (
-                                <EventCardSkeleton key={i} />
-                            ))}
+                    <section className="space-y-8">
+                        <SectionIntro
+                            icon={CalendarCheck}
+                            badge={content.upcomingBadge}
+                            title={content.upcomingTitle}
+                            description={content.upcomingDescription}
+                        />
+
+                        {isLoading ? (
+                            <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+                                {Array.from({ length: 4 }).map((_, i) => (
+                                    <EventCardSkeleton key={i} />
+                                ))}
+                            </div>
+                        ) : filteredUpcoming.length > 0 ? (
+                            <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+                                {filteredUpcoming.map((event) => (
+                                    <EventCard
+                                        key={event.id}
+                                        titulo={event.titulo}
+                                        fecha={event.fecha}
+                                        hora={event.hora}
+                                        descripcion={event.descripcion}
+                                        imagen={event.imagen}
+                                        enlace={event.link}
+                                        lugar={event.lugar}
+                                        is_online={event.is_online}
+                                        registration_url={event.registration_url}
+                                        online_url={event.online_url}
+                                        isOngoing={event.isOngoing}
+                                        isPast={event.isPast}
+                                    />
+                                ))}
+                            </div>
+                        ) : (
+                            <EmptyState text={content.emptyUpcoming} />
+                        )}
+                    </section>
+
+                    <section className="rounded-[2rem] bg-muted/25 px-4 py-8 sm:px-6 lg:px-8 lg:py-10 dark:bg-zinc-950/70">
+                        <div className="space-y-8">
+                            <SectionIntro icon={Archive} badge={content.pastBadge} title={content.pastTitle} description={content.pastDescription} />
+
+                            {isLoading ? (
+                                <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+                                    {Array.from({ length: 4 }).map((_, i) => (
+                                        <EventCardSkeleton key={i} />
+                                    ))}
+                                </div>
+                            ) : filteredPast.length > 0 ? (
+                                <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+                                    {filteredPast.map((event) => (
+                                        <EventCard
+                                            key={event.id}
+                                            titulo={event.titulo}
+                                            fecha={event.fecha}
+                                            hora={event.hora}
+                                            descripcion={event.descripcion}
+                                            imagen={event.imagen}
+                                            enlace={event.link}
+                                            lugar={event.lugar}
+                                            isPast={true}
+                                            is_online={event.is_online}
+                                            registration_url={event.registration_url}
+                                            online_url={event.online_url}
+                                        />
+                                    ))}
+                                </div>
+                            ) : (
+                                <EmptyState text={content.emptyPast} />
+                            )}
                         </div>
-                    ) : filteredPast.length > 0 ? (
-                        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-                            {filteredPast.map((event) => (
-                                <EventCard
-                                    key={event.id}
-                                    titulo={event.titulo}
-                                    fecha={event.fecha}
-                                    hora={event.hora}
-                                    descripcion={event.descripcion}
-                                    imagen={event.imagen}
-                                    enlace={event.link}
-                                    lugar={event.lugar}
-                                    isPast={true}
-                                    is_online={event.is_online}
-                                    registration_url={event.registration_url}
-                                    online_url={event.online_url}
-                                />
-                            ))}
-                        </div>
-                    ) : (
-                        <p className="py-10 text-center text-lg text-muted-foreground">{content.emptyPast}</p>
-                    )}
-                </section>
+                    </section>
+                </div>
             </div>
         </AppLayout>
     );
