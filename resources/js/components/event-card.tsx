@@ -21,9 +21,9 @@ interface EventCardProps {
 function EventBadge({ children, variant = 'default' }: { children: React.ReactNode; variant?: 'default' | 'secondary' | 'live' | 'finished' }) {
     const styles = {
         default: 'bg-primary/10 text-primary',
-        secondary: 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300',
+        secondary: 'bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300',
         live: 'bg-emerald-600 text-white dark:bg-emerald-500',
-        finished: 'bg-zinc-900 text-white dark:bg-zinc-200 dark:text-zinc-900',
+        finished: 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900',
     };
 
     return (
@@ -38,13 +38,13 @@ function MetaItem({ icon: Icon, children, muted }: { icon: React.ElementType; ch
         <div
             className={cn(
                 'flex items-center gap-3 text-sm',
-                muted ? 'text-foreground/60 dark:text-zinc-400' : 'text-foreground/65 dark:text-zinc-300',
+                muted ? 'text-foreground/60 dark:text-zinc-400' : 'text-foreground/70 dark:text-zinc-300',
             )}
         >
             <span
                 className={cn(
                     'inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full',
-                    muted ? 'bg-muted text-muted-foreground' : 'bg-primary/10 text-primary',
+                    muted ? 'bg-muted text-muted-foreground dark:bg-zinc-800 dark:text-zinc-400' : 'bg-primary/10 text-primary',
                 )}
             >
                 <Icon className="h-4 w-4" />
@@ -77,7 +77,7 @@ export default function EventCard({
             className={cn(
                 'group h-full overflow-hidden rounded-[2rem] transition-all duration-300',
                 isPast
-                    ? 'bg-background/90 shadow-[0_12px_30px_rgba(0,0,0,0.03)] dark:bg-zinc-950/92'
+                    ? 'bg-background/95 shadow-[0_12px_30px_rgba(0,0,0,0.03)] dark:bg-zinc-950/92'
                     : isOngoing
                       ? 'bg-primary/5 shadow-[0_20px_50px_rgba(175,16,26,0.08)] dark:bg-primary/10'
                       : 'bg-background shadow-[0_16px_40px_rgba(175,16,26,0.05)] hover:-translate-y-0.5 hover:shadow-[0_22px_55px_rgba(175,16,26,0.10)] dark:bg-zinc-950/95',
@@ -99,7 +99,7 @@ export default function EventCard({
                             'absolute inset-0',
                             isPast
                                 ? 'bg-gradient-to-t from-black/20 via-black/5 to-transparent'
-                                : 'bg-gradient-to-t from-black/22 via-black/0 to-transparent',
+                                : 'bg-gradient-to-t from-black/18 via-black/0 to-transparent',
                         )}
                     />
 
@@ -166,7 +166,7 @@ export default function EventCard({
                                     <a href={enlace} target="_blank" rel="noopener noreferrer">
                                         <Button
                                             variant="outline"
-                                            className="h-11 cursor-pointer rounded-xl border-border/60 bg-background px-5 hover:border-primary/30 hover:bg-primary/5"
+                                            className="h-11 cursor-pointer rounded-xl border-border/60 bg-background px-5 hover:border-primary/30 hover:bg-primary/5 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-900"
                                         >
                                             {isPast ? 'Ver detalles' : 'Ver actividad'}
                                             <ExternalLink className="ml-2 h-4 w-4" />
