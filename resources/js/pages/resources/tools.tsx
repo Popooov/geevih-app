@@ -13,6 +13,7 @@ export default function Herramientas() {
     return (
         <AppLayout>
             <Head title="Herramientas Prácticas | GEEVIH" />
+
             <div className="mx-auto max-w-6xl space-y-16 p-6 pt-16">
                 <header className="space-y-3 text-center">
                     <div className="flex flex-col items-center justify-center space-y-4">
@@ -27,7 +28,16 @@ export default function Herramientas() {
 
                 <ResourceGrid>
                     {resources.map((r) => (
-                        <ResourceCard key={r.id} titulo={r.titulo} tipo={r.tipo} fecha={r.fecha} imagen={r.imagen} enlace={r.enlace ?? null} />
+                        <ResourceCard
+                            key={r.id}
+                            titulo={r.titulo}
+                            tipo={r.tipo}
+                            fecha={r.fecha}
+                            descripcion={r.descripcion}
+                            imagen={r.imagen}
+                            enlace={r.enlace ?? null}
+                            is_pinned={r.is_pinned}
+                        />
                     ))}
                 </ResourceGrid>
 

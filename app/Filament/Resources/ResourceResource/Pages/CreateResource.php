@@ -14,9 +14,17 @@ class CreateResource extends CreateRecord
         $fileTmp = $this->data['file_tmp'] ?? null;
 
         if (($data['type'] ?? null) === 'enlaces') {
+            $data['access_mode'] = 'url';
             $data['file_url'] = null;
-            $data['image_url'] = null;
             unset($data['file_tmp']);
+
+            return $data;
+        }
+
+        if (($data['access_mode'] ?? 'file') === 'url') {
+            $data['file_url'] = null;
+            unset($data['file_tmp']);
+
             return $data;
         }
 
@@ -29,6 +37,7 @@ class CreateResource extends CreateRecord
         }
 
         unset($data['file_tmp']);
+
         return $data;
     }
 }
