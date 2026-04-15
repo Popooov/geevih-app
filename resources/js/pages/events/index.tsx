@@ -1,6 +1,4 @@
 import EventCard from '@/components/event-card';
-import { Card } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
 import AppLayout from '@/layouts/app-layout';
 import { type EventPageProps } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
@@ -9,15 +7,16 @@ import { useMemo, useState } from 'react';
 
 type FilterMode = 'all' | 'online' | 'presencial';
 
-function FilterPills({ value, onChange }: { value: FilterMode; onChange: (v: FilterMode) => void }) {
+function FilterPills({ value, onChange }: { value: FilterMode; onChange: (value: FilterMode) => void }) {
     const base =
         'inline-flex h-9 cursor-pointer items-center justify-center rounded-full px-4 text-sm font-medium transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30';
     const active = 'bg-zinc-950 text-white dark:bg-white dark:text-zinc-950';
-    const idle = 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground dark:bg-muted/60';
+    const idle =
+        'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-white';
 
     return (
         <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-2 pr-1 text-sm font-medium text-muted-foreground">
+            <span className="inline-flex items-center gap-2 pr-1 text-sm font-medium text-muted-foreground dark:text-zinc-400">
                 <Filter className="h-4 w-4" />
                 Filtrar
             </span>
@@ -37,29 +36,6 @@ function FilterPills({ value, onChange }: { value: FilterMode; onChange: (v: Fil
     );
 }
 
-function EventCardSkeleton() {
-    return (
-        <Card className="overflow-hidden rounded-[2rem] border-0 bg-background shadow-[0_16px_40px_rgba(175,16,26,0.05)]">
-            <div className="grid md:grid-cols-[0.92fr_1fr]">
-                <Skeleton className="h-56 w-full md:h-full" />
-                <div className="space-y-5 p-6 sm:p-7">
-                    <Skeleton className="h-5 w-24 rounded-full" />
-                    <Skeleton className="h-8 w-3/4" />
-                    <div className="space-y-3">
-                        <Skeleton className="h-4 w-40" />
-                        <Skeleton className="h-4 w-32" />
-                        <Skeleton className="h-4 w-44" />
-                    </div>
-                    <div className="flex gap-3 pt-2">
-                        <Skeleton className="h-11 w-32 rounded-xl" />
-                        <Skeleton className="h-11 w-32 rounded-xl" />
-                    </div>
-                </div>
-            </div>
-        </Card>
-    );
-}
-
 function SectionIntro({ icon: Icon, badge, title, description }: { icon: React.ElementType; badge: string; title: string; description: string }) {
     return (
         <div className="max-w-2xl space-y-3">
@@ -68,17 +44,17 @@ function SectionIntro({ icon: Icon, badge, title, description }: { icon: React.E
                 {badge}
             </div>
 
-            <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">{title}</h2>
+            <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl dark:text-white">{title}</h2>
 
-            <p className="text-sm leading-7 text-muted-foreground sm:text-base">{description}</p>
+            <p className="text-sm leading-7 text-foreground/65 sm:text-base dark:text-zinc-300">{description}</p>
         </div>
     );
 }
 
 function EmptyState({ text }: { text: string }) {
     return (
-        <div className="rounded-[2rem] bg-background/70 px-6 py-10 text-center shadow-[0_14px_40px_rgba(175,16,26,0.03)] backdrop-blur sm:px-8">
-            <p className="mx-auto max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">{text}</p>
+        <div className="rounded-[2rem] bg-background/80 px-6 py-10 text-center shadow-[0_14px_40px_rgba(175,16,26,0.03)] backdrop-blur sm:px-8 dark:bg-zinc-950/90">
+            <p className="mx-auto max-w-2xl text-sm leading-7 text-foreground/65 sm:text-base dark:text-zinc-300">{text}</p>
         </div>
     );
 }
@@ -179,26 +155,23 @@ function getCategoryContent(slug?: string | null) {
 }
 
 export default function Index() {
-    const { upcomingEvents, pastEvents, currentCategory } = usePage<EventPageProps>().props;
+    const { upcomingEvents = [], pastEvents = [], currentCategory = null } = usePage<EventPageProps>().props;
+
     const [filter, setFilter] = useState<FilterMode>('all');
 
     const content = getCategoryContent(currentCategory?.slug);
 
     const filteredUpcoming = useMemo(() => {
-        const list = upcomingEvents ?? [];
-        if (filter === 'all') return list;
-        if (filter === 'online') return list.filter((e) => e.is_online);
-        return list.filter((e) => !e.is_online);
+        if (filter === 'all') return upcomingEvents;
+        if (filter === 'online') return upcomingEvents.filter((event) => event.is_online);
+        return upcomingEvents.filter((event) => !event.is_online);
     }, [upcomingEvents, filter]);
 
     const filteredPast = useMemo(() => {
-        const list = pastEvents ?? [];
-        if (filter === 'all') return list;
-        if (filter === 'online') return list.filter((e) => e.is_online);
-        return list.filter((e) => !e.is_online);
+        if (filter === 'all') return pastEvents;
+        if (filter === 'online') return pastEvents.filter((event) => event.is_online);
+        return pastEvents.filter((event) => !event.is_online);
     }, [pastEvents, filter]);
-
-    const isLoading = !upcomingEvents || !pastEvents;
 
     return (
         <AppLayout>
@@ -206,8 +179,8 @@ export default function Index() {
 
             <div className="mx-auto max-w-7xl px-6 pt-6 pb-16 lg:px-8 lg:pt-10 lg:pb-20">
                 <div className="space-y-12 lg:space-y-14">
-                    <section className="relative overflow-hidden rounded-[2rem] bg-background/92 px-6 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] backdrop-blur-xl dark:bg-zinc-950/85 sm:px-8 sm:py-7 lg:px-10">
-                        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.08),transparent_46%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.12),transparent_46%)]" />
+                    <section className="relative overflow-hidden rounded-[2rem] bg-background/92 px-6 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] backdrop-blur-xl sm:px-8 sm:py-7 lg:px-10 dark:bg-zinc-950/85">
+                        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.08),transparent_46%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.14),transparent_46%)]" />
 
                         <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1.25fr)_280px] lg:items-start">
                             <div className="space-y-5">
@@ -217,31 +190,37 @@ export default function Index() {
                                 </div>
 
                                 <div className="max-w-3xl space-y-3">
-                                    <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">{content.title}</h1>
+                                    <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl dark:text-white">
+                                        {content.title}
+                                    </h1>
 
-                                    <p className="max-w-2xl text-sm leading-8 text-foreground/70 dark:text-zinc-300 sm:text-lg">{content.description}</p>
+                                    <p className="max-w-2xl text-sm leading-8 text-foreground/70 sm:text-lg dark:text-zinc-300">
+                                        {content.description}
+                                    </p>
                                 </div>
                             </div>
 
                             <div className="rounded-[1.5rem] bg-background p-5 shadow-[0_16px_40px_rgba(175,16,26,0.05)] dark:bg-zinc-950/95">
-                                <p className="text-[11px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">Vista actual</p>
+                                <p className="text-[11px] font-semibold tracking-[0.18em] text-muted-foreground uppercase dark:text-zinc-500">
+                                    Vista actual
+                                </p>
 
                                 <div className="mt-4 space-y-4">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-sm text-muted-foreground">Próximas</span>
-                                        <span className="text-lg font-semibold text-foreground">{filteredUpcoming.length}</span>
+                                        <span className="text-sm text-muted-foreground dark:text-zinc-400">Próximas</span>
+                                        <span className="text-lg font-semibold text-foreground dark:text-white">{filteredUpcoming.length}</span>
                                     </div>
 
                                     <div className="flex items-center justify-between">
-                                        <span className="text-sm text-muted-foreground">Archivo</span>
-                                        <span className="text-lg font-semibold text-foreground">{filteredPast.length}</span>
+                                        <span className="text-sm text-muted-foreground dark:text-zinc-400">Archivo</span>
+                                        <span className="text-lg font-semibold text-foreground dark:text-white">{filteredPast.length}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div className="relative mt-6 pt-5">
-                            <div className="h-px bg-border/40" />
+                            <div className="h-px bg-border/40 dark:bg-zinc-800" />
                             <div className="pt-5">
                                 <FilterPills value={filter} onChange={setFilter} />
                             </div>
@@ -256,13 +235,7 @@ export default function Index() {
                             description={content.upcomingDescription}
                         />
 
-                        {isLoading ? (
-                            <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-                                {Array.from({ length: 4 }).map((_, i) => (
-                                    <EventCardSkeleton key={i} />
-                                ))}
-                            </div>
-                        ) : filteredUpcoming.length > 0 ? (
+                        {filteredUpcoming.length > 0 ? (
                             <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
                                 {filteredUpcoming.map((event) => (
                                     <EventCard
@@ -287,39 +260,31 @@ export default function Index() {
                         )}
                     </section>
 
-                    <section className="rounded-[2rem] bg-muted/25 px-4 py-8 sm:px-6 lg:px-8 lg:py-10 dark:bg-zinc-950/70">
-                        <div className="space-y-8">
-                            <SectionIntro icon={Archive} badge={content.pastBadge} title={content.pastTitle} description={content.pastDescription} />
+                    <section className="space-y-8">
+                        <SectionIntro icon={Archive} badge={content.pastBadge} title={content.pastTitle} description={content.pastDescription} />
 
-                            {isLoading ? (
-                                <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-                                    {Array.from({ length: 4 }).map((_, i) => (
-                                        <EventCardSkeleton key={i} />
-                                    ))}
-                                </div>
-                            ) : filteredPast.length > 0 ? (
-                                <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-                                    {filteredPast.map((event) => (
-                                        <EventCard
-                                            key={event.id}
-                                            titulo={event.titulo}
-                                            fecha={event.fecha}
-                                            hora={event.hora}
-                                            descripcion={event.descripcion}
-                                            imagen={event.imagen}
-                                            enlace={event.link}
-                                            lugar={event.lugar}
-                                            isPast={true}
-                                            is_online={event.is_online}
-                                            registration_url={event.registration_url}
-                                            online_url={event.online_url}
-                                        />
-                                    ))}
-                                </div>
-                            ) : (
-                                <EmptyState text={content.emptyPast} />
-                            )}
-                        </div>
+                        {filteredPast.length > 0 ? (
+                            <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+                                {filteredPast.map((event) => (
+                                    <EventCard
+                                        key={event.id}
+                                        titulo={event.titulo}
+                                        fecha={event.fecha}
+                                        hora={event.hora}
+                                        descripcion={event.descripcion}
+                                        imagen={event.imagen}
+                                        enlace={event.link}
+                                        lugar={event.lugar}
+                                        isPast={true}
+                                        is_online={event.is_online}
+                                        registration_url={event.registration_url}
+                                        online_url={event.online_url}
+                                    />
+                                ))}
+                            </div>
+                        ) : (
+                            <EmptyState text={content.emptyPast} />
+                        )}
                     </section>
                 </div>
             </div>

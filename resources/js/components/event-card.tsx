@@ -163,7 +163,7 @@ export default function EventCard({
                                 )}
 
                                 {enlace && (
-                                    <a href={enlace} target="_blank" rel="noopener noreferrer">
+                                    <a href={enlace} target="_self" rel="noopener noreferrer">
                                         <Button
                                             variant="outline"
                                             className="h-11 cursor-pointer rounded-xl border-border/60 bg-background px-5 hover:border-primary/30 hover:bg-primary/5 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-900"
