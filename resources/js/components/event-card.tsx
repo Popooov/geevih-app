@@ -10,7 +10,7 @@ interface EventCardProps {
     descripcion?: string | null;
     imagen?: string | null;
     enlace?: string | null;
-    lugar?: string;
+    lugar?: string | null;
     is_online?: boolean;
     registration_url?: string | null;
     online_url?: string | null;
@@ -70,7 +70,7 @@ export default function EventCard({
     isPast,
 }: EventCardProps) {
     const imageSrc = imagen ?? '/images/event-placeholder.jpg';
-    const showPhysicalLocation = !!lugar && !is_online;
+    const showPhysicalLocation = Boolean(lugar) && !is_online;
 
     return (
         <article

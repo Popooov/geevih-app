@@ -44,31 +44,26 @@ export interface User {
 
 /**
  * EVENTS
- * Mantiene el shape "ES" para no tocar React, pero añade campos nuevos.
  */
 export interface EventItem {
     id: number;
 
-    // legacy / frontend-friendly
     titulo: string;
-    lugar: string;
-    fecha: string; // ej: "Jan 28, 2026" (toFormattedDateString)
+    lugar?: string | null;
+    fecha: string;
     hora?: string | null;
 
     descripcion?: string | null;
     imagen?: string | null;
 
-    // navegación
-    link?: string | null; // route('events.show', event)
-    slug?: string; // si lo quieres usar en front
+    link?: string | null;
+    slug?: string;
 
-    // nuevos (útiles para EventCard / lógica)
     is_online?: boolean;
     registration_url?: string | null;
     online_url?: string | null;
 
-    // opcional: si en algún momento quieres mostrar rangos
-    end_at?: string | null; // ISO string si lo mandas así (recomendado), o texto formateado
+    end_at?: string | null;
     isOngoing?: boolean;
     isPast?: boolean;
 
@@ -80,6 +75,14 @@ export interface EventCategoryInfo {
     name: string;
     slug: string;
 }
+
+export interface EventPagination {
+    current_page: number;
+    last_page: number;
+    total: number;
+}
+
+export type EventFilterMode = 'all' | 'online' | 'presencial';
 
 export interface SingleEvent {
     id: number;
@@ -114,9 +117,8 @@ export interface NewsItem {
 
     imagen?: string | null;
 
-    // navegación
     link?: string | null;
-    slug?: string; // recomendado para /noticias/{slug}
+    slug?: string;
 }
 
 export interface SingleNews {
@@ -139,7 +141,9 @@ export interface SingleNews {
 export interface EventPageProps {
     upcomingEvents: EventItem[];
     pastEvents: EventItem[];
-    currentCategory?: EventCategoryInfo | null;
+    currentCategory: EventCategoryInfo | null;
+    pastPagination: EventPagination;
+    currentFilter: EventFilterMode;
     [key: string]: unknown;
 }
 
@@ -159,7 +163,7 @@ export interface ShowNewsPageProps {
 }
 
 /**
- * RESOURCES (lo dejo igual, pero si luego quieres lo adaptamos)
+ * RESOURCES
  */
 export interface Resource {
     id: number;

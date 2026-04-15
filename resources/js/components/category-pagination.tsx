@@ -2,18 +2,26 @@ import { Link, usePage } from '@inertiajs/react';
 
 function makePages(current: number, last: number): (number | '...')[] {
     const out: (number | '...')[] = [];
-    const push = (v: number | '...') => out.push(v);
+    const push = (value: number | '...') => out.push(value);
+
     if (last <= 7) {
         for (let i = 1; i <= last; i++) push(i);
         return out;
     }
+
     push(1);
+
     if (current > 4) push('...');
+
     const start = Math.max(2, current - 1);
     const end = Math.min(last - 1, current + 1);
+
     for (let i = start; i <= end; i++) push(i);
+
     if (current < last - 3) push('...');
+
     push(last);
+
     return out;
 }
 
@@ -21,6 +29,7 @@ function buildHref(basePath: string, page: number, searchParams: URLSearchParams
     const params = new URLSearchParams(searchParams);
     params.set('page', String(page));
     const qs = params.toString();
+
     return `${basePath}${qs ? `?${qs}` : ''}`;
 }
 
@@ -46,15 +55,14 @@ export default function CategoryPagination({
     const hasNext = current < last;
 
     return (
-        <nav aria-label="pagination" className="mt-8 flex justify-center">
-            <ul className="inline-flex items-center gap-2">
-                {/* Previous */}
+        <nav aria-label="Paginación" className="mt-8 flex justify-center">
+            <ul className="inline-flex flex-wrap items-center gap-2">
                 <li>
                     {hasPrev ? (
                         <Link
                             href={buildHref(basePath, current - 1, searchParams)}
                             preserveScroll={preserveScroll}
-                            className="inline-flex items-center gap-2 rounded px-3 py-2 text-sm hover:bg-muted"
+                            className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-background px-3 py-2 text-sm text-foreground transition hover:bg-muted dark:bg-zinc-950 dark:text-zinc-200 dark:hover:bg-zinc-900"
                         >
                             Anterior
                         </Link>
@@ -63,41 +71,39 @@ export default function CategoryPagination({
                     )}
                 </li>
 
-                {/* Pages */}
-                {pages.map((p, i) =>
-                    p === '...' ? (
-                        <li key={`e-${i}`} className="px-2 py-1 text-sm text-muted-foreground">
+                {pages.map((page, index) =>
+                    page === '...' ? (
+                        <li key={`ellipsis-${index}`} className="px-2 py-1 text-sm text-muted-foreground dark:text-zinc-500">
                             …
                         </li>
                     ) : (
-                        <li key={p}>
-                            {p === current ? (
+                        <li key={page}>
+                            {page === current ? (
                                 <span
                                     aria-current="page"
-                                    className="inline-flex items-center justify-center rounded bg-primary px-3 py-2 text-sm font-medium whitespace-nowrap text-white"
+                                    className="inline-flex min-w-10 items-center justify-center rounded-xl bg-zinc-950 px-3 py-2 text-sm font-medium whitespace-nowrap text-white dark:bg-white dark:text-zinc-950"
                                 >
-                                    {p}
+                                    {page}
                                 </span>
                             ) : (
                                 <Link
-                                    href={buildHref(basePath, p as number, searchParams)}
+                                    href={buildHref(basePath, page, searchParams)}
                                     preserveScroll={preserveScroll}
-                                    className="inline-flex items-center justify-center rounded px-3 py-2 text-sm whitespace-nowrap hover:bg-muted"
+                                    className="inline-flex min-w-10 cursor-pointer items-center justify-center rounded-xl bg-background px-3 py-2 text-sm whitespace-nowrap text-foreground transition hover:bg-muted dark:bg-zinc-950 dark:text-zinc-200 dark:hover:bg-zinc-900"
                                 >
-                                    {p}
+                                    {page}
                                 </Link>
                             )}
                         </li>
                     ),
                 )}
 
-                {/* Next */}
                 <li>
                     {hasNext ? (
                         <Link
                             href={buildHref(basePath, current + 1, searchParams)}
                             preserveScroll={preserveScroll}
-                            className="inline-flex items-center gap-2 rounded px-3 py-2 text-sm hover:bg-muted"
+                            className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-background px-3 py-2 text-sm text-foreground transition hover:bg-muted dark:bg-zinc-950 dark:text-zinc-200 dark:hover:bg-zinc-900"
                         >
                             Siguiente
                         </Link>
