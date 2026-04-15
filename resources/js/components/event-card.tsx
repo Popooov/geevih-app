@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { Calendar, Clock3, ExternalLink, MapPin } from 'lucide-react';
+import { Calendar, Clock3, MapPin } from 'lucide-react';
 
 interface EventCardProps {
     titulo: string;
@@ -169,7 +169,7 @@ export default function EventCard({
                                             className="h-11 cursor-pointer rounded-xl border-border/60 bg-background px-5 hover:border-primary/30 hover:bg-primary/5 dark:border-zinc-800 dark:bg-zinc-950 dark:hover:bg-zinc-900"
                                         >
                                             {isPast ? 'Ver detalles' : 'Ver actividad'}
-                                            <ExternalLink className="ml-2 h-4 w-4" />
+                                            {/* <ExternalLink className="ml-2 h-4 w-4" /> */}
                                         </Button>
                                     </a>
                                 )}

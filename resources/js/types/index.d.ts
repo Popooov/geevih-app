@@ -59,7 +59,7 @@ export interface EventItem {
     imagen?: string | null;
 
     // navegación
-    link?: string | null; // route('events.show', event)
+    link?: string | null;
     slug?: string; // si lo quieres usar en front
 
     // nuevos (útiles para EventCard / lógica)
@@ -98,8 +98,13 @@ export interface SingleEvent {
     fin?: string | null;
     slug?: string;
 
+    isOngoing?: boolean;
+
     category?: string | null;
     category_slug?: string | null;
+
+    link?: string | null;
+    backLink?: string | null;
 }
 
 /**

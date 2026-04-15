@@ -18,11 +18,12 @@ Route::prefix('sobre')->name('about.')->group(function () {
 
 Route::prefix('eventos')->name('events.')->group(function () {
     Route::get('/', [EventController::class, 'index'])->name('index');
-    Route::get('/{event:slug}', [EventController::class, 'show'])->name('show');
+    Route::get('/{event:slug}', [EventController::class, 'show'])->name('legacy-show');
 });
 
 Route::prefix('formacion')->name('training.')->group(function () {
     Route::get('/{category:slug}', [EventController::class, 'index'])->name('category');
+    Route::get('/{category:slug}/{event:slug}', [EventController::class, 'show'])->name('show');
 });
 
 Route::prefix('recursos')->name('resources.')->group(function () {
