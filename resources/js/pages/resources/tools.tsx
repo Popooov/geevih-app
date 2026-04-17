@@ -8,8 +8,9 @@ export default function Herramientas() {
     return (
         <ResourceCategoryPage
             title="Herramientas Prácticas | GEEVIH"
+            eyebrow="Recursos GEEVIH"
             heading="Herramientas Prácticas"
-            description="Calculadoras, checklists y plantillas para la práctica clínica diaria."
+            description="Calculadoras, checklists, plantillas y otros materiales útiles para la práctica clínica diaria en el ámbito del VIH."
             basePath="/recursos/herramientas"
             resources={resources}
             current_page={pagination.current_page}
