@@ -70,6 +70,22 @@ export default function ResourceCategoryPage({
                                     />
                                 ))}
                             </ResourceGrid>
+
+                            {/* <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                                {pinned.map((r) => (
+                                    <ResourceCard
+                                        key={r.id}
+                                        titulo={r.titulo}
+                                        tipo={r.tipo}
+                                        fecha={r.fecha}
+                                        descripcion={r.descripcion}
+                                        imagen={r.imagen}
+                                        enlace={r.enlace ?? null}
+                                        is_pinned={r.is_pinned}
+                                    />
+                                ))}
+                            </div> */}
+
                         </section>
                     ) : null}
 
