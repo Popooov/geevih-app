@@ -39,7 +39,7 @@ export default function Links() {
                                 <h2 className="mt-3 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">Enlaces recomendados</h2>
                             </div>
 
-                            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                            <div className="space-y-6">
                                 {pinned.map((r) => (
                                     <LinkCard
                                         key={r.id}
@@ -62,7 +62,7 @@ export default function Links() {
                             </div>
                         ) : null}
 
-                        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                        <div className="space-y-6">
                             {(pinned.length > 0 ? others : resources).map((r) => (
                                 <LinkCard
                                     key={r.id}
