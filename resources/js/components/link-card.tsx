@@ -57,7 +57,7 @@ export default function LinkCard({ href, titulo, descripcion, imagen, is_pinned 
                         </div>
 
                         <div className="mt-5 min-w-0 flex-1 space-y-4">
-                            <h3 className="line-clamp-2 text-3xl text-lg font-semibold tracking-tight text-foreground md:text-[1.75rem] md:leading-9">
+                            <h3 className="line-clamp-2 text-3xl font-semibold tracking-tight text-foreground md:text-[1.75rem] md:leading-9">
                                 {titulo}
                             </h3>
 
