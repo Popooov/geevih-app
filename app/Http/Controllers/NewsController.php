@@ -24,6 +24,7 @@ class NewsController extends Controller
                 'contenido'   => $news->content,
                 'imagen'      => $news->image_url ? Storage::disk('cloudinary')->url($news->image_url) : null,
                 'slug'        => $news->slug,
+                'is_featured' => (bool) $news->is_featured,
             ]),
         ]);
     }

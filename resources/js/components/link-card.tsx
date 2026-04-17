@@ -22,17 +22,17 @@ export default function LinkCard({ href, titulo, descripcion, imagen, is_pinned 
                     'hover:-translate-y-1 hover:shadow-[0_24px_65px_rgba(175,16,26,0.12)]',
                 ].join(' ')}
             >
-                <div className="grid min-h-[220px] grid-cols-1 md:grid-cols-[220px_minmax(0,1fr)]">
+                <div className="grid min-h-[240px] grid-cols-1 md:grid-cols-[260px_minmax(0,1fr)]">
                     <div className="relative flex items-center justify-center bg-muted/35 p-8 dark:bg-neutral-900">
                         {imageSrc ? (
                             <img
                                 src={imageSrc}
                                 alt={`Logo o imagen del enlace: ${titulo}`}
-                                className="h-24 w-24 rounded-[1.4rem] bg-white object-contain p-3 shadow-sm"
+                                className="h-32 w-32 rounded-[1.6rem] bg-white object-contain p-4 shadow-sm transition-transform duration-300 group-hover:scale-105"
                             />
                         ) : (
-                            <div className="flex h-24 w-24 items-center justify-center rounded-[1.4rem] bg-background text-primary shadow-sm dark:bg-neutral-800">
-                                <Globe className="h-9 w-9" />
+                            <div className="flex h-32 w-32 items-center justify-center rounded-[1.6rem] bg-background text-primary shadow-sm dark:bg-neutral-800">
+                                <Globe className="h-10 w-10" />
                             </div>
                         )}
                     </div>

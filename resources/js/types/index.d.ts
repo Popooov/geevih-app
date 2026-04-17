@@ -121,7 +121,9 @@ export interface NewsItem {
 
     // navegación
     link?: string | null;
-    slug?: string; // recomendado para /noticias/{slug}
+    slug?: string;
+
+    is_featured?: boolean | number;
 }
 
 export interface SingleNews {
