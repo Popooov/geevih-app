@@ -11,6 +11,8 @@ class Resource extends Model
 
     protected $casts = [
         'published_at' => 'datetime',
+        'is_pinned' => 'boolean',
+        'pin_order' => 'integer',
     ];
 
     protected $fillable = [
@@ -23,13 +25,31 @@ class Resource extends Model
         'link_url',
         'published_at',
         'deleted_at',
+        'is_pinned',
+        'pin_order',
+        'access_mode',
     ];
 
     /**
      * Get the formatted published date (simple).
      */
-    public function getFormattedPublishedAtAttribute()
+    public function getFormattedPublishedAtAttribute(): ?string
     {
         return $this->published_at ? $this->published_at->format('d M Y') : null;
+    }
+
+    public function isLinkType(): bool
+    {
+        return $this->type === 'enlaces';
+    }
+
+    public function usesExternalUrl(): bool
+    {
+        return $this->type === 'enlaces' || $this->access_mode === 'url';
+    }
+
+    public function usesFile(): bool
+    {
+        return $this->type !== 'enlaces' && $this->access_mode === 'file';
     }
 }

@@ -1,39 +1,33 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, FileText, Link as LinkIcon } from 'lucide-react';
+import { Calendar, ExternalLink, FileText, Pin } from 'lucide-react';
 
 interface RecursoCardProps {
     titulo: string;
     tipo: string;
     fecha: string;
+    descripcion?: string | null;
     enlace?: string | null;
     imagen?: string | null;
+    is_pinned?: boolean;
 }
 
-export default function ResourceCard({ titulo, tipo, fecha, enlace, imagen }: RecursoCardProps) {
-    const href = enlace?.trim() || undefined; // ✅ string | undefined
+export default function ResourceCard({ titulo, tipo, fecha, descripcion, enlace, imagen, is_pinned = false }: RecursoCardProps) {
+    const href = enlace?.trim() || undefined;
     const isAvailable = Boolean(href);
     const imageSrc = imagen?.trim() ? imagen : null;
 
     const card = (
         <Card
             className={[
-                'relative flex h-full flex-col overflow-hidden rounded-xl border border-border/70 bg-background shadow-sm transition-all duration-300',
-                'animate-in fade-in slide-in-from-bottom-8 motion-reduce:transform-none motion-reduce:animate-none',
-                isAvailable
-                    ? 'hover:-translate-y-1 hover:border-red-600/50 hover:shadow-xl hover:shadow-red-500/10 dark:hover:border-red-400/40'
-                    : 'opacity-80',
+                'group relative flex h-full min-h-[390px] flex-col overflow-hidden rounded-[1.75rem] border-0 bg-background/95',
+                'shadow-[0_18px_50px_rgba(175,16,26,0.06)] ring-1 ring-black/5 transition-all duration-300',
+                'dark:bg-neutral-950 dark:shadow-[0_18px_50px_rgba(175,16,26,0.08)] dark:ring-white/10',
+                isAvailable ? 'hover:-translate-y-1 hover:shadow-[0_24px_65px_rgba(175,16,26,0.12)]' : 'opacity-85',
             ].join(' ')}
         >
-            {/* Top bar: base primary, hover rojo */}
-            <div
-                className={[
-                    'h-1 w-full transition-colors duration-300',
-                    isAvailable ? 'bg-primary group-hover:bg-red-600 dark:group-hover:bg-red-400' : 'bg-border',
-                ].join(' ')}
-            />
+            <div className="absolute inset-x-0 top-0 h-1.5 bg-primary/70" />
 
-            {/* Image / placeholder */}
-            <div className="relative h-44 w-full overflow-hidden">
+            <div className="relative h-44 overflow-hidden bg-muted/35 dark:bg-neutral-900">
                 {imageSrc ? (
                     <>
                         <img
@@ -44,49 +38,59 @@ export default function ResourceCard({ titulo, tipo, fecha, enlace, imagen }: Re
                                 isAvailable ? 'group-hover:scale-[1.04]' : '',
                             ].join(' ')}
                         />
-                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-black/10 to-transparent" />
+                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-black/5 to-transparent" />
                     </>
                 ) : (
-                    <div className="flex h-full items-center justify-center bg-muted/40">
-                        <div className="flex items-center gap-2 text-muted-foreground">
+                    <div className="flex h-full items-center justify-center">
+                        <div className="flex items-center gap-2 text-muted-foreground dark:text-neutral-400">
                             <FileText className="h-6 w-6" />
-                            <span className="text-sm font-semibold">Sin previsualización</span>
+                            <span className="text-sm font-medium">Documento</span>
                         </div>
                     </div>
                 )}
+
+                <div className="absolute inset-x-0 top-0 flex items-start justify-between gap-3 p-4">
+                    <div className="flex flex-wrap items-center gap-2">
+                        <span className="inline-flex items-center rounded-full bg-white/90 px-3 py-1 text-[11px] font-semibold tracking-[0.16em] text-neutral-800 uppercase shadow-sm backdrop-blur dark:bg-neutral-100 dark:text-neutral-900">
+                            {tipo}
+                        </span>
+
+                        {is_pinned ? (
+                            <span className="inline-flex items-center gap-1 rounded-full bg-neutral-900 px-3 py-1 text-[11px] font-semibold tracking-[0.16em] text-white uppercase shadow-sm dark:bg-white dark:text-neutral-900">
+                                <Pin className="h-3.5 w-3.5" />
+                                Fijado
+                            </span>
+                        ) : null}
+                    </div>
+                </div>
             </div>
 
-            {/* Content */}
-            <CardHeader className="flex flex-grow flex-col space-y-3 p-6 pb-4">
-                {/* Meta */}
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
-                    <span className="inline-flex items-center gap-2 font-semibold text-primary transition-colors duration-300 group-hover:text-red-600 dark:group-hover:text-red-400">
-                        <FileText className="h-4 w-4" />
-                        {tipo}
-                    </span>
-
-                    <span className="inline-flex items-center gap-2 text-muted-foreground">
-                        <Calendar className="h-4 w-4" />
-                        {fecha}
-                    </span>
+            <CardHeader className="flex flex-1 flex-col space-y-4 p-6 pb-4">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground dark:text-neutral-400">
+                    <Calendar className="h-4 w-4" />
+                    <span>{fecha || 'Sin fecha'}</span>
                 </div>
 
-                {/* Title */}
-                <CardTitle className="line-clamp-2 text-xl leading-snug font-bold text-foreground transition-colors duration-300 group-hover:text-red-600 dark:group-hover:text-red-400">
-                    {titulo}
-                </CardTitle>
+                <CardTitle className="line-clamp-2 min-h-[3.25rem] text-xl font-semibold leading-7 tracking-tight text-foreground">{titulo}</CardTitle>
+
+                <div className="min-h-[4.75rem]">
+                    {descripcion ? (
+                        <p className="line-clamp-3 text-sm leading-7 text-muted-foreground dark:text-neutral-400">{descripcion}</p>
+                    ) : (
+                        <p className="text-sm leading-7 text-transparent select-none">.</p>
+                    )}
+                </div>
             </CardHeader>
 
-            {/* Footer / CTA */}
-            <CardContent className="p-6 pt-0">
+            <CardContent className="mt-auto p-6 pt-0">
                 {isAvailable ? (
-                    <div className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition-all duration-300 group-hover:gap-3 group-hover:text-red-600 dark:group-hover:text-red-400">
-                        <LinkIcon className="h-4 w-4" />
-                        Ver recurso online
+                    <div className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition-all duration-300 group-hover:gap-3">
+                        <ExternalLink className="h-4 w-4" />
+                        Abrir recurso
                         <span className="transition-transform group-hover:translate-x-0.5">→</span>
                     </div>
                 ) : (
-                    <div className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground">
+                    <div className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground dark:text-neutral-400">
                         <FileText className="h-4 w-4" />
                         Recurso no disponible
                     </div>
@@ -95,18 +99,11 @@ export default function ResourceCard({ titulo, tipo, fecha, enlace, imagen }: Re
         </Card>
     );
 
-    // ✅ Render condicional para evitar el problema de tipos con href null
     return isAvailable ? (
-        <a
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label={`Abrir recurso: ${titulo}`}
-            className="group block h-full cursor-pointer"
-        >
+        <a href={href} target="_blank" rel="noopener noreferrer" aria-label={`Abrir recurso: ${titulo}`} className="block h-full">
             {card}
         </a>
     ) : (
-        <div className="group block h-full cursor-default">{card}</div>
+        <div className="block h-full cursor-default">{card}</div>
     );
 }

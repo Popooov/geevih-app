@@ -164,16 +164,17 @@ export interface ShowNewsPageProps {
 }
 
 /**
- * RESOURCES (lo dejo igual, pero si luego quieres lo adaptamos)
+ * RESOURCES
  */
 export interface Resource {
     id: number;
     titulo: string;
     tipo: string;
     fecha: string;
-    enlace: string;
-    imagen?: string;
-    descripcion?: string;
+    enlace?: string | null;
+    imagen?: string | null;
+    descripcion?: string | null;
+    is_pinned?: boolean;
 }
 
 export interface PaginationMeta {
