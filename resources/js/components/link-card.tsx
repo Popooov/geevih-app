@@ -9,59 +9,73 @@ interface LinksCardProps {
     is_pinned?: boolean;
 }
 
-export default function LinkCard({ href, titulo, descripcion, imagen, is_pinned }: LinksCardProps) {
+export default function LinkCard({ href, titulo, descripcion, imagen, is_pinned = false }: LinksCardProps) {
     const imageSrc = imagen?.trim() ? imagen : null;
 
     return (
-        <a href={href} target="_blank" rel="noopener noreferrer" className="group block h-full" aria-label={`Abrir enlace: ${titulo}`}>
+        <a href={href} target="_blank" rel="noopener noreferrer" className="group block w-full" aria-label={`Abrir enlace: ${titulo}`}>
             <Card
                 className={[
-                    'relative overflow-hidden rounded-[1.75rem] border-0 bg-background/95 shadow-[0_20px_60px_rgba(175,16,26,0.06)] transition-all duration-300',
-                    'animate-in fade-in slide-in-from-bottom-8 motion-reduce:transform-none motion-reduce:animate-none',
-                    'hover:-translate-y-1.5 hover:shadow-[0_24px_70px_rgba(175,16,26,0.12)]',
+                    'overflow-hidden rounded-[1.9rem] border-0 bg-background/95',
+                    'shadow-[0_18px_50px_rgba(175,16,26,0.06)] ring-1 ring-black/5 transition-all duration-300',
+                    'dark:bg-neutral-950 dark:shadow-[0_18px_50px_rgba(175,16,26,0.08)] dark:ring-white/10',
+                    'hover:-translate-y-1 hover:shadow-[0_24px_65px_rgba(175,16,26,0.12)]',
                 ].join(' ')}
             >
-                {is_pinned && (
-                    <div className="absolute top-4 right-4 z-10 rounded-full bg-primary px-3 py-1 text-[11px] font-semibold tracking-[0.15em] text-white uppercase">
-                        Destacado
-                    </div>
-                )}
-                <div className="grid min-h-[180px] md:grid-cols-[140px_minmax(0,1fr)]">
-                    <div className="flex items-center justify-center bg-muted/35 p-6">
+                <div className="grid min-h-[220px] grid-cols-1 md:grid-cols-[220px_minmax(0,1fr)]">
+                    <div className="relative flex items-center justify-center bg-muted/35 p-8 dark:bg-neutral-900">
                         {imageSrc ? (
                             <img
                                 src={imageSrc}
                                 alt={`Logo o imagen del enlace: ${titulo}`}
-                                className="h-20 w-20 rounded-2xl bg-white object-contain p-3 shadow-sm"
+                                className="h-24 w-24 rounded-[1.4rem] bg-white object-contain p-3 shadow-sm"
                             />
                         ) : (
-                            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-background text-primary shadow-sm">
-                                <Globe className="h-8 w-8" />
+                            <div className="flex h-24 w-24 items-center justify-center rounded-[1.4rem] bg-background text-primary shadow-sm dark:bg-neutral-800">
+                                <Globe className="h-9 w-9" />
                             </div>
                         )}
                     </div>
 
-                    <div className="flex items-start justify-between gap-4 p-6">
-                        <div className="min-w-0 space-y-3">
-                            <span className="inline-flex rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold tracking-[0.16em] text-primary uppercase">
-                                Enlace de interés
-                            </span>
+                    <div className="flex min-w-0 flex-col p-6 md:p-7">
+                        <div className="flex items-start justify-between gap-4">
+                            <div className="flex flex-wrap items-center gap-2">
+                                <span className="inline-flex rounded-full bg-neutral-200 px-3 py-1 text-[11px] font-semibold tracking-[0.16em] text-neutral-800 uppercase dark:bg-neutral-800 dark:text-neutral-100">
+                                    Enlace de interés
+                                </span>
 
-                            <h3 className="line-clamp-2 text-xl font-semibold tracking-tight text-foreground transition-colors duration-300 group-hover:text-primary">
-                                {titulo}
-                            </h3>
+                                {is_pinned ? (
+                                    <span className="inline-flex rounded-full bg-neutral-900 px-3 py-1 text-[11px] font-semibold tracking-[0.16em] text-white uppercase dark:bg-white dark:text-neutral-900">
+                                        Destacado
+                                    </span>
+                                ) : null}
+                            </div>
 
-                            {descripcion ? <p className="line-clamp-3 text-sm leading-7 text-muted-foreground">{descripcion}</p> : null}
-
-                            <div className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition-all duration-300 group-hover:gap-3">
-                                <ExternalLink className="h-4 w-4" />
-                                Visitar sitio
-                                <span className="transition-transform group-hover:translate-x-0.5">→</span>
+                            <div className="shrink-0 pt-1 text-muted-foreground transition-colors duration-300 group-hover:text-primary dark:text-neutral-400">
+                                <ExternalLink className="h-5 w-5" />
                             </div>
                         </div>
 
-                        <div className="shrink-0 text-muted-foreground transition-colors duration-300 group-hover:text-primary" aria-hidden>
-                            <ExternalLink className="h-5 w-5" />
+                        <div className="mt-5 min-w-0 flex-1 space-y-4">
+                            <h3 className="line-clamp-2 text-3xl text-lg font-semibold tracking-tight text-foreground md:text-[1.75rem] md:leading-9">
+                                {titulo}
+                            </h3>
+
+                            <div className="min-h-[5.5rem]">
+                                {descripcion ? (
+                                    <p className="line-clamp-3 text-sm leading-8 text-muted-foreground md:text-base dark:text-neutral-400">
+                                        {descripcion}
+                                    </p>
+                                ) : (
+                                    <p className="text-sm leading-8 text-transparent select-none">.</p>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="mt-6 inline-flex items-center gap-2 text-base font-semibold text-foreground transition-all duration-300 group-hover:gap-3 dark:text-white">
+                            <ExternalLink className="h-5 w-5 text-primary" />
+                            <span>Visitar sitio</span>
+                            <span className="transition-transform group-hover:translate-x-0.5">→</span>
                         </div>
                     </div>
                 </div>
