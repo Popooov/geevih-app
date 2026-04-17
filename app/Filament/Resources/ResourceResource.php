@@ -168,7 +168,7 @@ class ResourceResource extends Resource
                 ->openable()
                 ->downloadable()
                 ->nullable()
-                ->required(fn (callable $get) => $get('type') === 'enlaces')
+                // ->required(fn (callable $get) => $get('type') === 'enlaces')
                 ->dehydrated(true),
 
             DatePicker::make('published_at')
