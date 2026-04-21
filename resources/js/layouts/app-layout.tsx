@@ -1,5 +1,5 @@
 import AppLayoutTemplate from '@/layouts/app/app-header-layout';
-// import Footer from "@/components/footer";
+import Footer from "@/components/footer";
 import { type BreadcrumbItem } from '@/types';
 import { type ReactNode } from 'react';
 
@@ -11,6 +11,6 @@ interface AppLayoutProps {
 export default ({ children, breadcrumbs, ...props }: AppLayoutProps) => (
     <AppLayoutTemplate breadcrumbs={breadcrumbs} {...props}>
         {children}
-        {/* <Footer /> */}
+        <Footer />
     </AppLayoutTemplate>
 );

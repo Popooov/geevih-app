@@ -5,8 +5,8 @@ export default function Footer() {
     const navigationLinks = [
         { label: 'Sobre GEEVIH', href: '/sobre' },
         { label: 'Áreas de trabajo', href: '/areas' },
-        { label: 'Formación', href: '/formacion' },
-        { label: 'Recursos', href: '/recursos' },
+        // { label: 'Formación', href: '/formacion' },
+        // { label: 'Recursos', href: '/recursos' },
         { label: 'Noticias', href: '/noticias' },
         { label: 'Contacto', href: '/contacto' },
     ];
