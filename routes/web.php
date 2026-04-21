@@ -43,5 +43,7 @@ Route::get('/contacto', function () {
     return Inertia::render('contact');
 })->name('contact');
 
+Route::inertia('/aviso-legal', 'aviso-legal')->name('legal.notice');
+
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
