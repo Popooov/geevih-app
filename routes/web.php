@@ -44,6 +44,7 @@ Route::get('/contacto', function () {
 })->name('contact');
 
 Route::inertia('/aviso-legal', 'aviso-legal')->name('legal.notice');
+Route::inertia('/politica-de-cookies', 'politica-de-cookies')->name('cookies.policy');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
