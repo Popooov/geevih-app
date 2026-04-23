@@ -16,14 +16,12 @@ function Section({
 }) {
     return (
         <section id={id} className="scroll-mt-24 rounded-[2rem] bg-background p-5 shadow-sm ring-1 ring-border/50 lg:p-8">
-            <div className="mb-4 flex items-start gap-3">
+            <div className="mb-4 flex items-center gap-3">
                 <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
                     <Icon className="h-5 w-5" />
                 </div>
 
-                <div>
-                    <h2 className="font-headline text-xl font-semibold tracking-tight text-foreground sm:text-2xl">{title}</h2>
-                </div>
+                <h2 className="font-headline text-xl font-semibold tracking-tight text-foreground sm:text-2xl">{title}</h2>
             </div>
 
             <div className="space-y-4 text-sm leading-7 text-muted-foreground">{children}</div>
@@ -86,15 +84,17 @@ export default function CookiesPolicy() {
                                 </div>
                             </div>
 
-                            <div className="rounded-[1.75rem] bg-muted/35 p-5 sm:p-6">
-                                <p className="text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase">Índice rápido</p>
+                            <div className="rounded-[1.75rem] bg-white/85 p-5 ring-1 ring-black/5 backdrop-blur-sm sm:p-6 dark:bg-white/5 dark:ring-white/10">
+                                <p className="text-xs font-semibold tracking-[0.14em] text-foreground/70 uppercase dark:text-muted-foreground">
+                                    Índice
+                                </p>
 
                                 <div className="mt-4 grid gap-1.5">
                                     {sections.map((section) => (
                                         <a
                                             key={section.id}
                                             href={`#${section.id}`}
-                                            className="rounded-xl px-3 py-2 text-sm text-muted-foreground transition hover:bg-background hover:text-foreground"
+                                            className="rounded-xl px-3 py-2 text-sm text-foreground/70 transition hover:bg-primary/6 hover:text-primary dark:text-muted-foreground dark:hover:bg-white/5 dark:hover:text-white"
                                         >
                                             {section.label}
                                         </a>
