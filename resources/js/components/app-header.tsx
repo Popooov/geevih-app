@@ -10,7 +10,7 @@ import {
     NavigationMenuTrigger,
     navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 import { type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
@@ -98,17 +98,18 @@ export function AppHeader() {
         if (title === 'Recursos') return setRecursosOpen(value);
     };
 
-    const desktopItemBase = 'h-10 rounded-full rounded-full px-4 xl:px-5 text-[15px] font-medium transition-all duration-200 bg-transparent px-4 xl:px-5 text-[15px] font-medium transition-colors';
+    const desktopItemActive = 'bg-[#FBEAEC] text-[#AF101A] dark:bg-[#2a0d10] dark:text-[#ffb4b8]';
+
+    const desktopItemOpen =
+        'data-[state=open]:bg-[#FCF1F2] data-[state=open]:text-[#AF101A] dark:data-[state=open]:bg-[#2a0d10] dark:data-[state=open]:text-[#ffb4b8]';
 
     const desktopItemInactive =
-        'text-foreground/80 hover:bg-muted hover:text-foreground dark:text-foreground/75 dark:hover:bg-white/10 dark:hover:text-foreground';
+        'text-foreground/80 hover:bg-[#FCF1F2] hover:text-[#AF101A] dark:text-foreground/80 dark:hover:bg-[#22090c] dark:hover:text-[#ffb4b8]';
 
-    const desktopItemActive = 'bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-200';
-
-    // const dropdownItemBase = 'block rounded-xl px-3 py-2.5 text-sm transition-colors outline-none';
+    const desktopItemBase = 'h-10 rounded-full bg-transparent px-3.5 text-[15px] font-medium transition-colors duration-200 xl:px-4';
 
     return (
-        <header className="sticky top-0 z-50 border-b border-border/60 bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80">
+        <header className="sticky top-0 z-50 border-b bg-background/95 shadow-[0_1px_12px_rgba(0,0,0,0.06)] backdrop-blur-xl [border-image:linear-gradient(to_right,transparent,#AF101A4D,transparent)_1] supports-[backdrop-filter]:bg-background/85 dark:shadow-[0_1px_16px_rgba(0,0,0,0.25)]">
             <div className="mx-auto flex h-[72px] items-center justify-between px-4 md:max-w-7xl lg:px-6">
                 <Link href="/" prefetch className="flex items-center">
                     <AppLogo />
@@ -129,17 +130,21 @@ export function AppHeader() {
                             </Button>
                         </SheetTrigger>
 
-                        <SheetContent side="right" className="flex h-full w-72 flex-col bg-background p-0">
-                            <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
+                        <SheetContent
+                            side="right"
+                            className="flex h-full w-[88vw] max-w-sm flex-col border-l border-border/60 bg-background/95 p-0 backdrop-blur-xl"
+                        >
+                            <SheetHeader className="border-b border-border/60 px-5 py-4 text-left">
+                                <SheetTitle className="sr-only">Menú de navegación</SheetTitle>
+                                <SheetDescription className="sr-only">Navegación principal del sitio web de GEEVIH.</SheetDescription>
 
-                            <SheetHeader className="border-b px-5 py-4 text-left">
                                 <Link href="/" prefetch className="flex items-center">
                                     <AppLogo />
                                 </Link>
                             </SheetHeader>
 
-                            <div className="flex flex-1 flex-col overflow-y-auto p-4">
-                                <nav className="flex flex-col space-y-1.5 text-sm">
+                            <div className="flex flex-1 flex-col overflow-y-auto px-4 py-4">
+                                <nav className="flex flex-col space-y-2 text-sm">
                                     {mainNavItems.map((item) => {
                                         const hasChildren = !!item.children?.length;
                                         const isActive =
@@ -160,28 +165,39 @@ export function AppHeader() {
                                                         <button
                                                             type="button"
                                                             className={cn(
-                                                                'flex w-full items-center justify-between rounded-2xl px-4 py-3 text-base font-medium transition-colors',
+                                                                'flex w-full items-center justify-between rounded-2xl px-4 py-3.5 text-[18px] font-medium transition-colors',
                                                                 isActive
-                                                                    ? 'bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-200'
-                                                                    : 'text-foreground/85 hover:bg-muted hover:text-foreground',
+                                                                    ? 'bg-[#FBEAEC] text-[#AF101A] dark:bg-[#2a0d10] dark:text-[#ffb4b8]'
+                                                                    : 'text-foreground/90 hover:bg-[#FCF1F2] hover:text-[#AF101A] dark:hover:bg-[#22090c] dark:hover:text-[#ffb4b8]',
                                                             )}
                                                             aria-current={isActive ? 'page' : undefined}
                                                         >
                                                             <span className="flex items-center gap-3">
                                                                 {item.icon && (
-                                                                    <Icon iconNode={item.icon as any} className="h-[18px] w-[18px] opacity-80" />
+                                                                    <Icon
+                                                                        iconNode={item.icon as any}
+                                                                        className={cn(
+                                                                            'h-[19px] w-[19px]',
+                                                                            isActive
+                                                                                ? 'text-[#AF101A] dark:text-[#ffb4b8]'
+                                                                                : 'text-foreground/60 dark:text-foreground/60',
+                                                                        )}
+                                                                    />
                                                                 )}
                                                                 <span>{item.title}</span>
                                                             </span>
 
                                                             <ChevronDown
-                                                                className={cn('h-4 w-4 transition-transform duration-200', open && 'rotate-180')}
+                                                                className={cn(
+                                                                    'h-4 w-4 shrink-0 transition-transform duration-200',
+                                                                    open && 'rotate-180',
+                                                                )}
                                                             />
                                                         </button>
                                                     </CollapsibleTrigger>
 
                                                     <CollapsibleContent>
-                                                        <div className="mt-2 ml-4 flex flex-col space-y-1 border-l border-border/60 pl-4">
+                                                        <div className="mt-2 ml-2 flex flex-col space-y-1.5 pl-2">
                                                             {item.children!.map((sub) => {
                                                                 const isActiveSub = isActiveByHref(currentUrl, sub.href);
 
@@ -191,10 +207,10 @@ export function AppHeader() {
                                                                         prefetch
                                                                         href={sub.href}
                                                                         className={cn(
-                                                                            'rounded-xl px-3 py-2 text-sm transition-colors',
+                                                                            'rounded-xl px-4 py-3 text-[17px] font-medium transition-colors',
                                                                             isActiveSub
-                                                                                ? 'bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-200'
-                                                                                : 'text-foreground/85 hover:bg-muted hover:text-foreground',
+                                                                                ? 'bg-[#FBEAEC] text-[#AF101A] dark:bg-[#2a0d10] dark:text-[#ffb4b8]'
+                                                                                : 'text-muted-foreground hover:bg-[#FCF1F2] hover:text-[#AF101A] dark:text-foreground/70 dark:hover:bg-[#22090c] dark:hover:text-[#ffb4b8]',
                                                                         )}
                                                                     >
                                                                         {sub.title}
@@ -213,14 +229,24 @@ export function AppHeader() {
                                                 prefetch
                                                 href={item.href!}
                                                 className={cn(
-                                                    'flex items-center gap-3 rounded-2xl px-4 py-3 text-base font-medium transition-all duration-200',
+                                                    'flex items-center gap-3 rounded-2xl px-4 py-3.5 text-[18px] font-medium transition-colors',
                                                     isActive
-                                                        ? 'bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-200'
-                                                        : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                                                        ? 'bg-[#FBEAEC] text-[#AF101A] dark:bg-[#2a0d10] dark:text-[#ffb4b8]'
+                                                        : 'text-muted-foreground hover:bg-[#FCF1F2] hover:text-[#AF101A] dark:hover:bg-[#22090c] dark:hover:text-[#ffb4b8]',
                                                 )}
                                                 aria-current={isActive ? 'page' : undefined}
                                             >
-                                                {item.icon && <Icon iconNode={item.icon as any} className="h-[18px] w-[18px] opacity-80" />}
+                                                {item.icon && (
+                                                    <Icon
+                                                        iconNode={item.icon as any}
+                                                        className={cn(
+                                                            'h-[19px] w-[19px]',
+                                                            isActive
+                                                                ? 'text-[#AF101A] dark:text-[#ffb4b8]'
+                                                                : 'text-foreground/60 dark:text-foreground/60',
+                                                        )}
+                                                    />
+                                                )}
                                                 <span>{item.title}</span>
                                             </Link>
                                         );
@@ -246,12 +272,9 @@ export function AppHeader() {
                                             <NavigationMenuTrigger
                                                 className={cn(
                                                     navigationMenuTriggerStyle(),
-                                                    'h-10 rounded-full transition-colors bg-transparent px-4 text-[15px] font-medium xl:px-5',
-                                                    isActive
-                                                        ? 'bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-200'
-                                                        : 'text-foreground/85 hover:bg-muted hover:text-foreground dark:text-foreground/80 dark:hover:bg-white/10',
-                                                    'data-[state=open]:bg-red-50 data-[state=open]:text-red-700 dark:data-[state=open]:bg-red-950/40 dark:data-[state=open]:text-red-200',
-                                                    'transition-colors duration-200',
+                                                    desktopItemBase,
+                                                    isActive ? desktopItemActive : desktopItemInactive,
+                                                    desktopItemOpen,
                                                 )}
                                             >
                                                 {item.icon && (
@@ -259,15 +282,17 @@ export function AppHeader() {
                                                         iconNode={item.icon as any}
                                                         className={cn(
                                                             'mr-2 hidden h-4 w-4 xl:block',
-                                                            isActive ? 'text-red-600 dark:text-red-400' : 'text-foreground/50',
+                                                            isActive || isActiveByChildren(currentUrl, item.children)
+                                                                ? 'text-[#AF101A] dark:text-[#ffb4b8]'
+                                                                : 'text-foreground/50 dark:text-foreground/55',
                                                         )}
                                                     />
                                                 )}
                                                 {item.title}
                                             </NavigationMenuTrigger>
 
-                                            <NavigationMenuContent className="top-full mt-2 rounded-2xl border border-border/60 bg-background/95 p-2 shadow-[0_24px_70px_rgba(0,0,0,0.12)] backdrop-blur-xl dark:bg-neutral-950/95">
-                                                <ul className="grid w-[260px] gap-1">
+                                            <NavigationMenuContent className="top-full mt-2 rounded-2xl border border-border/60 bg-background/98 p-2 shadow-[0_16px_40px_rgba(0,0,0,0.08)] backdrop-blur-xl dark:border-white/8 dark:bg-neutral-950/96">
+                                                <ul className="grid w-[232px] gap-1">
                                                     {item.children!.map((sub) => {
                                                         const isActiveSub = isActiveByHref(currentUrl, sub.href);
 
@@ -278,10 +303,10 @@ export function AppHeader() {
                                                                         href={sub.href}
                                                                         prefetch
                                                                         className={cn(
-                                                                            'block rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200',
+                                                                            'block rounded-xl px-3 py-2.5 text-[14.5px] font-medium transition-colors duration-200 outline-none',
                                                                             isActiveSub
-                                                                                ? 'bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-200'
-                                                                                : 'text-foreground/85 hover:bg-muted hover:text-foreground dark:text-foreground/80 dark:hover:bg-white/10',
+                                                                                ? 'bg-[#FBEAEC] text-[#AF101A] dark:bg-[#2a0d10] dark:text-[#ffb4b8]'
+                                                                                : 'text-foreground/80 hover:bg-[#FCF1F2] hover:text-[#AF101A] dark:text-foreground/80 dark:hover:bg-[#22090c] dark:hover:text-[#ffb4b8]',
                                                                         )}
                                                                     >
                                                                         {sub.title}
@@ -313,7 +338,9 @@ export function AppHeader() {
                                                     iconNode={item.icon as any}
                                                     className={cn(
                                                         'mr-2 hidden h-4 w-4 xl:block',
-                                                        isActive ? 'text-red-600 dark:text-red-400' : 'text-foreground/50',
+                                                        isActive
+                                                            ? 'text-[#AF101A] dark:text-[#ffb4b8]'
+                                                            : 'text-foreground/50 dark:text-foreground/55',
                                                     )}
                                                 />
                                             )}

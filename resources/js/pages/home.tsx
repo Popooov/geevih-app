@@ -9,8 +9,8 @@ export default function Home() {
             <Head title="Inicio" />
 
             <div className="min-h-[calc(100vh-80px)]">
-                <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-                    <section className="relative w-full overflow-hidden rounded-[2rem] bg-background/85 px-6 py-14 text-center backdrop-blur-xl sm:px-8 lg:px-10 lg:py-20 dark:bg-background/70">
+                <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-8 sm:px-6 lg:px-8 lg:py-0">
+                    <section className="relative w-full overflow-hidden rounded-[2rem] bg-background/85 px-6 py-14 text-center backdrop-blur-xl sm:px-8 lg:px-10 lg:py-30 dark:bg-background/70">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.08),transparent_50%)] dark:bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.14),transparent_50%)]" />
 
                         <div className="relative mx-auto max-w-4xl">
