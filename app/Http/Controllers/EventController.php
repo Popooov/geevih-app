@@ -11,13 +11,20 @@ class EventController extends Controller
 {
     public function index(?EventCategory $category = null)
     {
+        // Store the current date and time to compare events against it.
         $now = now();
 
+        // Build the base query for published events.
+        // The category relationship is eager loaded to avoid extra queries.
+        // If a category is provided, only events from that category are returned.
         $base = Event::query()
             ->with('category')
             ->where('is_published', true)
             ->when($category, fn ($q) => $q->where('event_category_id', $category->id));
 
+        // Get upcoming or ongoing events.
+        // If the event has an end date, it is considered upcoming/active while end_at is in the future.
+        // If the event has no end date, start_at is used instead.
         $upcoming = (clone $base)
             ->where(function ($q) use ($now) {
                 $q->whereNotNull('end_at')->where('end_at', '>=', $now)
@@ -28,6 +35,9 @@ class EventController extends Controller
             ->orderBy('start_at', 'asc')
             ->get();
 
+        // Get past events.
+        // If the event has an end date, it is past when end_at is before now.
+        // If the event has no end date, start_at is used instead.
         $past = (clone $base)
             ->where(function ($q) use ($now) {
                 $q->whereNotNull('end_at')->where('end_at', '<', $now)
@@ -38,40 +48,62 @@ class EventController extends Controller
             ->orderBy('start_at', 'desc')
             ->get();
 
+        // Transform each Event model into the structure expected by the React page.
         $mapEvent = function (Event $event) use ($now) {
             $start = $event->start_at;
             $end = $event->end_at;
 
+            // Determine if the event is already finished.
+            // If end_at exists, it is used. Otherwise, start_at is used.
             $isPast = ($end ?? $start)?->lt($now) ?? false;
+
+            // Determine if the event is currently active.
+            // This only applies when the event has an end date.
             $isOngoing = $end ? ($start->lte($now) && $end->gte($now)) : false;
 
+            // Format start and end times.
             $time = $start?->format('H:i');
             $endTime = $end?->format('H:i');
 
+            // Build the visible date range.
+            // If the event starts and ends on the same day, only one date is shown.
+            // If it spans multiple days, a date range is shown.
             $dateRange = $end
                 ? ($start->isSameDay($end)
                     ? $start->translatedFormat('d M Y')
                     : $start->translatedFormat('d M') . ' – ' . $end->translatedFormat('d M Y'))
                 : $start?->translatedFormat('d M Y');
 
+            // Build the visible time range.
+            // If the event starts and ends on the same day, both times are shown.
+            // If it spans multiple days, only the start time is shown.
             $timeRange = $end
                 ? ($start->isSameDay($end)
                     ? $time . ' – ' . $endTime
                     : $time)
                 : $time;
 
+            // Get the category slug if the event has a category.
             $categorySlug = $event->category?->slug;
 
             return [
                 'id' => $event->id,
                 'titulo' => $event->title,
                 'slug' => $event->slug,
+
+                // Show "Online" as the place when the event is online.
                 'lugar' => $event->is_online ? 'Online' : $event->location,
+
                 'fecha' => $dateRange,
                 'hora' => $timeRange,
                 'descripcion' => $event->description,
+
+                // Convert the Cloudinary stored path into a public URL.
                 'imagen' => $event->image_url ? Storage::disk('cloudinary')->url($event->image_url) : null,
 
+                // Generate the event detail URL.
+                // New category-based routes are used when the event has a category.
+                // Otherwise, the legacy route is used as a fallback.
                 'link' => $categorySlug
                     ? route('training.show', [
                         'category' => $categorySlug,
@@ -91,6 +123,8 @@ class EventController extends Controller
             ];
         };
 
+        // Render the events index page with upcoming events, past events,
+        // and the current category if one was selected.
         return Inertia::render('events/index', [
             'upcomingEvents' => $upcoming->map($mapEvent)->values(),
             'pastEvents' => $past->map($mapEvent)->values(),
@@ -103,41 +137,57 @@ class EventController extends Controller
 
     public function show(EventCategory $category, Event $event)
     {
+        // Return a 404 if the event is not published.
         abort_unless($event->is_published, 404);
+
+        // Return a 404 if the event does not belong to the category from the URL.
         abort_unless($event->event_category_id === $category->id, 404);
 
+        // Store the current date and time to check the event status.
         $now = now();
+
         $start = $event->start_at;
         $end = $event->end_at;
 
+        // Check if the event is currently ongoing.
+        // This only applies to events with an end date.
         $isOngoing = $end ? ($start->lte($now) && $end->gte($now)) : false;
 
+        // Format start and end times.
         $time = $start?->format('H:i');
         $endTime = $end?->format('H:i');
 
+        // Build the visible date range.
         $dateRange = $end
             ? ($start->isSameDay($end)
                 ? $start->translatedFormat('d M Y')
                 : $start->translatedFormat('d M') . ' – ' . $end->translatedFormat('d M Y'))
             : $start?->translatedFormat('d M Y');
 
+        // Build the visible time range.
         $timeRange = $end
             ? ($start->isSameDay($end)
                 ? $time . ' – ' . $endTime
                 : $time)
             : $time;
 
+        // Render the event detail page with all data needed by React.
         return Inertia::render('events/show', [
             'event' => [
                 'id' => $event->id,
                 'titulo' => $event->title,
                 'slug' => $event->slug,
+
+                // Show "Online" as the place when the event is online.
                 'lugar' => $event->is_online ? 'Online' : $event->location,
+
                 'fecha' => $dateRange,
                 'hora' => $timeRange,
                 'fin' => $event->end_at?->format('d/m/Y H:i'),
                 'descripcion' => $event->description,
                 'contenido' => $event->content,
+
+                // Convert the Cloudinary stored path into a public URL.
                 'imagen' => $event->image_url ? Storage::disk('cloudinary')->url($event->image_url) : null,
 
                 'registration_url' => $event->registration_url,
@@ -148,7 +198,10 @@ class EventController extends Controller
                 'category' => $event->category?->name,
                 'category_slug' => $event->category?->slug,
 
+                // Link back to the selected training category.
                 'backLink' => route('training.category', $category->slug),
+
+                // Current event detail URL.
                 'link' => route('training.show', [
                     'category' => $category->slug,
                     'event' => $event->slug,
