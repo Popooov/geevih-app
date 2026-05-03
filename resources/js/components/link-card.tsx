@@ -28,7 +28,7 @@ export default function LinkCard({ href, titulo, descripcion, imagen, is_pinned 
                             <img
                                 src={imageSrc}
                                 alt={`Logo o imagen del enlace: ${titulo}`}
-                                className="h-32 w-32 rounded-[1.6rem] bg-white object-contain p-4 shadow-sm transition-transform duration-300 group-hover:scale-105"
+                                className="h-48 w-48 rounded-[1.6rem] bg-white object-contain p-4 shadow-sm transition-transform duration-300 group-hover:scale-105"
                             />
                         ) : (
                             <div className="flex h-32 w-32 items-center justify-center rounded-[1.6rem] bg-background text-primary shadow-sm dark:bg-neutral-800">
