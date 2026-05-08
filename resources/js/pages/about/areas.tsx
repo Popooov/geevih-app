@@ -105,7 +105,7 @@ export default function Areas() {
                                         ))}
                                     </ul>
 
-                                    <div className="mt-8">
+                                    {/* <div className="mt-8">
                                         <a
                                             href="#"
                                             className={[
@@ -116,7 +116,7 @@ export default function Areas() {
                                             {area.cta}
                                             <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                                         </a>
-                                    </div>
+                                    </div> */}
                                 </CardContent>
                             </Card>
                         ))}
