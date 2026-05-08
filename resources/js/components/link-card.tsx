@@ -40,15 +40,15 @@ export default function LinkCard({ href, titulo, descripcion, imagen, is_pinned 
                     <div className="flex min-w-0 flex-col p-6 md:p-7">
                         <div className="flex items-start justify-between gap-4">
                             <div className="flex flex-wrap items-center gap-2">
-                                <span className="inline-flex rounded-full bg-neutral-200 px-3 py-1 text-[11px] font-semibold tracking-[0.16em] text-neutral-800 uppercase dark:bg-neutral-800 dark:text-neutral-100">
+                                {/* <span className="inline-flex rounded-full bg-neutral-200 px-3 py-1 text-[11px] font-semibold tracking-[0.16em] text-neutral-800 uppercase dark:bg-neutral-800 dark:text-neutral-100">
                                     Enlace de interés
-                                </span>
+                                </span> */}
 
-                                {is_pinned ? (
+                                {/* {is_pinned ? (
                                     <span className="inline-flex rounded-full bg-neutral-900 px-3 py-1 text-[11px] font-semibold tracking-[0.16em] text-white uppercase dark:bg-white dark:text-neutral-900">
                                         Destacado
                                     </span>
-                                ) : null}
+                                ) : null} */}
                             </div>
 
                             <div className="shrink-0 pt-1 text-muted-foreground transition-colors duration-300 group-hover:text-primary dark:text-neutral-400">
@@ -73,7 +73,7 @@ export default function LinkCard({ href, titulo, descripcion, imagen, is_pinned 
                         </div>
 
                         <div className="mt-6 inline-flex items-center gap-2 text-base font-semibold text-foreground transition-all duration-300 group-hover:gap-3 dark:text-white">
-                            <ExternalLink className="h-5 w-5 text-primary" />
+                            {/* <ExternalLink className="h-5 w-5 text-primary" /> */}
                             <span>Visitar sitio</span>
                             <span className="transition-transform group-hover:translate-x-0.5">→</span>
                         </div>
