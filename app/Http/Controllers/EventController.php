@@ -62,8 +62,12 @@ class EventController extends Controller
             $isOngoing = $end ? ($start->lte($now) && $end->gte($now)) : false;
 
             // Format start and end times.
-            $time = $start?->format('H:i');
-            $endTime = $end?->format('H:i');
+            // 00:00 is treated as "no visible time" because some events only need a date.
+            $hasStartTime = $start && $start->format('H:i') !== '00:00';
+            $hasEndTime = $end && $end->format('H:i') !== '00:00';
+
+            $time = $hasStartTime ? $start->format('H:i') : null;
+            $endTime = $hasEndTime ? $end->format('H:i') : null;
 
             // Build the visible date range.
             // If the event starts and ends on the same day, only one date is shown.
@@ -77,11 +81,15 @@ class EventController extends Controller
             // Build the visible time range.
             // If the event starts and ends on the same day, both times are shown.
             // If it spans multiple days, only the start time is shown.
-            $timeRange = $end
-                ? ($start->isSameDay($end)
-                    ? $time . ' – ' . $endTime
-                    : $time)
-                : $time;
+            $timeRange = null;
+
+            if ($time) {
+                $timeRange = $time;
+
+                if ($end && $start->isSameDay($end) && $endTime) {
+                    $timeRange = $time . ' – ' . $endTime;
+                }
+            }
 
             // Get the category slug if the event has a category.
             $categorySlug = $event->category?->slug;
@@ -155,8 +163,12 @@ class EventController extends Controller
         $isPast = ($end ?? $start)?->lt($now) ?? false;
 
         // Format start and end times.
-        $time = $start?->format('H:i');
-        $endTime = $end?->format('H:i');
+        // 00:00 is treated as "no visible time" because some events only need a date.
+        $hasStartTime = $start && $start->format('H:i') !== '00:00';
+        $hasEndTime = $end && $end->format('H:i') !== '00:00';
+
+        $time = $hasStartTime ? $start->format('H:i') : null;
+        $endTime = $hasEndTime ? $end->format('H:i') : null;
 
         // Build the visible date range.
         $dateRange = $end
@@ -166,11 +178,15 @@ class EventController extends Controller
             : $start?->translatedFormat('d M Y');
 
         // Build the visible time range.
-        $timeRange = $end
-            ? ($start->isSameDay($end)
-                ? $time . ' – ' . $endTime
-                : $time)
-            : $time;
+        $timeRange = null;
+
+        if ($time) {
+            $timeRange = $time;
+
+            if ($end && $start->isSameDay($end) && $endTime) {
+                $timeRange = $time . ' – ' . $endTime;
+            }
+        }
 
         // Render the event detail page with all data needed by React.
         return Inertia::render('events/show', [
@@ -184,7 +200,11 @@ class EventController extends Controller
 
                 'fecha' => $dateRange,
                 'hora' => $timeRange,
-                'fin' => $event->end_at?->format('d/m/Y H:i'),
+                'fin' => $event->end_at
+                    ? ($hasEndTime
+                        ? $event->end_at->format('d/m/Y H:i')
+                        : $event->end_at->format('d/m/Y'))
+                    : null,
                 'descripcion' => $event->description,
                 'contenido' => $event->content,
 
