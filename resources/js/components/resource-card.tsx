@@ -51,24 +51,28 @@ export default function ResourceCard({ titulo, tipo, fecha, descripcion, enlace,
 
                 <div className="absolute inset-x-0 top-0 flex items-start justify-between gap-3 p-4">
                     <div className="flex flex-wrap items-center gap-2">
-                        <span className="inline-flex items-center rounded-full bg-white/90 px-3 py-1 text-[11px] font-semibold tracking-[0.16em] text-neutral-800 uppercase shadow-sm backdrop-blur dark:bg-neutral-100 dark:text-neutral-900">
+                        {/* <span className="inline-flex items-center rounded-full bg-white/90 px-3 py-1 text-[11px] font-semibold tracking-[0.16em] text-neutral-800 uppercase shadow-sm backdrop-blur dark:bg-neutral-100 dark:text-neutral-900">
                             {tipo}
-                        </span>
+                        </span> */}
 
-                        {is_pinned ? (
+                        {/* {is_pinned ? (
                             <span className="inline-flex items-center gap-1 rounded-full bg-neutral-900 px-3 py-1 text-[11px] font-semibold tracking-[0.16em] text-white uppercase shadow-sm dark:bg-white dark:text-neutral-900">
                                 <Pin className="h-3.5 w-3.5" />
                                 Fijado
                             </span>
-                        ) : null}
+                        ) : null} */}
                     </div>
                 </div>
             </div>
 
             <CardHeader className="flex flex-1 flex-col space-y-4 p-6 pb-4">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground dark:text-neutral-400">
-                    <Calendar className="h-4 w-4" />
-                    <span>{fecha || 'Sin fecha'}</span>
+                    {fecha && (
+                        <>
+                            <Calendar className="h-4 w-4" />
+                            <span>{fecha}</span>
+                        </>
+                    )}
                 </div>
 
                 <CardTitle className="line-clamp-2 min-h-[3.25rem] text-xl font-semibold leading-7 tracking-tight text-foreground">{titulo}</CardTitle>
