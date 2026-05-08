@@ -207,7 +207,7 @@ export default function Index() {
 
                                 <div className="mt-4 space-y-4">
                                     <div className="flex items-center justify-between">
-                                        <span className="text-sm text-muted-foreground dark:text-zinc-400">Próximas</span>
+                                        <span className="text-sm text-muted-foreground dark:text-zinc-400">Próximos</span>
                                         <span className="text-lg font-semibold text-foreground dark:text-white">{filteredUpcoming.length}</span>
                                     </div>
 
