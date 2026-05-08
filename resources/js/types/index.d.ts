@@ -99,6 +99,7 @@ export interface SingleEvent {
     slug?: string;
 
     isOngoing?: boolean;
+    isPast?: boolean;
 
     category?: string | null;
     category_slug?: string | null;

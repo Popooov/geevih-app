@@ -44,7 +44,10 @@ export default function Show() {
     const { event } = usePage<ShowEventPageProps>().props;
 
     const imageSrc = event.imagen?.trim() ? event.imagen : '/images/evento-placeholder.jpg';
-    const hasCtas = Boolean(event.registration_url || event.online_url);
+    const isPast = Boolean(event.isPast);
+    const canRegister = !isPast && Boolean(event.registration_url);
+    const canAccessOnline = Boolean(event.online_url);
+    const hasCtas = canRegister || canAccessOnline;
 
     const backHref = event.backLink ?? '/formacion';
     const backLabel = event.category ? `Volver a ${event.category}` : 'Volver a formación';
@@ -155,17 +158,17 @@ export default function Show() {
                                     <h3 className="text-sm font-semibold text-muted-foreground uppercase">Acciones</h3>
 
                                     <div className="mt-4 flex flex-col gap-3">
-                                        {event.registration_url && (
-                                            <a href={event.registration_url} target="_blank">
-                                                <button className="h-11 w-full rounded-xl bg-zinc-950 text-white hover:bg-primary dark:bg-white dark:text-zinc-950">
+                                        {canRegister && event.registration_url && (
+                                            <a href={event.registration_url} target="_blank" rel="noopener noreferrer">
+                                                <button className="h-11 w-full cursor-pointer rounded-xl bg-zinc-950 text-white hover:bg-primary dark:bg-white dark:text-zinc-950">
                                                     Inscribirse
                                                 </button>
                                             </a>
                                         )}
 
-                                        {event.online_url && (
-                                            <a href={event.online_url} target="_blank">
-                                                <button className="h-11 w-full rounded-xl bg-primary/5 text-[#005f7b] hover:bg-primary/10">
+                                        {canAccessOnline && event.online_url && (
+                                            <a href={event.online_url} target="_blank" rel="noopener noreferrer">
+                                                <button className="h-11 w-full cursor-pointer rounded-xl bg-primary/5 text-[#005f7b] hover:bg-primary/10">
                                                     Acceder online
                                                 </button>
                                             </a>

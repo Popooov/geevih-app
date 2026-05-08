@@ -152,6 +152,7 @@ class EventController extends Controller
         // Check if the event is currently ongoing.
         // This only applies to events with an end date.
         $isOngoing = $end ? ($start->lte($now) && $end->gte($now)) : false;
+        $isPast = ($end ?? $start)?->lt($now) ?? false;
 
         // Format start and end times.
         $time = $start?->format('H:i');
@@ -194,6 +195,7 @@ class EventController extends Controller
                 'online_url' => $event->online_url,
                 'is_online' => $event->is_online,
                 'isOngoing' => $isOngoing,
+                'isPast' => $isPast,
 
                 'category' => $event->category?->name,
                 'category_slug' => $event->category?->slug,
