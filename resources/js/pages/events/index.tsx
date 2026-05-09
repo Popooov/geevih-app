@@ -44,7 +44,7 @@ function SectionIntro({ icon: Icon, badge, title, description }: { icon: React.E
                 {badge}
             </div>
 
-            <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl dark:text-white">{title}</h2>
+            <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl dark:text-white">{title}</h2>
 
             <p className="text-sm leading-7 text-foreground/65 sm:text-base dark:text-zinc-300">{description}</p>
         </div>
@@ -177,24 +177,24 @@ export default function Index() {
         <AppLayout>
             <Head title={content.title} />
 
-            <div className="mx-auto max-w-7xl px-6 pt-6 pb-16 lg:px-8 lg:pt-10 lg:pb-20">
-                <div className="space-y-12 lg:space-y-14">
-                    <section className="relative overflow-hidden rounded-[2rem] bg-background/92 px-6 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] backdrop-blur-xl sm:px-8 sm:py-7 lg:px-10 dark:bg-zinc-950/85">
+            <div className="mx-auto max-w-6xl px-5 pt-6 pb-16 sm:px-6 lg:px-6 lg:pt-9 lg:pb-20 xl:px-0">
+                <div className="space-y-10 lg:space-y-12">
+                    <section className="relative overflow-hidden rounded-[2rem] bg-background/92 px-5 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] backdrop-blur-xl sm:px-7 sm:py-7 lg:px-8 dark:bg-zinc-950/85">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.08),transparent_46%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.14),transparent_46%)]" />
 
-                        <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1.25fr)_280px] lg:items-start">
+                        <div className="relative grid gap-6 lg:grid-cols-[minmax(0,1fr)_220px] lg:items-start xl:grid-cols-[minmax(0,1.2fr)_260px]">
                             <div className="space-y-5">
-                                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold tracking-[0.2em] text-primary uppercase">
+                                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-[10px] font-semibold tracking-[0.2em] text-primary uppercase sm:text-[11px]">
                                     <Presentation className="h-4 w-4" />
                                     {content.eyebrow}
                                 </div>
 
                                 <div className="max-w-3xl space-y-3">
-                                    <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl dark:text-white">
+                                    <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl xl:text-5xl dark:text-white">
                                         {content.title}
                                     </h1>
 
-                                    <p className="max-w-2xl text-sm leading-8 text-foreground/70 sm:text-lg dark:text-zinc-300">
+                                    <p className="max-w-2xl text-sm leading-7 text-foreground/70 sm:text-base xl:text-lg dark:text-zinc-300">
                                         {content.description}
                                     </p>
                                 </div>
@@ -227,7 +227,7 @@ export default function Index() {
                         </div>
                     </section>
 
-                    <section className="space-y-8">
+                    <section className="space-y-7">
                         <SectionIntro
                             icon={CalendarCheck}
                             badge={content.upcomingBadge}
@@ -236,7 +236,7 @@ export default function Index() {
                         />
 
                         {filteredUpcoming.length > 0 ? (
-                            <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+                            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                                 {filteredUpcoming.map((event) => (
                                     <EventCard
                                         key={event.id}
@@ -260,11 +260,11 @@ export default function Index() {
                         )}
                     </section>
 
-                    <section className="space-y-8">
+                    <section className="space-y-7">
                         <SectionIntro icon={Archive} badge={content.pastBadge} title={content.pastTitle} description={content.pastDescription} />
 
                         {filteredPast.length > 0 ? (
-                            <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+                            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                                 {filteredPast.map((event) => (
                                     <EventCard
                                         key={event.id}
