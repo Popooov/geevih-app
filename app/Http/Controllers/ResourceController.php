@@ -251,9 +251,46 @@ class ResourceController extends Controller
         return Inertia::render('resources/material', $this->paginateCategory('material'));
     }
 
+    /**
+     * Paginate links with pinned resources always present on every page.
+     *
+     * Pinned resources are returned in full on every request so the frontend
+     * can render the featured section without tracking which page they came
+     * from. Only non-pinned resources are paginated.
+     */
+    private function paginateLinks(string $pageName = 'page'): array
+    {
+        $baseQuery = $this->baseQuery()->where('type', 'enlaces');
+
+        // Always return every pinned link — they are not paginated.
+        $pinned = (clone $baseQuery)
+            ->where('is_pinned', true)
+            ->get()
+            ->map(fn (ContentResource $r) => $this->mapResource($r))
+            ->values();
+
+        // Paginate only non-pinned links.
+        $paginated = (clone $baseQuery)
+            ->where('is_pinned', false)
+            ->paginate(9, ['*'], $pageName)
+            ->through(fn (ContentResource $r) => $this->mapResource($r));
+
+        return [
+            'pinned'    => $pinned,
+            'resources' => $paginated->items(),
+            'pagination' => [
+                'current_page' => $paginated->currentPage(),
+                'last_page'    => $paginated->lastPage(),
+                'per_page'     => $paginated->perPage(),
+                'total'        => $paginated->total(),
+            ],
+            'filters' => request()->only([]),
+        ];
+    }
+
     public function links()
     {
         // Render the useful links page.
-        return Inertia::render('resources/links', $this->paginateCategory('enlaces'));
+        return Inertia::render('resources/links', $this->paginateLinks());
     }
 }
