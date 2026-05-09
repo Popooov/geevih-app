@@ -6,7 +6,7 @@ import { ArrowLeft, Calendar, Clock3, Globe, MapPin } from 'lucide-react';
 
 function EventBadge({ children, variant = 'default' }: { children: React.ReactNode; variant?: 'default' | 'secondary' | 'live' }) {
     const styles = {
-        default: 'bg-primary/10 text-primary',
+        default: 'bg-primary/10 text-primary dark:bg-primary/15 dark:text-red-200',
         secondary: 'bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300',
         live: 'bg-emerald-600 text-white dark:bg-emerald-500',
     };
@@ -23,7 +23,7 @@ function EventBadge({ children, variant = 'default' }: { children: React.ReactNo
 function MetaItem({ icon: Icon, children }: { icon: React.ElementType; children: React.ReactNode }) {
     return (
         <div className="flex items-center gap-3 text-sm text-foreground/70 dark:text-zinc-300">
-            <span className="inline-flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary dark:bg-primary/15">
                 <Icon className="h-4 w-4" />
             </span>
             <span className="leading-6">{children}</span>
@@ -56,7 +56,7 @@ export default function Show() {
         <AppLayout>
             <Head title={event.titulo} />
 
-            <div className="mx-auto max-w-7xl px-6 pt-6 pb-16 lg:px-8 lg:pt-10 lg:pb-20">
+            <div className="mx-auto max-w-7xl px-5 pt-6 pb-16 sm:px-6 lg:px-8 lg:pt-10 lg:pb-20">
                 <div className="space-y-10 lg:space-y-12">
                     {/* BACK */}
                     <div>
@@ -70,10 +70,10 @@ export default function Show() {
                     </div>
 
                     {/* HERO */}
-                    <section className="relative overflow-hidden rounded-[2rem] bg-background/92 px-6 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] backdrop-blur-xl sm:px-8 sm:py-8 lg:px-10 dark:bg-zinc-950/85">
+                    <section className="relative overflow-hidden rounded-[2rem] bg-background/92 px-5 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] backdrop-blur-xl sm:px-8 sm:py-8 lg:px-9 xl:px-10 dark:bg-zinc-950/85">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.08),transparent_46%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.14),transparent_46%)]" />
 
-                        <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_420px] lg:items-start">
+                        <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(420px,500px)] lg:items-center xl:grid-cols-[minmax(0,1fr)_520px]">
                             {/* INFO */}
                             <div className="space-y-6">
                                 <div className="flex flex-wrap items-center gap-2">
@@ -83,7 +83,7 @@ export default function Show() {
                                 </div>
 
                                 <div className="max-w-3xl space-y-4">
-                                    <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl dark:text-white">
+                                    <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl lg:text-[2.75rem] xl:text-5xl dark:text-white">
                                         {event.titulo}
                                     </h1>
 
@@ -106,17 +106,18 @@ export default function Show() {
                             </div>
 
                             {/* IMAGE */}
-                            <div className="relative overflow-hidden rounded-[1.75rem] bg-muted shadow-[0_20px_50px_rgba(175,16,26,0.08)] dark:bg-zinc-900">
+                            <div className="relative mx-auto w-full max-w-[520px] overflow-hidden rounded-[1.75rem] bg-muted shadow-[0_22px_55px_rgba(175,16,26,0.10)] dark:bg-zinc-900">
                                 <img
                                     src={imageSrc}
                                     alt={event.titulo}
-                                    className="aspect-video h-auto w-full object-contain"
+                                    className="aspect-video h-auto w-full object-cover object-center"
                                     onError={(e) => {
                                         e.currentTarget.onerror = null;
                                         e.currentTarget.src = '/images/evento-placeholder.jpg';
                                     }}
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/18 via-black/0 to-transparent" />
+
+                                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-black/0 to-transparent" />
                             </div>
                         </div>
                     </section>
@@ -160,7 +161,7 @@ export default function Show() {
                                     <div className="mt-4 flex flex-col gap-3">
                                         {canRegister && event.registration_url && (
                                             <a href={event.registration_url} target="_blank" rel="noopener noreferrer">
-                                                <button className="h-11 w-full cursor-pointer rounded-xl bg-zinc-950 text-white hover:bg-primary dark:bg-white dark:text-zinc-950">
+                                                <button className="h-11 w-full cursor-pointer rounded-xl bg-zinc-950 text-white transition hover:bg-primary dark:bg-white dark:text-zinc-950 dark:hover:bg-primary dark:hover:text-white">
                                                     Inscribirse
                                                 </button>
                                             </a>
@@ -168,7 +169,7 @@ export default function Show() {
 
                                         {canAccessOnline && event.online_url && (
                                             <a href={event.online_url} target="_blank" rel="noopener noreferrer">
-                                                <button className="h-11 w-full cursor-pointer rounded-xl bg-primary/5 text-[#005f7b] hover:bg-primary/10">
+                                                <button className="h-11 w-full cursor-pointer rounded-xl bg-primary/5 text-[#005f7b] transition hover:bg-primary/10 dark:bg-sky-500/10 dark:text-sky-300 dark:hover:bg-sky-500/15">
                                                     Acceder online
                                                 </button>
                                             </a>
@@ -196,7 +197,10 @@ export default function Show() {
 
                             {/* BACK */}
                             <div className="rounded-[1.75rem] bg-background p-6 shadow-[0_16px_40px_rgba(175,16,26,0.05)] dark:bg-zinc-950/95">
-                                <Link href={backHref} className="flex items-center justify-center gap-2 text-sm font-medium hover:text-primary">
+                                <Link
+                                    href={backHref}
+                                    className="flex items-center justify-center gap-2 text-sm font-medium transition hover:text-primary"
+                                >
                                     <ArrowLeft className="h-4 w-4" />
                                     {backLabel}
                                 </Link>
