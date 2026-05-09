@@ -301,21 +301,6 @@ class ResourceResource extends Resource
         return parent::getEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
-            ])
-            ->select([
-                'id',
-                'title',
-                'type',
-                'access_mode',
-                'file_url',
-                'image_url',
-                'link_url',
-                'is_pinned',
-                'pin_order',
-                'published_at',
-                'created_at',
-                'updated_at',
-                'deleted_at',
             ]);
     }
 
