@@ -1,13 +1,77 @@
 import LinkCard from '@/components/link-card';
 import AppLayout from '@/layouts/app-layout';
-import { type ResourcesPageProps } from '@/types';
-import { Head, usePage } from '@inertiajs/react';
+import { type Resource, type ResourcesPageProps } from '@/types';
+import { Head, router, usePage } from '@inertiajs/react';
+import { Loader2 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+
+const LINKS_PATH = '/recursos/enlaces';
+
+// El backend ahora devuelve `pinned` y `resources` (solo no-pinned) por separado.
+// `pagination` refleja únicamente los no-pinned, por lo que el total excluye los pinned.
+interface LinksPageProps extends ResourcesPageProps {
+    pinned: Resource[];
+}
 
 export default function Links() {
-    const { resources = [] } = usePage<ResourcesPageProps>().props;
+    const { pinned = [], resources = [], pagination } = usePage<LinksPageProps>().props;
 
-    const pinned = resources.filter((r) => r.is_pinned);
-    const others = resources.filter((r) => !r.is_pinned);
+    const [others, setOthers] = useState<Resource[]>(resources);
+    const [currentPage, setCurrentPage] = useState(pagination?.current_page ?? 1);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const lastPage = pagination?.last_page ?? 1;
+    const total = pagination?.total ?? others.length;
+    const hasMore = currentPage < lastPage;
+
+    const didMount = useRef(false);
+
+    // Al montar: si la URL tiene ?page=X redirigir a la raíz con hard redirect
+    // para evitar el error "Cannot read properties of undefined (reading 'version')"
+    // que ocurre al llamar router.get antes de que Inertia esté inicializado.
+    useEffect(() => {
+        if (didMount.current) return;
+        didMount.current = true;
+
+        const pageParam = Number(new URLSearchParams(window.location.search).get('page') ?? 1);
+
+        if (pageParam > 1) {
+            window.location.replace(LINKS_PATH);
+        }
+    }, []);
+
+    function loadMore() {
+        if (!hasMore || isLoading) return;
+
+        setIsLoading(true);
+
+        router.get(
+            LINKS_PATH,
+            { page: currentPage + 1 },
+            {
+                preserveScroll: true,
+                preserveState: true,
+                replace: true,
+                only: ['resources', 'pagination'],
+                onSuccess: (page) => {
+                    const incoming = (page.props.resources ?? []) as Resource[];
+                    const newPagination = page.props.pagination as ResourcesPageProps['pagination'] | undefined;
+
+                    setOthers((prev) => {
+                        const ids = new Set(prev.map((r) => r.id));
+                        return [...prev, ...incoming.filter((r) => !ids.has(r.id))];
+                    });
+
+                    setCurrentPage(newPagination?.current_page ?? currentPage + 1);
+
+                    window.setTimeout(() => {
+                        window.history.replaceState(window.history.state, '', LINKS_PATH);
+                    }, 0);
+                },
+                onFinish: () => setIsLoading(false),
+            },
+        );
+    }
 
     return (
         <AppLayout>
@@ -63,7 +127,7 @@ export default function Links() {
                         ) : null}
 
                         <div className="space-y-6">
-                            {(pinned.length > 0 ? others : resources).map((r) => (
+                            {others.map((r) => (
                                 <LinkCard
                                     key={r.id}
                                     href={r.enlace ?? '#'}
@@ -74,6 +138,32 @@ export default function Links() {
                                 />
                             ))}
                         </div>
+
+                        {(pinned.length > 0 || others.length > 0) ? (
+                            <div className="flex flex-col items-center gap-4 pt-4 text-center">
+                                <p className="text-xs font-medium tracking-[0.16em] text-muted-foreground uppercase">
+                                    Mostrando {others.length} de {total} enlaces
+                                </p>
+
+                                {hasMore ? (
+                                    <button
+                                        type="button"
+                                        onClick={loadMore}
+                                        disabled={isLoading}
+                                        className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(175,16,26,0.18)] transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60 dark:shadow-[0_18px_45px_rgba(175,16,26,0.22)]"
+                                    >
+                                        {isLoading ? (
+                                            <>
+                                                <Loader2 className="h-4 w-4 animate-spin" />
+                                                Cargando enlaces...
+                                            </>
+                                        ) : (
+                                            <>Cargar más enlaces</>
+                                        )}
+                                    </button>
+                                ) : null}
+                            </div>
+                        ) : null}
                     </section>
                 </div>
             </div>
