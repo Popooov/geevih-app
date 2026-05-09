@@ -182,6 +182,9 @@ class ResourceResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->deferLoading()
+            ->defaultPaginationPageOption(10)
+            ->paginated([10, 25, 50])
             ->defaultSort('published_at', 'desc')
             ->columns([
                 IconColumn::make('is_pinned')
@@ -226,21 +229,21 @@ class ResourceResource extends Resource
                 ImageColumn::make('image_url')
                     ->label('Imagen')
                     ->disk('cloudinary')
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('link_url')
                     ->label('Enlace')
                     ->url(fn ($record) => $record?->link_url ?: null)
                     ->openUrlInNewTab()
                     ->limit(30)
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('file_url')
                     ->label('Archivo')
                     ->formatStateUsing(fn ($state) => $state ? 'Abrir PDF' : '—')
                     ->url(fn ($record) => $record?->file_url ? self::pdfUrl($record->file_url) : null)
                     ->openUrlInNewTab()
-                    ->toggleable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('created_at')
                     ->label('Creado')
@@ -298,6 +301,21 @@ class ResourceResource extends Resource
         return parent::getEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
+            ])
+            ->select([
+                'id',
+                'title',
+                'type',
+                'access_mode',
+                'file_url',
+                'image_url',
+                'link_url',
+                'is_pinned',
+                'pin_order',
+                'published_at',
+                'created_at',
+                'updated_at',
+                'deleted_at',
             ]);
     }
 
