@@ -27,18 +27,18 @@ export default function Show() {
 
                     <article className="overflow-hidden rounded-[2rem] bg-background shadow-[0_16px_40px_rgba(175,16,26,0.05)] ring-1 ring-black/5 dark:bg-zinc-950/95 dark:ring-white/10">
                         <header className="relative">
-                            <div className="relative overflow-hidden">
+                            <div className="relative overflow-hidden bg-muted dark:bg-zinc-900">
                                 <img
                                     src={imageSrc}
                                     alt={`Imagen de ${singleNews.titulo}`}
-                                    className="h-[280px] w-full object-cover sm:h-[340px] lg:h-[420px]"
+                                    className="aspect-video h-auto w-full object-contain"
                                     onError={(e) => {
                                         e.currentTarget.onerror = null;
                                         e.currentTarget.src = '/images/noticia-placeholder.jpg';
                                     }}
                                 />
 
-                                <div className="absolute inset-0 bg-gradient-to-t from-black/18 via-black/0 to-transparent" />
+                                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/10 via-black/0 to-transparent" />
 
                                 <div className="absolute top-4 left-4">
                                     <div className="inline-flex items-center gap-2 rounded-2xl bg-white/90 px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm backdrop-blur-md dark:bg-slate-900/90 dark:text-slate-200">
