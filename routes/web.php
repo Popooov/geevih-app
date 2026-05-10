@@ -21,6 +21,11 @@ Route::prefix('eventos')->name('events.')->group(function () {
     Route::get('/{event:slug}', [EventController::class, 'show'])->name('legacy-show');
 });
 
+// TODO: Remove this route when the training section is fully implemented, to avoid confusion with the "Aval de Geevih".
+Route::get('/formacion/aval-de-geevih', function () {
+    abort(404);
+});
+
 Route::prefix('formacion')->name('training.')->group(function () {
     Route::get('/{category:slug}', [EventController::class, 'index'])->name('category');
     Route::get('/{category:slug}/{event:slug}', [EventController::class, 'show'])->name('show');
