@@ -82,12 +82,12 @@ export default function Index() {
 
                                     <div className="relative overflow-hidden rounded-[1.75rem] bg-background shadow-[0_20px_50px_rgba(175,16,26,0.08)] dark:bg-zinc-950/95">
                                         <img
-                                            src={featured.imagen?.trim() ? featured.imagen : '/images/noticia-placeholder.jpg'}
+                                            src={featured.imagen?.trim() ? featured.imagen : '/images/news-placeholder.png'}
                                             alt={featured.titulo}
                                             className="h-[280px] w-full object-cover sm:h-[340px] lg:h-[420px]"
                                             onError={(e) => {
                                                 e.currentTarget.onerror = null;
-                                                e.currentTarget.src = '/images/noticia-placeholder.jpg';
+                                                e.currentTarget.src = '/images/news-placeholder.png';
                                             }}
                                         />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/18 via-black/0 to-transparent" />
