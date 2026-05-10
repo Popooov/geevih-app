@@ -82,13 +82,13 @@ export default function Show() {
                                     {event.isOngoing && <EventBadge variant="live">En curso</EventBadge>}
                                 </div>
 
-                                <div className="max-w-3xl space-y-4">
-                                    <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl lg:text-[2.75rem] xl:text-5xl dark:text-white">
+                                <div className="max-w-2xl space-y-4">
+                                    <h1 className="text-[1.85rem] leading-[1.1] font-semibold tracking-tight text-foreground sm:text-[2rem] lg:text-[2.05rem] xl:text-[2.25rem] dark:text-white">
                                         {event.titulo}
                                     </h1>
 
                                     {event.descripcion && (
-                                        <p className="max-w-2xl text-sm leading-8 text-foreground/70 sm:text-lg dark:text-zinc-300">
+                                        <p className="max-w-2xl text-sm leading-7 text-foreground/65 sm:text-[0.95rem] dark:text-zinc-300">
                                             {event.descripcion}
                                         </p>
                                     )}
