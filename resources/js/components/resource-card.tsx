@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar, ExternalLink, FileText, Pin } from 'lucide-react';
+import { Calendar, ExternalLink, FileText } from 'lucide-react';
 
 interface RecursoCardProps {
     titulo: string;
@@ -11,7 +11,7 @@ interface RecursoCardProps {
     is_pinned?: boolean;
 }
 
-export default function ResourceCard({ titulo, tipo, fecha, descripcion, enlace, imagen, is_pinned = false }: RecursoCardProps) {
+export default function ResourceCard({ titulo, fecha, descripcion, enlace, imagen }: RecursoCardProps) {
     const href = enlace?.trim() || undefined;
     const isAvailable = Boolean(href);
     const imageSrc = imagen?.trim() ? imagen : null;
@@ -19,83 +19,69 @@ export default function ResourceCard({ titulo, tipo, fecha, descripcion, enlace,
     const card = (
         <Card
             className={[
-                'group relative flex h-full min-h-[390px] flex-col overflow-hidden rounded-[1.75rem] border-0 bg-background/95',
-                'shadow-[0_18px_50px_rgba(175,16,26,0.06)] ring-1 ring-black/5 transition-all duration-300',
+                'group relative flex h-full min-h-[300px] flex-col overflow-hidden rounded-[1.5rem] border-0 bg-white/95',
+                'shadow-[0_18px_50px_rgba(175,16,26,0.045)] ring-1 ring-black/[0.045] transition-all duration-300',
                 'dark:bg-neutral-950 dark:shadow-[0_18px_50px_rgba(175,16,26,0.08)] dark:ring-white/10',
-                isAvailable ? 'hover:-translate-y-1 hover:shadow-[0_24px_65px_rgba(175,16,26,0.12)]' : 'opacity-85',
+                isAvailable ? 'hover:-translate-y-1 hover:shadow-[0_24px_65px_rgba(175,16,26,0.11)]' : 'opacity-85',
             ].join(' ')}
         >
-            <div className="absolute inset-x-0 top-0 h-1.5 bg-primary/70" />
-
-            <div className="relative h-44 overflow-hidden bg-muted/35 dark:bg-neutral-900">
+            <div className="relative h-28 overflow-hidden bg-neutral-50 dark:bg-neutral-900 sm:h-32">
                 {imageSrc ? (
                     <>
+                        <div className="absolute inset-0">
+                            <img src={imageSrc} alt="" aria-hidden="true" className="h-full w-full scale-110 object-cover opacity-25 blur-md" />
+                        </div>
+
+                        <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-white/10 to-white/40 dark:from-neutral-950/35 dark:via-neutral-950/10 dark:to-neutral-950/50" />
+
                         <img
                             src={imageSrc}
                             alt={`Imagen del recurso: ${titulo}`}
                             className={[
-                                'h-full w-full object-cover transition-transform duration-500',
-                                isAvailable ? 'group-hover:scale-[1.04]' : '',
+                                'relative z-10 h-full w-full object-contain p-3 transition-transform duration-500',
+                                isAvailable ? 'group-hover:scale-[1.03]' : '',
                             ].join(' ')}
                         />
-                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-black/5 to-transparent" />
                     </>
                 ) : (
                     <div className="flex h-full items-center justify-center">
-                        <div className="flex items-center gap-2 text-muted-foreground dark:text-neutral-400">
-                            <FileText className="h-6 w-6" />
-                            <span className="text-sm font-medium">Documento</span>
+                        <div className="flex flex-col items-center gap-2 text-neutral-500 dark:text-neutral-400">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-black/[0.04] dark:bg-neutral-950 dark:ring-white/10">
+                                <FileText className="h-4.5 w-4.5" />
+                            </div>
+                            <span className="text-[11px] font-medium">Documento</span>
                         </div>
                     </div>
                 )}
-
-                <div className="absolute inset-x-0 top-0 flex items-start justify-between gap-3 p-4">
-                    <div className="flex flex-wrap items-center gap-2">
-                        {/* <span className="inline-flex items-center rounded-full bg-white/90 px-3 py-1 text-[11px] font-semibold tracking-[0.16em] text-neutral-800 uppercase shadow-sm backdrop-blur dark:bg-neutral-100 dark:text-neutral-900">
-                            {tipo}
-                        </span> */}
-
-                        {/* {is_pinned ? (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-neutral-900 px-3 py-1 text-[11px] font-semibold tracking-[0.16em] text-white uppercase shadow-sm dark:bg-white dark:text-neutral-900">
-                                <Pin className="h-3.5 w-3.5" />
-                                Fijado
-                            </span>
-                        ) : null} */}
-                    </div>
-                </div>
             </div>
 
-            <CardHeader className="flex flex-1 flex-col space-y-4 p-6 pb-4">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground dark:text-neutral-400">
-                    {fecha && (
-                        <>
-                            <Calendar className="h-4 w-4" />
-                            <span>{fecha}</span>
-                        </>
-                    )}
-                </div>
+            <CardHeader className="flex flex-1 flex-col space-y-3.5 p-5 pb-4 sm:p-6 sm:pb-4">
+                {fecha ? (
+                    <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground dark:text-neutral-400">
+                        <Calendar className="h-3.5 w-3.5" />
+                        <span>{fecha}</span>
+                    </div>
+                ) : null}
 
-                <CardTitle className="line-clamp-2 min-h-[3.25rem] text-xl font-semibold leading-7 tracking-tight text-foreground">{titulo}</CardTitle>
+                <CardTitle className="text-[15px] font-semibold leading-[1.35] tracking-tight text-neutral-950 transition-colors duration-300 group-hover:text-primary dark:text-white sm:text-base">
+                    {titulo}
+                </CardTitle>
 
-                <div className="min-h-[4.75rem]">
-                    {descripcion ? (
-                        <p className="line-clamp-3 text-sm leading-7 text-muted-foreground dark:text-neutral-400">{descripcion}</p>
-                    ) : (
-                        <p className="text-sm leading-7 text-transparent select-none">.</p>
-                    )}
-                </div>
+                {descripcion ? (
+                    <p className="line-clamp-2 text-sm leading-6 text-muted-foreground dark:text-neutral-400">{descripcion}</p>
+                ) : null}
             </CardHeader>
 
-            <CardContent className="mt-auto p-6 pt-0">
+            <CardContent className="mt-auto p-5 pt-0 sm:p-6 sm:pt-0">
                 {isAvailable ? (
-                    <div className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition-all duration-300 group-hover:gap-3">
-                        <ExternalLink className="h-4 w-4" />
+                    <div className="inline-flex items-center gap-2 rounded-full bg-neutral-100 px-3.5 py-2 text-xs font-semibold text-neutral-900 transition-all duration-300 group-hover:bg-primary group-hover:text-white dark:bg-neutral-900 dark:text-neutral-100">
+                        <ExternalLink className="h-3.5 w-3.5" />
                         Abrir recurso
                         <span className="transition-transform group-hover:translate-x-0.5">→</span>
                     </div>
                 ) : (
-                    <div className="inline-flex items-center gap-2 text-sm font-semibold text-muted-foreground dark:text-neutral-400">
-                        <FileText className="h-4 w-4" />
+                    <div className="inline-flex items-center gap-2 rounded-full bg-neutral-100 px-3.5 py-2 text-xs font-semibold text-muted-foreground dark:bg-neutral-900 dark:text-neutral-400">
+                        <FileText className="h-3.5 w-3.5" />
                         Recurso no disponible
                     </div>
                 )}
