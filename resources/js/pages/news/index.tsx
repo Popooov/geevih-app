@@ -40,7 +40,7 @@ export default function Index() {
                             <section className="relative overflow-hidden rounded-[2rem] bg-background/92 px-6 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] backdrop-blur-xl sm:px-8 sm:py-8 lg:px-10 dark:bg-zinc-950/85">
                                 <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(175,16,26,0.07),transparent_45%)] dark:bg-[radial-gradient(circle_at_top_right,rgba(175,16,26,0.12),transparent_45%)]" />
 
-                                <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_420px] lg:items-start">
+                                <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(420px,520px)] lg:items-center">
                                     <div className="flex h-full flex-col">
                                         <div className="space-y-7">
                                             <div className="flex flex-wrap items-center gap-2">
@@ -80,17 +80,17 @@ export default function Index() {
                                         </div>
                                     </div>
 
-                                    <div className="relative overflow-hidden rounded-[1.75rem] bg-background shadow-[0_20px_50px_rgba(175,16,26,0.08)] dark:bg-zinc-950/95">
+                                    <div className="relative mx-auto w-full max-w-[520px] overflow-hidden rounded-[1.75rem] bg-muted shadow-[0_20px_50px_rgba(175,16,26,0.08)] dark:bg-zinc-900">
                                         <img
                                             src={featured.imagen?.trim() ? featured.imagen : '/images/news-placeholder.png'}
                                             alt={featured.titulo}
-                                            className="h-[280px] w-full object-cover sm:h-[340px] lg:h-[420px]"
+                                            className="aspect-[18/7] h-auto w-full object-cover object-center"
                                             onError={(e) => {
                                                 e.currentTarget.onerror = null;
                                                 e.currentTarget.src = '/images/news-placeholder.png';
                                             }}
                                         />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/18 via-black/0 to-transparent" />
+                                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-black/0 to-transparent" />
                                     </div>
                                 </div>
                             </section>

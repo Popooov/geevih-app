@@ -31,14 +31,14 @@ export default function Show() {
                                 <img
                                     src={imageSrc}
                                     alt={`Imagen de ${singleNews.titulo}`}
-                                    className="aspect-video h-auto w-full object-contain"
+                                    className="aspect-[18/7] h-auto w-full object-cover object-center"
                                     onError={(e) => {
                                         e.currentTarget.onerror = null;
                                         e.currentTarget.src = '/images/noticia-placeholder.jpg';
                                     }}
                                 />
 
-                                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-black/10 via-black/0 to-transparent" />
+                                <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/10 via-black/0 to-transparent" />
 
                                 <div className="absolute top-4 left-4">
                                     <div className="inline-flex items-center gap-2 rounded-2xl bg-white/90 px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm backdrop-blur-md dark:bg-slate-900/90 dark:text-slate-200">
