@@ -19,35 +19,31 @@ export default function ResourceCard({ titulo, fecha, descripcion, enlace, image
     const card = (
         <Card
             className={[
-                'group relative flex h-full min-h-[300px] flex-col overflow-hidden rounded-[1.5rem] border-0 bg-white/95',
+                'group relative flex h-full min-h-[320px] flex-col overflow-hidden rounded-[1.5rem] border-0 bg-white/95',
                 'shadow-[0_18px_50px_rgba(175,16,26,0.045)] ring-1 ring-black/[0.045] transition-all duration-300',
                 'dark:bg-neutral-950 dark:shadow-[0_18px_50px_rgba(175,16,26,0.08)] dark:ring-white/10',
                 isAvailable ? 'hover:-translate-y-1 hover:shadow-[0_24px_65px_rgba(175,16,26,0.11)]' : 'opacity-85',
             ].join(' ')}
         >
-            <div className="relative h-28 overflow-hidden bg-neutral-50 dark:bg-neutral-900 sm:h-32">
+            <div className="relative h-36 overflow-hidden bg-neutral-50 dark:bg-neutral-900 sm:h-40">
                 {imageSrc ? (
                     <>
-                        <div className="absolute inset-0">
-                            <img src={imageSrc} alt="" aria-hidden="true" className="h-full w-full scale-110 object-cover opacity-25 blur-md" />
-                        </div>
-
-                        <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-white/10 to-white/40 dark:from-neutral-950/35 dark:via-neutral-950/10 dark:to-neutral-950/50" />
-
                         <img
                             src={imageSrc}
                             alt={`Imagen del recurso: ${titulo}`}
                             className={[
-                                'relative z-10 h-full w-full object-contain p-3 transition-transform duration-500',
-                                isAvailable ? 'group-hover:scale-[1.03]' : '',
+                                'h-full w-full object-cover object-center transition-transform duration-500',
+                                isAvailable ? 'group-hover:scale-[1.04]' : '',
                             ].join(' ')}
                         />
+
+                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/0 via-white/0 to-white/10 dark:to-neutral-950/20" />
                     </>
                 ) : (
                     <div className="flex h-full items-center justify-center">
                         <div className="flex flex-col items-center gap-2 text-neutral-500 dark:text-neutral-400">
                             <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-black/[0.04] dark:bg-neutral-950 dark:ring-white/10">
-                                <FileText className="h-4.5 w-4.5" />
+                                <FileText className="h-4 w-4" />
                             </div>
                             <span className="text-[11px] font-medium">Documento</span>
                         </div>
