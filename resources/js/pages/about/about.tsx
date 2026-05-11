@@ -50,7 +50,12 @@ export default function SobreNosotros() {
 
                         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                             {(members ?? []).map((member, index) => (
-                                <MemberCard key={member.id} member={member} index={index} />
+                                <MemberCard
+                                    key={member.id}
+                                    member={member}
+                                    index={index}
+                                    priority={index < 3}
+                                />
                             ))}
                         </div>
                     </section>

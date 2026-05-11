@@ -21,9 +21,10 @@ export interface Member {
 interface MemberCardProps {
     member: Member;
     index?: number;
+    priority?: boolean;
 }
 
-export default function MemberCard({ member, index = 0 }: MemberCardProps) {
+export default function MemberCard({ member, index = 0, priority = false }: MemberCardProps) {
     const src = member.photo_url?.trim() ? member.photo_url : '/images/member-placeholder.svg';
     const alt = member.photo_alt?.trim() ? member.photo_alt : `Foto de ${member.name}`;
 
@@ -46,8 +47,13 @@ export default function MemberCard({ member, index = 0 }: MemberCardProps) {
                 <img
                     src={src}
                     alt={alt}
+                    width={640}
+                    height={640}
+                    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                     className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                    loading="lazy"
+                    loading={priority ? 'eager' : 'lazy'}
+                    fetchPriority={priority ? 'high' : 'auto'}
+                    decoding="async"
                     onError={(e) => {
                         e.currentTarget.onerror = null;
                         e.currentTarget.src = '/images/member-placeholder.svg';
