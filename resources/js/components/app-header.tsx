@@ -47,7 +47,7 @@ const recursosItems: NavChild[] = [
     { title: 'Guías y Protocolos', href: '/recursos/guias' },
     { title: 'Herramientas Prácticas', href: '/recursos/herramientas' },
     { title: 'Últimas Evidencias Científicas', href: '/recursos/biblioteca' },
-    { title: 'Material de Apoyo al Paciente', href: '/recursos/material' },
+    { title: 'Material de Apoyo para las PVIH', href: '/recursos/material' },
     { title: 'Enlaces de Interés', href: '/recursos/enlaces' },
 ];
 

@@ -7,9 +7,9 @@ export default function Material() {
 
     return (
         <ResourceCategoryPage
-            title="Material de Apoyo al Paciente | GEEVIH"
+            title="Material de apoyo para las PVIH | GEEVIH"
             eyebrow="Recursos GEEVIH"
-            heading="Material de Apoyo al Paciente"
+            heading="Material de apoyo para las personas con VIH"
             description="Recursos educativos descargables e imprimibles para apoyar la atención, la educación sanitaria y el acompañamiento a pacientes."
             basePath="/recursos/material"
             resources={resources}
