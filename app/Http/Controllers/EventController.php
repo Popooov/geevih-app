@@ -6,9 +6,81 @@ use App\Models\Event;
 use App\Models\EventCategory;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Carbon\Carbon;
 
 class EventController extends Controller
 {
+    /**
+     * Format a date manually in Spanish.
+     */
+    private function formatSpanishDate(mixed $date): string
+    {
+        if (! $date) {
+            return '';
+        }
+
+        try {
+            $c = $date instanceof \DateTime
+                ? Carbon::instance($date)
+                : Carbon::parse($date);
+
+            $meses = [
+                'enero',
+                'febrero',
+                'marzo',
+                'abril',
+                'mayo',
+                'junio',
+                'julio',
+                'agosto',
+                'septiembre',
+                'octubre',
+                'noviembre',
+                'diciembre',
+            ];
+
+            $dia = $c->format('j');
+            $mesNombre = $meses[(int) $c->format('n') - 1];
+            $anio = $c->format('Y');
+
+            return "{$dia} de {$mesNombre} de {$anio}";
+        } catch (\Throwable $e) {
+            return '';
+        }
+    }
+
+    /**
+     * Format an event date range in Spanish.
+     */
+    private function formatSpanishDateRange(mixed $start, mixed $end = null): string
+    {
+        if (! $start) {
+            return '';
+        }
+
+        try {
+            $startDate = $start instanceof \DateTime
+                ? Carbon::instance($start)
+                : Carbon::parse($start);
+
+            if (! $end) {
+                return $this->formatSpanishDate($startDate);
+            }
+
+            $endDate = $end instanceof \DateTime
+                ? Carbon::instance($end)
+                : Carbon::parse($end);
+
+            if ($startDate->isSameDay($endDate)) {
+                return $this->formatSpanishDate($startDate);
+            }
+
+            return $this->formatSpanishDate($startDate) . ' – ' . $this->formatSpanishDate($endDate);
+        } catch (\Throwable $e) {
+            return '';
+        }
+    }
+
     public function index(?EventCategory $category = null)
     {
         // Store the current date and time to compare events against it.
@@ -72,11 +144,7 @@ class EventController extends Controller
             // Build the visible date range.
             // If the event starts and ends on the same day, only one date is shown.
             // If it spans multiple days, a date range is shown.
-            $dateRange = $end
-                ? ($start->isSameDay($end)
-                    ? $start->translatedFormat('d M Y')
-                    : $start->translatedFormat('d M') . ' – ' . $end->translatedFormat('d M Y'))
-                : $start?->translatedFormat('d M Y');
+            $dateRange = $this->formatSpanishDateRange($start, $end);
 
             // Build the visible time range.
             // If the event starts and ends on the same day, both times are shown.
@@ -171,11 +239,7 @@ class EventController extends Controller
         $endTime = $hasEndTime ? $end->format('H:i') : null;
 
         // Build the visible date range.
-        $dateRange = $end
-            ? ($start->isSameDay($end)
-                ? $start->translatedFormat('d M Y')
-                : $start->translatedFormat('d M') . ' – ' . $end->translatedFormat('d M Y'))
-            : $start?->translatedFormat('d M Y');
+        $dateRange = $this->formatSpanishDateRange($start, $end);
 
         // Build the visible time range.
         $timeRange = null;

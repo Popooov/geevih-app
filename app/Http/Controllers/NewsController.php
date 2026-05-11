@@ -5,9 +5,49 @@ namespace App\Http\Controllers;
 use App\Models\News;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Carbon\Carbon;
 
 class NewsController extends Controller
 {
+    /**
+     * Format a date manually in Spanish.
+     */
+    private function formatSpanishDate(mixed $date): string
+    {
+        if (! $date) {
+            return '';
+        }
+
+        try {
+            $c = $date instanceof \DateTime
+                ? Carbon::instance($date)
+                : Carbon::parse($date);
+
+            $meses = [
+                'enero',
+                'febrero',
+                'marzo',
+                'abril',
+                'mayo',
+                'junio',
+                'julio',
+                'agosto',
+                'septiembre',
+                'octubre',
+                'noviembre',
+                'diciembre',
+            ];
+
+            $dia = $c->format('j');
+            $mesNombre = $meses[(int) $c->format('n') - 1];
+            $anio = $c->format('Y');
+
+            return "{$dia} de {$mesNombre} de {$anio}";
+        } catch (\Throwable $e) {
+            return '';
+        }
+    }
+
     public function index()
     {
         // Retrieve all published news ordered by publication date (latest first)
@@ -25,7 +65,7 @@ class NewsController extends Controller
                 'titulo'      => $news->title,
 
                 // Format publication date for display (human-readable format)
-                'fecha'       => $news->published_at?->toFormattedDateString(),
+                'fecha'       => $this->formatSpanishDate($news->published_at),
 
                 // Short summary used in listing views
                 'descripcion' => $news->summary,
@@ -61,7 +101,7 @@ class NewsController extends Controller
                 'titulo'      => $news->title,
 
                 // Formatted publication date
-                'fecha'       => $news->published_at?->toFormattedDateString(),
+                'fecha'       => $this->formatSpanishDate($news->published_at),
 
                 // Short summary
                 'descripcion' => $news->summary,
