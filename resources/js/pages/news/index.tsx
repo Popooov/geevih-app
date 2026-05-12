@@ -44,8 +44,8 @@ export default function Index() {
                             <section className="relative overflow-hidden rounded-[2rem] bg-background/92 px-5 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] backdrop-blur-xl sm:px-8 sm:py-8 lg:px-10 lg:py-10 dark:bg-zinc-950/85">
                                 <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(175,16,26,0.07),transparent_45%)] dark:bg-[radial-gradient(circle_at_top_right,rgba(175,16,26,0.12),transparent_45%)]" />
 
-                                <div className="relative mx-auto grid max-w-5xl gap-7 min-[1400px]:max-w-none min-[1400px]:grid-cols-[minmax(0,0.92fr)_minmax(440px,560px)] min-[1400px]:items-center min-[1400px]:gap-10">
-                                    <div className="space-y-6 min-[1400px]:space-y-7">
+                                <div className="relative mx-auto grid max-w-5xl gap-7 xl:max-w-none xl:grid-cols-[minmax(0,0.92fr)_minmax(440px,560px)] xl:items-center xl:gap-10">
+                                    <div className="space-y-6 xl:space-y-7">
                                         <div className="flex flex-wrap items-center gap-2">
                                             <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold tracking-[0.14em] text-primary uppercase">
                                                 Destacada
@@ -57,23 +57,23 @@ export default function Index() {
                                         </div>
 
                                         <div className="max-w-3xl space-y-4">
-                                            <h2 className="text-[1.95rem] font-semibold leading-[1.08] tracking-tight text-foreground sm:text-[2.35rem] lg:text-[2.7rem] min-[1400px]:text-[2.25rem] 2xl:text-[2.6rem] dark:text-white">
+                                            <h2 className="text-[1.95rem] font-semibold leading-[1.08] tracking-tight text-foreground sm:text-[2.35rem] lg:text-[2.7rem] xl:text-[2.25rem] 2xl:text-[2.6rem] dark:text-white">
                                                 {featured.titulo}
                                             </h2>
 
                                             {featured.descripcion && (
-                                                <p className="max-w-3xl text-sm leading-7 text-foreground/70 sm:text-base sm:leading-8 lg:text-lg min-[1400px]:max-w-2xl dark:text-zinc-300">
+                                                <p className="max-w-3xl text-sm leading-7 text-foreground/70 sm:text-base sm:leading-8 lg:text-lg xl:max-w-2xl dark:text-zinc-300">
                                                     {featured.descripcion}
                                                 </p>
                                             )}
                                         </div>
                                     </div>
 
-                                    <div className="order-2 relative mx-auto w-full max-w-[860px] overflow-hidden rounded-[1.5rem] bg-muted shadow-[0_20px_50px_rgba(175,16,26,0.08)] sm:rounded-[1.75rem] min-[1400px]:order-none min-[1400px]:mx-0 min-[1400px]:max-w-none min-[1400px]:row-span-2 dark:bg-zinc-900">
+                                    <div className="order-2 relative w-full max-w-[860px] overflow-hidden rounded-[1.5rem] bg-muted shadow-[0_20px_50px_rgba(175,16,26,0.08)] sm:rounded-[1.75rem] xl:order-none xl:row-span-2 xl:mx-0 xl:max-w-none dark:bg-zinc-900">
                                         <img
                                             src={featured.imagen?.trim() ? featured.imagen : '/images/news-placeholder.png'}
                                             alt={featured.titulo}
-                                            className="aspect-[16/9] w-full object-cover object-center sm:aspect-[18/8] lg:aspect-[18/8] min-[1400px]:aspect-[16/9]"
+                                            className="aspect-[16/9] w-full object-cover object-center sm:aspect-[18/8] lg:aspect-[18/8] xl:aspect-[16/9]"
                                             onError={(e) => {
                                                 e.currentTarget.onerror = null;
                                                 e.currentTarget.src = '/images/news-placeholder.png';
@@ -83,7 +83,7 @@ export default function Index() {
                                         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-black/0 to-transparent" />
                                     </div>
 
-                                    <div className="order-3 min-[1400px]:col-start-1 min-[1400px]:row-start-2">
+                                    <div className="order-3 xl:col-start-1 xl:row-start-2">
                                         <Link
                                             href={`/noticias/${featured.slug ?? featured.id}`}
                                             prefetch
