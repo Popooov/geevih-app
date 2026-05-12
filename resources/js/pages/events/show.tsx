@@ -32,17 +32,15 @@ function MetaItem({
     return (
         <div
             className={cn(
-                'flex min-w-0 items-center gap-3 rounded-2xl bg-zinc-50/90 px-4 py-3 text-sm text-foreground/70 shadow-[0_8px_24px_rgba(175,16,26,0.025)] dark:bg-zinc-900/60 dark:text-zinc-300',
+                'flex min-w-0 items-center gap-3 px-1 py-3 text-xs leading-5 text-foreground/70 md:rounded-2xl md:bg-zinc-50/90 md:px-4 md:text-base md:shadow-[0_8px_24px_rgba(175,16,26,0.025)] dark:text-zinc-300 md:dark:bg-zinc-900/60',
                 className,
             )}
         >
-            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-zinc-200/80 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+            <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-zinc-700 sm:h-9 sm:w-9 md:bg-zinc-200/80 dark:bg-zinc-800 dark:text-zinc-300">
                 <Icon className="h-4 w-4" />
             </span>
 
-            <span className="min-w-0 flex-1 leading-6 break-words">
-                {children}
-            </span>
+            <span className="min-w-0 flex-1 break-words">{children}</span>
         </div>
     );
 }
@@ -89,17 +87,17 @@ export default function Show() {
                     <section className="relative overflow-hidden rounded-[2rem] bg-background/92 px-5 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] backdrop-blur-xl sm:px-8 sm:py-8 lg:px-9 xl:px-8 dark:bg-zinc-950/85">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.08),transparent_46%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.14),transparent_46%)]" />
 
-                        <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(420px,500px)] lg:items-start xl:grid-cols-[minmax(0,1fr)_520px]">
+                        <div className="relative grid gap-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(420px,1fr)] lg:items-start xl:grid-cols-[minmax(0,1fr)_520px]">
                             {/* TOP INFO */}
                             <div className="space-y-6">
-                                <div className="flex flex-wrap items-center gap-2">
+                                <div className="flex flex-wrap items-center gap-2 lg:hidden">
                                     {event.category && <EventBadge>{event.category}</EventBadge>}
                                     {event.is_online && <EventBadge variant="secondary">Online</EventBadge>}
                                     {event.isOngoing && <EventBadge variant="live">En curso</EventBadge>}
                                 </div>
 
-                                <div className="max-w-2xl space-y-4">
-                                    <h1 className="text-[1.85rem] leading-[1.1] font-semibold tracking-tight text-foreground sm:text-[2rem] lg:text-[2.05rem] xl:text-[2.25rem] dark:text-white">
+                                <div className="max-w-2xl space-y-4 lg:max-w-xl xl:max-w-2xl">
+                                    <h1 className="text-2xl leading-tight font-semibold tracking-tight text-foreground sm:text-3xl md:text-4xl lg:text-3xl xl:text-4xl dark:text-white">
                                         {event.titulo}
                                     </h1>
 
@@ -111,50 +109,59 @@ export default function Show() {
                                 </div>
                             </div>
 
-                            {/* IMAGE */}
-                            <div className="relative mx-auto w-full max-w-[520px] overflow-hidden rounded-[1.75rem] bg-muted shadow-[0_22px_55px_rgba(175,16,26,0.10)] lg:mx-0 dark:bg-zinc-900">
-                                <img
-                                    src={imageSrc}
-                                    alt={event.titulo}
-                                    className="aspect-video h-auto w-full object-cover object-center"
-                                    onError={(e) => {
-                                        e.currentTarget.onerror = null;
-                                        e.currentTarget.src = '/images/evento-placeholder.jpg';
-                                    }}
-                                />
+                            {/* MEDIA */}
+                            <div className="space-y-4 lg:self-start">
+                                <div className="relative mx-auto w-full max-w-[620px] overflow-hidden rounded-[1.75rem] bg-muted shadow-[0_22px_55px_rgba(175,16,26,0.10)] lg:mx-0 lg:max-w-[520px] dark:bg-zinc-900">
+                                    <img
+                                        src={imageSrc}
+                                        alt={event.titulo}
+                                        className="aspect-video h-auto w-full object-cover object-center"
+                                        onError={(e) => {
+                                            e.currentTarget.onerror = null;
+                                            e.currentTarget.src = '/images/evento-placeholder.jpg';
+                                        }}
+                                    />
 
-                                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-black/0 to-transparent" />
+                                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-black/0 to-transparent" />
+                                </div>
+
+                                <div className="hidden rounded-[1.5rem] bg-white/65 px-4 py-4 shadow-[0_12px_34px_rgba(175,16,26,0.04)] backdrop-blur-sm lg:block dark:bg-zinc-900/45">
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        {event.is_online ? <EventBadge variant="secondary">Actividad online</EventBadge> : <EventBadge variant="secondary">Actividad presencial</EventBadge>}
+                                        {event.isOngoing && <EventBadge variant="live">En curso</EventBadge>}
+                                    </div>
+                                </div>
                             </div>
 
                             {/* META ROW */}
-                            <div className="rounded-[1.75rem] bg-white/55 p-3 shadow-[0_14px_36px_rgba(175,16,26,0.035)] backdrop-blur-sm lg:col-span-2 dark:bg-zinc-900/35">
-                                <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-12">
-                                    <MetaItem icon={MapPin} className="xl:col-span-5">
+                            <div className="rounded-[1.75rem] bg-white/70 px-4 py-2 shadow-[0_14px_36px_rgba(175,16,26,0.035)] backdrop-blur-sm md:bg-white/55 md:p-3 lg:col-span-2 dark:bg-zinc-900/35">
+                                <div className="divide-y divide-zinc-200/60 md:grid md:grid-cols-12 md:gap-3 md:divide-y-0 dark:divide-zinc-800/70">
+                                    <MetaItem icon={MapPin} className="md:col-span-12 xl:col-span-5">
                                         {event.is_online ? 'Online' : event.lugar || 'Ubicación por confirmar'}
                                     </MetaItem>
 
-                                    <MetaItem icon={Calendar} className="xl:col-span-5">
+                                    <MetaItem icon={Calendar} className="md:col-span-8 xl:col-span-5">
                                         {event.fecha}
                                     </MetaItem>
 
                                     {event.hora && (
-                                        <MetaItem icon={Clock3} className="md:col-span-2 xl:col-span-2">
+                                        <MetaItem icon={Clock3} className="md:col-span-4 xl:col-span-2">
                                             {event.hora}
                                         </MetaItem>
                                     )}
 
-                                    {event.online_url && event.is_online && (
-                                        <MetaItem icon={Globe} className="md:col-span-2 xl:col-span-12">
+                                    {/* {event.online_url && event.is_online && (
+                                        <MetaItem icon={Globe} className="md:col-span-12 xl:col-span-12">
                                             Acceso online disponible
                                         </MetaItem>
-                                    )}
+                                    )} */}
                                 </div>
                             </div>
                         </div>
                     </section>
 
                     {/* MAIN */}
-                    <main className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
+                    <main className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_340px]">
                         {/* CONTENT */}
                         <section>
                             <div className="rounded-[2rem] bg-background px-6 py-7 shadow-[0_16px_40px_rgba(175,16,26,0.05)] sm:px-8 sm:py-8 dark:bg-zinc-950/95">
@@ -186,25 +193,45 @@ export default function Show() {
                         <aside className="space-y-6 lg:sticky lg:top-6">
                             {/* CTAs */}
                             {hasCtas && (
-                                <div className="rounded-[1.75rem] bg-background p-6 xl:px-8 shadow-[0_16px_40px_rgba(175,16,26,0.05)] dark:bg-zinc-950/95">
-                                    <h3 className="text-sm font-semibold text-muted-foreground uppercase">Acciones</h3>
+                                <div className="rounded-[1.75rem] bg-background px-5 py-5 shadow-[0_16px_40px_rgba(175,16,26,0.05)] sm:px-6 dark:bg-zinc-950/95">
+                                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between lg:flex-col lg:items-stretch">
+                                        <div className="space-y-1">
+                                            <h3 className="text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase">
+                                                Acciones
+                                            </h3>
 
-                                    <div className="mt-4 flex flex-col gap-3">
-                                        {canRegister && event.registration_url && (
-                                            <a href={event.registration_url} target="_blank" rel="noopener noreferrer">
-                                                <button className="h-11 w-full cursor-pointer rounded-xl bg-zinc-950 text-white transition hover:bg-primary dark:bg-white dark:text-zinc-950 dark:hover:bg-primary dark:hover:text-white">
-                                                    Inscribirse
-                                                </button>
-                                            </a>
-                                        )}
+                                            <p className="max-w-sm text-sm leading-6 text-foreground/60 lg:max-w-none dark:text-zinc-400">
+                                                Gestiona tu participación en esta actividad.
+                                            </p>
+                                        </div>
 
-                                        {canAccessOnline && event.online_url && (
-                                            <a href={event.online_url} target="_blank" rel="noopener noreferrer">
-                                                <button className="h-11 w-full cursor-pointer rounded-xl bg-primary/5 text-[#005f7b] transition hover:bg-primary/10 dark:bg-sky-500/10 dark:text-sky-300 dark:hover:bg-sky-500/15">
-                                                    Acceder online
-                                                </button>
-                                            </a>
-                                        )}
+                                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center lg:flex-col lg:items-stretch">
+                                            {canRegister && event.registration_url && (
+                                                <a
+                                                    href={event.registration_url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="w-full sm:w-auto lg:w-full"
+                                                >
+                                                    <button className="h-10 w-full cursor-pointer rounded-xl bg-zinc-950 px-5 text-sm font-medium text-white transition hover:bg-primary sm:w-auto sm:min-w-40 lg:w-full dark:bg-white dark:text-zinc-950 dark:hover:bg-primary dark:hover:text-white">
+                                                        Inscribirse
+                                                    </button>
+                                                </a>
+                                            )}
+
+                                            {canAccessOnline && event.online_url && (
+                                                <a
+                                                    href={event.online_url}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="w-full sm:w-auto lg:w-full"
+                                                >
+                                                    <button className="h-10 w-full cursor-pointer rounded-xl bg-primary/5 px-5 text-sm font-medium text-[#005f7b] transition hover:bg-primary/10 sm:w-auto sm:min-w-40 lg:w-full dark:bg-sky-500/10 dark:text-sky-300 dark:hover:bg-sky-500/15">
+                                                        Acceder online
+                                                    </button>
+                                                </a>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
                             )}
