@@ -20,13 +20,29 @@ function EventBadge({ children, variant = 'default' }: { children: React.ReactNo
     );
 }
 
-function MetaItem({ icon: Icon, children }: { icon: React.ElementType; children: React.ReactNode }) {
+function MetaItem({
+    icon: Icon,
+    children,
+    className,
+}: {
+    icon: React.ElementType;
+    children: React.ReactNode;
+    className?: string;
+}) {
     return (
-        <div className="flex items-center gap-3 text-sm text-foreground/70 dark:text-zinc-300">
-            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary dark:bg-primary/15">
+        <div
+            className={cn(
+                'flex min-w-0 items-center gap-3 rounded-2xl bg-zinc-50/90 px-4 py-3 text-sm text-foreground/70 shadow-[0_8px_24px_rgba(175,16,26,0.025)] dark:bg-zinc-900/60 dark:text-zinc-300',
+                className,
+            )}
+        >
+            <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-zinc-200/80 text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
                 <Icon className="h-4 w-4" />
             </span>
-            <span className="leading-6">{children}</span>
+
+            <span className="min-w-0 flex-1 leading-6 break-words">
+                {children}
+            </span>
         </div>
     );
 }
@@ -70,11 +86,11 @@ export default function Show() {
                     </div>
 
                     {/* HERO */}
-                    <section className="relative overflow-hidden rounded-[2rem] bg-background/92 px-5 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] backdrop-blur-xl sm:px-8 sm:py-8 lg:px-9 xl:px-10 dark:bg-zinc-950/85">
+                    <section className="relative overflow-hidden rounded-[2rem] bg-background/92 px-5 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] backdrop-blur-xl sm:px-8 sm:py-8 lg:px-9 xl:px-8 dark:bg-zinc-950/85">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.08),transparent_46%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.14),transparent_46%)]" />
 
-                        <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(420px,500px)] lg:items-center xl:grid-cols-[minmax(0,1fr)_520px]">
-                            {/* INFO */}
+                        <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(420px,500px)] lg:items-start xl:grid-cols-[minmax(0,1fr)_520px]">
+                            {/* TOP INFO */}
                             <div className="space-y-6">
                                 <div className="flex flex-wrap items-center gap-2">
                                     {event.category && <EventBadge>{event.category}</EventBadge>}
@@ -93,20 +109,10 @@ export default function Show() {
                                         </p>
                                     )}
                                 </div>
-
-                                <div className="grid gap-3 sm:grid-cols-2">
-                                    <MetaItem icon={Calendar}>{event.fecha}</MetaItem>
-
-                                    {event.hora && <MetaItem icon={Clock3}>{event.hora}</MetaItem>}
-
-                                    <MetaItem icon={MapPin}>{event.is_online ? 'Online' : event.lugar || 'Ubicación por confirmar'}</MetaItem>
-
-                                    {event.online_url && event.is_online && <MetaItem icon={Globe}>Acceso online disponible</MetaItem>}
-                                </div>
                             </div>
 
                             {/* IMAGE */}
-                            <div className="relative mx-auto w-full max-w-[520px] overflow-hidden rounded-[1.75rem] bg-muted shadow-[0_22px_55px_rgba(175,16,26,0.10)] dark:bg-zinc-900">
+                            <div className="relative mx-auto w-full max-w-[520px] overflow-hidden rounded-[1.75rem] bg-muted shadow-[0_22px_55px_rgba(175,16,26,0.10)] lg:mx-0 dark:bg-zinc-900">
                                 <img
                                     src={imageSrc}
                                     alt={event.titulo}
@@ -118,6 +124,31 @@ export default function Show() {
                                 />
 
                                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-black/0 to-transparent" />
+                            </div>
+
+                            {/* META ROW */}
+                            <div className="rounded-[1.75rem] bg-white/55 p-3 shadow-[0_14px_36px_rgba(175,16,26,0.035)] backdrop-blur-sm lg:col-span-2 dark:bg-zinc-900/35">
+                                <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-12">
+                                    <MetaItem icon={MapPin} className="xl:col-span-5">
+                                        {event.is_online ? 'Online' : event.lugar || 'Ubicación por confirmar'}
+                                    </MetaItem>
+
+                                    <MetaItem icon={Calendar} className="xl:col-span-5">
+                                        {event.fecha}
+                                    </MetaItem>
+
+                                    {event.hora && (
+                                        <MetaItem icon={Clock3} className="md:col-span-2 xl:col-span-2">
+                                            {event.hora}
+                                        </MetaItem>
+                                    )}
+
+                                    {event.online_url && event.is_online && (
+                                        <MetaItem icon={Globe} className="md:col-span-2 xl:col-span-12">
+                                            Acceso online disponible
+                                        </MetaItem>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </section>
@@ -155,7 +186,7 @@ export default function Show() {
                         <aside className="space-y-6 lg:sticky lg:top-6">
                             {/* CTAs */}
                             {hasCtas && (
-                                <div className="rounded-[1.75rem] bg-background p-6 shadow-[0_16px_40px_rgba(175,16,26,0.05)] dark:bg-zinc-950/95">
+                                <div className="rounded-[1.75rem] bg-background p-6 xl:px-8 shadow-[0_16px_40px_rgba(175,16,26,0.05)] dark:bg-zinc-950/95">
                                     <h3 className="text-sm font-semibold text-muted-foreground uppercase">Acciones</h3>
 
                                     <div className="mt-4 flex flex-col gap-3">
