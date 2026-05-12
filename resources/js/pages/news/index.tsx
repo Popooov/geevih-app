@@ -8,7 +8,11 @@ export default function Index() {
     const { news } = usePage<NewsPageProps>().props;
 
     const featured = news.find((item) => Boolean(item.is_featured)) ?? null;
-    const rest = news.filter((item) => !item.is_featured);
+
+    // Use only one item as the main featured news.
+    // If more than one item is marked as featured in Filament,
+    // the rest will still appear in the recent news list.
+    const rest = featured ? news.filter((item) => item.id !== featured.id) : news;
 
     const gridColsClass = featured ? (rest.length >= 3 ? 'xl:grid-cols-3' : 'xl:grid-cols-2') : 'xl:grid-cols-2';
 
@@ -16,19 +20,19 @@ export default function Index() {
         <AppLayout>
             <Head title="Noticias | GEEVIH" />
 
-            <div className="mx-auto max-w-7xl px-6 pt-6 pb-16 lg:px-8 lg:pt-10 lg:pb-20">
+            <div className="mx-auto max-w-7xl px-5 pt-6 pb-16 sm:px-6 lg:px-8 lg:pt-10 lg:pb-20">
                 <div className={featured ? 'space-y-10 lg:space-y-12' : 'space-y-7 lg:space-y-8'}>
-                    <section className="relative overflow-hidden rounded-[2rem] bg-background/90 px-6 py-10 backdrop-blur-xl sm:px-8 lg:px-10 dark:bg-background/80">
+                    <section className="relative overflow-hidden rounded-[2rem] bg-background/85 px-5 py-10 text-center backdrop-blur-xl sm:px-6 sm:py-12 dark:bg-background/70">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.08),transparent_60%)] dark:bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.12),transparent_60%)]" />
 
-                        <div className="relative max-w-3xl space-y-4">
-                            <div className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold tracking-[0.16em] text-primary uppercase">
-                                Actualidad GEEVIH
-                            </div>
+                        <div className="relative mx-auto max-w-3xl">
+                            <p className="text-xs font-medium tracking-[0.16em] text-muted-foreground uppercase">Actualidad GEEVIH</p>
 
-                            <h1 className="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl">Noticias</h1>
+                            <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-balance text-foreground sm:text-5xl lg:text-6xl">
+                                Noticias
+                            </h1>
 
-                            <p className="text-base leading-7 text-muted-foreground sm:text-lg">
+                            <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base lg:text-lg lg:leading-8">
                                 Actualidad del Grupo GEEVIH, novedades científicas, participación institucional y contenidos de interés en el ámbito
                                 del VIH.
                             </p>
@@ -37,60 +41,57 @@ export default function Index() {
 
                     {featured && (
                         <>
-                            <section className="relative overflow-hidden rounded-[2rem] bg-background/92 px-6 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] backdrop-blur-xl sm:px-8 sm:py-8 lg:px-10 dark:bg-zinc-950/85">
+                            <section className="relative overflow-hidden rounded-[2rem] bg-background/92 px-5 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] backdrop-blur-xl sm:px-8 sm:py-8 lg:px-10 lg:py-10 dark:bg-zinc-950/85">
                                 <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(175,16,26,0.07),transparent_45%)] dark:bg-[radial-gradient(circle_at_top_right,rgba(175,16,26,0.12),transparent_45%)]" />
 
-                                <div className="relative grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(420px,520px)] lg:items-center">
-                                    <div className="flex h-full flex-col">
-                                        <div className="space-y-7">
-                                            <div className="flex flex-wrap items-center gap-2">
-                                                <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold tracking-[0.14em] text-primary uppercase">
-                                                    Destacada
-                                                </span>
+                                <div className="relative mx-auto grid max-w-5xl gap-7 min-[1400px]:max-w-none min-[1400px]:grid-cols-[minmax(0,0.92fr)_minmax(440px,560px)] min-[1400px]:items-center min-[1400px]:gap-10">
+                                    <div className="space-y-6 min-[1400px]:space-y-7">
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold tracking-[0.14em] text-primary uppercase">
+                                                Destacada
+                                            </span>
 
-                                                <span className="inline-flex items-center rounded-full bg-zinc-100 px-3 py-1 text-[11px] font-semibold tracking-[0.14em] text-zinc-700 uppercase dark:bg-zinc-800 dark:text-zinc-300">
-                                                    {featured.fecha}
-                                                </span>
-                                            </div>
-
-                                            <div className="max-w-3xl space-y-4">
-                                                <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl dark:text-white">
-                                                    {featured.titulo}
-                                                </h2>
-
-                                                {featured.descripcion && (
-                                                    <p className="max-w-2xl text-sm leading-8 text-foreground/70 sm:text-lg dark:text-zinc-300">
-                                                        {featured.descripcion}
-                                                    </p>
-                                                )}
-                                            </div>
+                                            <span className="inline-flex items-center rounded-full bg-zinc-100 px-3 py-1 text-[11px] font-semibold tracking-[0.14em] text-zinc-700 uppercase dark:bg-zinc-800 dark:text-zinc-300">
+                                                {featured.fecha}
+                                            </span>
                                         </div>
 
-                                        <div className="mt-auto pt-8">
-                                            <div className="flex flex-wrap gap-3">
-                                                <Link
-                                                    href={`/noticias/${featured.slug ?? featured.id}`}
-                                                    prefetch
-                                                    className="inline-flex items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#af101a_0%,#d32f2f_100%)] px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(175,16,26,0.18)] transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(175,16,26,0.22)]"
-                                                >
-                                                    Leer noticia
-                                                    <ArrowRight className="h-4 w-4" />
-                                                </Link>
-                                            </div>
+                                        <div className="max-w-3xl space-y-4">
+                                            <h2 className="text-[1.95rem] font-semibold leading-[1.08] tracking-tight text-foreground sm:text-[2.35rem] lg:text-[2.7rem] min-[1400px]:text-[2.25rem] 2xl:text-[2.6rem] dark:text-white">
+                                                {featured.titulo}
+                                            </h2>
+
+                                            {featured.descripcion && (
+                                                <p className="max-w-3xl text-sm leading-7 text-foreground/70 sm:text-base sm:leading-8 lg:text-lg min-[1400px]:max-w-2xl dark:text-zinc-300">
+                                                    {featured.descripcion}
+                                                </p>
+                                            )}
                                         </div>
                                     </div>
 
-                                    <div className="relative mx-auto w-full max-w-[520px] overflow-hidden rounded-[1.75rem] bg-muted shadow-[0_20px_50px_rgba(175,16,26,0.08)] dark:bg-zinc-900">
+                                    <div className="order-2 relative mx-auto w-full max-w-[860px] overflow-hidden rounded-[1.5rem] bg-muted shadow-[0_20px_50px_rgba(175,16,26,0.08)] sm:rounded-[1.75rem] min-[1400px]:order-none min-[1400px]:mx-0 min-[1400px]:max-w-none min-[1400px]:row-span-2 dark:bg-zinc-900">
                                         <img
                                             src={featured.imagen?.trim() ? featured.imagen : '/images/news-placeholder.png'}
                                             alt={featured.titulo}
-                                            className="aspect-[18/7] h-auto w-full object-cover object-center"
+                                            className="aspect-[16/9] w-full object-cover object-center sm:aspect-[18/8] lg:aspect-[18/8] min-[1400px]:aspect-[16/9]"
                                             onError={(e) => {
                                                 e.currentTarget.onerror = null;
                                                 e.currentTarget.src = '/images/news-placeholder.png';
                                             }}
                                         />
+
                                         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-black/0 to-transparent" />
+                                    </div>
+
+                                    <div className="order-3 min-[1400px]:col-start-1 min-[1400px]:row-start-2">
+                                        <Link
+                                            href={`/noticias/${featured.slug ?? featured.id}`}
+                                            prefetch
+                                            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#af101a_0%,#d32f2f_100%)] px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(175,16,26,0.18)] transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(175,16,26,0.22)] sm:w-auto"
+                                        >
+                                            Leer noticia
+                                            <ArrowRight className="h-4 w-4" />
+                                        </Link>
                                     </div>
                                 </div>
                             </section>
