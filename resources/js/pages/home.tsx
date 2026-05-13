@@ -6,7 +6,7 @@ import { ArrowRight, UserPlus } from 'lucide-react';
 export default function Home() {
     return (
         <AppLayout>
-            <Head title="Inicio" />
+            <Head title="Grupo de Enfermería Experta en VIH" />
 
             <div className="min-h-[calc(100vh-80px)]">
                 <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-8 sm:px-6 lg:px-8 lg:py-10">

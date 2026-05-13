@@ -30,7 +30,12 @@
             }
         </style>
 
-        <title inertia>{{ config('app.name', 'Laravel') }}</title>
+        <title inertia>{{ config('app.name', 'GEEVIH') }}</title>
+
+        <meta
+            name="description"
+            content="Grupo de Enfermería Experta en VIH integrado en SEISIDA. Formación, investigación, recursos y actualidad sobre cuidados de enfermería en VIH."
+        >
 
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
