@@ -30,7 +30,7 @@
             }
         </style>
 
-        <title inertia>{{ config('app.name', 'GEEVIH') }}</title>
+        <title inertia>{{ config('app.name', 'GEEVIH - SEISIDA') }}</title>
 
         <meta
             name="description"
