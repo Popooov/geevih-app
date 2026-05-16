@@ -213,7 +213,7 @@ export default function Show() {
                                                     rel="noopener noreferrer"
                                                     className="w-full sm:w-auto lg:w-full"
                                                 >
-                                                    <button className="h-10 w-full cursor-pointer rounded-xl bg-zinc-950 px-5 text-sm font-medium text-white transition hover:bg-primary sm:w-auto sm:min-w-40 lg:w-full dark:bg-white dark:text-zinc-950 dark:hover:bg-primary dark:hover:text-white">
+                                                    <button type='button' className="h-10 w-full cursor-pointer rounded-xl bg-zinc-950 px-5 text-sm font-medium text-white transition hover:bg-primary sm:w-auto sm:min-w-40 lg:w-full dark:bg-white dark:text-zinc-950 dark:hover:bg-primary dark:hover:text-white">
                                                         Inscribirse
                                                     </button>
                                                 </a>
