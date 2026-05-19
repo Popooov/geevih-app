@@ -2,7 +2,7 @@ import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
 import { type ShowEventPageProps } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { ArrowLeft, Calendar, Clock3, Globe, MapPin } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock3, MapPin } from 'lucide-react';
 
 function EventBadge({ children, variant = 'default' }: { children: React.ReactNode; variant?: 'default' | 'secondary' | 'live' }) {
     const styles = {
@@ -20,15 +20,7 @@ function EventBadge({ children, variant = 'default' }: { children: React.ReactNo
     );
 }
 
-function MetaItem({
-    icon: Icon,
-    children,
-    className,
-}: {
-    icon: React.ElementType;
-    children: React.ReactNode;
-    className?: string;
-}) {
+function MetaItem({ icon: Icon, children, className }: { icon: React.ElementType; children: React.ReactNode; className?: string }) {
     return (
         <div
             className={cn(
@@ -127,7 +119,11 @@ export default function Show() {
 
                                 <div className="hidden rounded-[1.5rem] bg-white/65 px-4 py-4 shadow-[0_12px_34px_rgba(175,16,26,0.04)] backdrop-blur-sm lg:block dark:bg-zinc-900/45">
                                     <div className="flex flex-wrap items-center gap-2">
-                                        {event.is_online ? <EventBadge variant="secondary">Actividad online</EventBadge> : <EventBadge variant="secondary">Actividad presencial</EventBadge>}
+                                        {event.is_online ? (
+                                            <EventBadge variant="secondary">Actividad online</EventBadge>
+                                        ) : (
+                                            <EventBadge variant="secondary">Actividad presencial</EventBadge>
+                                        )}
                                         {event.isOngoing && <EventBadge variant="live">En curso</EventBadge>}
                                     </div>
                                 </div>
@@ -196,9 +192,7 @@ export default function Show() {
                                 <div className="rounded-[1.75rem] bg-background px-5 py-5 shadow-[0_16px_40px_rgba(175,16,26,0.05)] sm:px-6 dark:bg-zinc-950/95">
                                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between lg:flex-col lg:items-stretch">
                                         <div className="space-y-1">
-                                            <h3 className="text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase">
-                                                Acciones
-                                            </h3>
+                                            <h3 className="text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase">Acciones</h3>
 
                                             <p className="max-w-sm text-sm leading-6 text-foreground/60 lg:max-w-none dark:text-zinc-400">
                                                 Gestiona tu participación en esta actividad.
@@ -211,11 +205,9 @@ export default function Show() {
                                                     href={event.registration_url}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="w-full sm:w-auto lg:w-full"
+                                                    className="inline-flex h-11 w-full items-center justify-center rounded-xl bg-zinc-900 px-5 text-sm font-semibold text-zinc-50 shadow-sm transition-all duration-200 hover:bg-zinc-800 focus-visible:ring-2 focus-visible:ring-zinc-500/50 focus-visible:ring-offset-2 focus-visible:outline-none sm:w-auto sm:min-w-40 lg:w-full dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-offset-zinc-950"
                                                 >
-                                                    <button type='button' className="h-10 w-full cursor-pointer rounded-xl bg-zinc-950 px-5 text-sm font-medium text-white transition hover:bg-primary sm:w-auto sm:min-w-40 lg:w-full dark:bg-white dark:text-zinc-950 dark:hover:bg-primary dark:hover:text-white">
-                                                        Inscribirse
-                                                    </button>
+                                                    Inscribirse
                                                 </a>
                                             )}
 
@@ -224,11 +216,9 @@ export default function Show() {
                                                     href={event.online_url}
                                                     target="_blank"
                                                     rel="noopener noreferrer"
-                                                    className="w-full sm:w-auto lg:w-full"
+                                                    className="inline-flex h-11 w-full items-center justify-center rounded-xl border border-zinc-200/60 bg-zinc-50/50 px-5 text-sm font-semibold text-zinc-700 transition-all duration-200 hover:bg-zinc-100 hover:text-zinc-900 focus-visible:ring-2 focus-visible:ring-zinc-500/30 focus-visible:ring-offset-2 focus-visible:outline-none sm:w-auto sm:min-w-40 lg:w-full dark:border-zinc-800/50 dark:bg-zinc-900/50 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 dark:focus-visible:ring-offset-zinc-950"
                                                 >
-                                                    <button className="h-10 w-full cursor-pointer rounded-xl bg-primary/5 px-5 text-sm font-medium text-[#005f7b] transition hover:bg-primary/10 sm:w-auto sm:min-w-40 lg:w-full dark:bg-sky-500/10 dark:text-sky-300 dark:hover:bg-sky-500/15">
-                                                        Acceder online
-                                                    </button>
+                                                    Acceder online
                                                 </a>
                                             )}
                                         </div>
