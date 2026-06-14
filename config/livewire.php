@@ -5,7 +5,7 @@ $config = require base_path('vendor/livewire/livewire/config/livewire.php');
 $config['temporary_file_upload']['rules'] = [
     'required',
     'file',
-    'max:' . env('LIVEWIRE_UPLOAD_MAX_KB', 20480),
+    'max:' . env('LIVEWIRE_UPLOAD_MAX_KB', 10240),
 ];
 
 return $config;

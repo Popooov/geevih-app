@@ -127,6 +127,7 @@ class ResourceResource extends Resource
                 ->disk('public')
                 ->directory('tmp/resources')
                 ->acceptedFileTypes(['application/pdf'])
+                ->maxSize(10240)
                 ->preserveFilenames(false)
                 ->multiple(false)
                 ->storeFiles(true)
