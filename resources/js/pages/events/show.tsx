@@ -49,7 +49,7 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 export default function Show() {
     const { event } = usePage<ShowEventPageProps>().props;
 
-    const imageSrc = event.imagen?.trim() ? event.imagen : '/images/evento-placeholder.jpg';
+    const imageSrc = event.imagen?.trim() ? event.imagen : '/images/event-placeholder.png';
     const isPast = Boolean(event.isPast);
     const canRegister = !isPast && Boolean(event.registration_url);
     const canAccessOnline = Boolean(event.online_url);
@@ -107,10 +107,16 @@ export default function Show() {
                                     <img
                                         src={imageSrc}
                                         alt={event.titulo}
+                                        width={1040}
+                                        height={585}
+                                        sizes="(min-width: 1280px) 520px, (min-width: 1024px) 50vw, 100vw"
+                                        loading="eager"
+                                        fetchPriority="high"
+                                        decoding="async"
                                         className="aspect-video h-auto w-full object-cover object-center"
                                         onError={(e) => {
                                             e.currentTarget.onerror = null;
-                                            e.currentTarget.src = '/images/evento-placeholder.jpg';
+                                            e.currentTarget.src = '/images/event-placeholder.png';
                                         }}
                                     />
 
