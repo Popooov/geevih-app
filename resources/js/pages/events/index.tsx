@@ -237,7 +237,7 @@ export default function Index() {
 
                         {filteredUpcoming.length > 0 ? (
                             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                                {filteredUpcoming.map((event) => (
+                                {filteredUpcoming.map((event, index) => (
                                     <EventCard
                                         key={event.id}
                                         titulo={event.titulo}
@@ -252,6 +252,7 @@ export default function Index() {
                                         online_url={event.online_url}
                                         isOngoing={event.isOngoing}
                                         isPast={event.isPast}
+                                        priority={index < 2}
                                     />
                                 ))}
                             </div>
@@ -265,7 +266,7 @@ export default function Index() {
 
                         {filteredPast.length > 0 ? (
                             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                                {filteredPast.map((event) => (
+                                {filteredPast.map((event, index) => (
                                     <EventCard
                                         key={event.id}
                                         titulo={event.titulo}
@@ -279,6 +280,7 @@ export default function Index() {
                                         is_online={event.is_online}
                                         registration_url={event.registration_url}
                                         online_url={event.online_url}
+                                        priority={filteredUpcoming.length === 0 && index < 2}
                                     />
                                 ))}
                             </div>
