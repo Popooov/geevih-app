@@ -16,10 +16,10 @@ Route::prefix('sobre')->name('about.')->group(function () {
     Route::inertia('/areas-de-trabajo', 'about/areas')->name('areas');
 });
 
-Route::prefix('eventos')->name('events.')->group(function () {
-    Route::get('/', [EventController::class, 'index'])->name('index');
-    Route::get('/{event:slug}', [EventController::class, 'show'])->name('legacy-show');
-});
+// Route::prefix('eventos')->name('events.')->group(function () {
+//     Route::get('/', [EventController::class, 'index'])->name('index');
+//     Route::get('/{event:slug}', [EventController::class, 'show'])->name('legacy-show');
+// });
 
 // TODO: Remove this route when the training section is fully implemented, to avoid confusion with the "Aval de Geevih".
 Route::get('/formacion/aval-de-geevih', function () {
