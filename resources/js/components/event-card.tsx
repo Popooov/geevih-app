@@ -17,6 +17,7 @@ interface EventCardProps {
     online_url?: string | null;
     isOngoing?: boolean;
     isPast?: boolean;
+    priority?: boolean;
 }
 
 function EventBadge({ children, variant = 'default' }: { children: ReactNode; variant?: 'default' | 'secondary' | 'live' | 'finished' }) {
@@ -69,6 +70,7 @@ export default function EventCard({
     online_url,
     isOngoing,
     isPast,
+    priority = false,
 }: EventCardProps) {
     const imageSrc = imagen && imagen.trim() !== '' ? imagen : '/images/event-placeholder.png';
     const showPhysicalLocation = !!lugar && !is_online;
@@ -88,13 +90,19 @@ export default function EventCard({
                 <img
                     src={imageSrc}
                     alt={titulo}
+                    width={768}
+                    height={432}
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    loading={priority ? 'eager' : 'lazy'}
+                    fetchPriority={priority ? 'high' : 'auto'}
+                    decoding="async"
                     className={cn(
                         'h-full w-full object-cover transition duration-700',
                         isPast ? 'brightness-[0.82] grayscale-[0.75]' : 'group-hover:scale-[1.02]',
                     )}
                     onError={(e) => {
                         e.currentTarget.onerror = null;
-                        e.currentTarget.src = '/images/event-placeholder.jpg';
+                        e.currentTarget.src = '/images/event-placeholder.png';
                     }}
                 />
 
