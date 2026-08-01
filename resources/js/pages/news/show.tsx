@@ -85,9 +85,12 @@ export default function Show() {
 
                         {singleNews.contenido ? (
                             <div className="border-t border-border/60 px-6 py-8 sm:px-8 sm:py-10 dark:border-white/10">
-                                <div className="prose prose-slate dark:prose-invert prose-headings:scroll-mt-24 prose-a:text-red-600 dark:prose-a:text-red-400 prose-a:font-semibold max-w-none">
-                                    <div dangerouslySetInnerHTML={{ __html: singleNews.contenido }} />
-                                </div>
+                                <div
+                                    className="max-w-none text-[1.0625rem] leading-8 break-words text-muted-foreground dark:text-zinc-300 [&_a]:font-semibold [&_a]:text-red-600 [&_a]:underline [&_a]:underline-offset-4 dark:[&_a]:text-red-400 [&_blockquote]:my-8 [&_blockquote]:border-l-4 [&_blockquote]:border-primary/40 [&_blockquote]:pl-5 [&_blockquote]:italic [&_h2]:mt-10 [&_h2]:mb-4 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:tracking-tight [&_h2]:text-foreground dark:[&_h2]:text-white [&_h3]:mt-8 [&_h3]:mb-3 [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:tracking-tight [&_h3]:text-foreground dark:[&_h3]:text-white [&_li]:pl-1 [&_li]:leading-8 [&_li>p]:my-0 [&_ol]:my-6 [&_ol]:list-decimal [&_ol]:space-y-3 [&_ol]:pl-7 [&_p]:my-5 [&_p]:leading-8 [&_p:first-child]:mt-0 [&_p:last-child]:mb-0 [&_strong]:font-semibold [&_strong]:text-foreground dark:[&_strong]:text-white [&_ul]:my-6 [&_ul]:list-disc [&_ul]:space-y-3 [&_ul]:pl-7"
+                                    dangerouslySetInnerHTML={{
+                                        __html: singleNews.contenido,
+                                    }}
+                                />
                             </div>
                         ) : (
                             <div className="border-t border-border/60 px-6 py-8 sm:px-8 sm:py-10 dark:border-white/10">
