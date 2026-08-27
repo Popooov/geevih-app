@@ -7,7 +7,7 @@ export default function Guides() {
 
     return (
         <ResourceCategoryPage
-            title="Guías y Protocolos | GEEVIH"
+            title="Guías y Protocolos"
             eyebrow="Recursos GEEVIH"
             heading="Guías y Protocolos"
             description="Compendio de guías clínicas, protocolos y documentos validados para apoyar la práctica enfermera experta en VIH."

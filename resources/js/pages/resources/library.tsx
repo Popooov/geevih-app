@@ -7,7 +7,7 @@ export default function Biblioteca() {
 
     return (
         <ResourceCategoryPage
-            title="Biblioteca de Artículos Científicos | GEEVIH"
+            title="Biblioteca de Artículos Científicos"
             eyebrow="Recursos GEEVIH"
             heading="Biblioteca de Artículos Científicos"
             description="Selección curada de artículos, publicaciones y materiales de actualización científica relevantes para la enfermería en VIH."
