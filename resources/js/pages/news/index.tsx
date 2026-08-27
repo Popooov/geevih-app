@@ -18,7 +18,7 @@ export default function Index() {
 
     return (
         <AppLayout>
-            <Head title="Noticias | GEEVIH" />
+            <Head title="Noticias" />
 
             <div className="mx-auto max-w-7xl px-5 pt-6 pb-16 sm:px-6 lg:px-8 lg:pt-10 lg:pb-20">
                 <div className={featured ? 'space-y-10 lg:space-y-12' : 'space-y-7 lg:space-y-8'}>
