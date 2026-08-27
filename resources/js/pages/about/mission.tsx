@@ -6,7 +6,7 @@ import { BookOpen, HeartPulse, Quote, ShieldCheck, Target } from 'lucide-react';
 export default function Mission() {
     return (
         <AppLayout>
-            <Head title="Misión y Objetivos | GEEVIH" />
+            <Head title="Misión y Objetivos" />
 
             <div className="mx-auto max-w-6xl px-6 lg:px-8 pt-6 pb-12 lg:pt-10 lg:pb-14">
                 <div className="space-y-14">

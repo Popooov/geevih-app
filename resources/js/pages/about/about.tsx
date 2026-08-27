@@ -11,7 +11,7 @@ export default function SobreNosotros() {
 
     return (
         <AppLayout>
-            <Head title="Sobre Nosotros | GEEVIH" />
+            <Head title="Sobre Nosotros" />
 
             <div className="mx-auto max-w-6xl px-6 pt-6 pb-12 lg:px-8 lg:pt-10 lg:pb-14">
                 <div className="space-y-12">

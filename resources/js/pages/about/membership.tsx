@@ -9,7 +9,7 @@ const contactEmail = 'geevih@seisida.net';
 export default function Membership() {
     return (
         <AppLayout>
-            <Head title="Hazte socio | GEEVIH" />
+            <Head title="Hazte socio" />
 
             <div className="mx-auto max-w-6xl px-6 pt-6 pb-12 lg:px-8 lg:pt-10 lg:pb-14">
                 <div className="space-y-14">

@@ -7,7 +7,7 @@ export default function Contact() {
 
     return (
         <AppLayout>
-            <Head title="Contacto | GEEVIH" />
+            <Head title="Contacto" />
 
             <div className="mx-auto max-w-6xl px-6 pt-6 pb-10 lg:px-8 lg:pt-10 lg:pb-14">
                 <div className="space-y-10 lg:space-y-12">
