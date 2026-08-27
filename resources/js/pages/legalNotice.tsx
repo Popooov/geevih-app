@@ -43,7 +43,7 @@ export default function LegalNotice() {
 
     return (
         <AppLayout>
-            <Head title="Aviso legal y política de privacidad | GEEVIH" />
+            <Head title="Aviso legal y política de privacidad" />
 
             <div className="mx-auto max-w-5xl px-4 pt-4 pb-14 sm:px-6 lg:px-8 lg:pt-6 lg:pb-16">
                 <div className="space-y-8">
