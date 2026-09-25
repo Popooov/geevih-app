@@ -6,6 +6,7 @@ use App\Models\News;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 
 class NewsController extends Controller
 {
@@ -50,40 +51,32 @@ class NewsController extends Controller
 
     public function index()
     {
-        // Retrieve all published news ordered by publication date (latest first)
         $allNews = News::query()
             ->where('is_published', true)
-            ->orderBy('published_at', 'desc')
+            ->orderByDesc('published_at')
             ->get();
 
         return Inertia::render('news/index', [
-            // Transform each News model into a simplified structure for the frontend
-            'news' => $allNews->map(fn ($news) => [
-                'id'          => $news->id,
+            'news' => $allNews->map(function (News $news): array {
+                $imagePath = $news->image_url;
 
-                // Title of the news item
-                'titulo'      => $news->title,
-
-                // Format publication date for display (human-readable format)
-                'fecha'       => $this->formatSpanishDate($news->published_at),
-
-                // Short summary used in listing views
-                'descripcion' => $news->summary,
-
-                // Full content (included here, possibly for previews or reuse)
-                'contenido'   => $news->content,
-
-                // Generate public URL from Cloudinary if image exists
-                'imagen'      => $news->image_url
-                    ? Storage::disk('cloudinary')->url($news->image_url)
-                    : null,
-
-                // Slug used for routing to detail page
-                'slug'        => $news->slug,
-
-                // Cast featured flag to boolean for consistent frontend usage
-                'is_featured' => (bool) $news->is_featured,
-            ]),
+                return [
+                    'id' => $news->id,
+                    'titulo' => $news->title,
+                    'fecha' => $this->formatSpanishDate($news->published_at),
+                    'descripcion' => $news->summary,
+                    'contenido' => $news->content,
+                    'imagen' => $imagePath
+                        ? Cache::store('file')->remember(
+                            'news:cloudinary-url:' . hash('sha256', (string) $imagePath),
+                            now()->addMinutes(30),
+                            fn (): string => Storage::disk('cloudinary')->url($imagePath),
+                        )
+                        : null,
+                    'slug' => $news->slug,
+                    'is_featured' => (bool) $news->is_featured,
+                ];
+            }),
         ]);
     }
 
