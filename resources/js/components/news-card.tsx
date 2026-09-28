@@ -15,7 +15,7 @@ export default function NewsCard({ titulo, fecha, resumen, imagen, enlace }: Not
 
     return (
         <Link href={href} className="group block h-full">
-            <article className="h-full overflow-hidden rounded-[1.75rem] bg-white shadow-[0_8px_24px_rgba(0,0,0,0.04)] ring-1 ring-black/5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:bg-background hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] dark:bg-neutral-900 dark:shadow-none dark:ring-white/10 dark:hover:bg-neutral-800">
+            <article className="flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-white shadow-[0_8px_24px_rgba(0,0,0,0.04)] ring-1 ring-black/5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:bg-background hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] dark:bg-neutral-900 dark:shadow-none dark:ring-white/10 dark:hover:bg-neutral-800">
                 <div className="relative aspect-video w-full overflow-hidden bg-muted dark:bg-zinc-900">
                     <img
                         src={imageSrc}
