@@ -31,7 +31,7 @@ export default function Show() {
                                 <img
                                     src={imageSrc}
                                     alt={`Imagen de ${singleNews.titulo}`}
-                                    className="aspect-[18/7] h-auto w-full object-cover object-center"
+                                    className="aspect-video h-auto w-full object-cover object-center"
                                     onError={(e) => {
                                         e.currentTarget.onerror = null;
                                         e.currentTarget.src = '/images/noticia-placeholder.jpg';
