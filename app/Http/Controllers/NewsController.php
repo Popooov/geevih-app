@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\News;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Cache;
 
 class NewsController extends Controller
 {
@@ -49,6 +47,22 @@ class NewsController extends Controller
         }
     }
 
+    private const CLOUDINARY_IMAGE_BASE_URL =
+        'https://res.cloudinary.com/dnke4qnie/image/upload/';
+
+    private function resolveImageUrl(?string $path): ?string
+    {
+        if (! $path) {
+            return null;
+        }
+
+        if (str_starts_with($path, 'https://') || str_starts_with($path, 'http://')) {
+            return $path;
+        }
+
+        return self::CLOUDINARY_IMAGE_BASE_URL . ltrim($path, '/');
+    }
+
     public function index()
     {
         $allNews = News::query()
@@ -66,13 +80,7 @@ class NewsController extends Controller
                     'fecha' => $this->formatSpanishDate($news->published_at),
                     'descripcion' => $news->summary,
                     'contenido' => $news->content,
-                    'imagen' => $imagePath
-                        ? Cache::store('file')->remember(
-                            'news:cloudinary-url:' . hash('sha256', (string) $imagePath),
-                            now()->addMinutes(30),
-                            fn (): string => Storage::disk('cloudinary')->url($imagePath),
-                        )
-                        : null,
+                    'imagen' => $this->resolveImageUrl($news->image_url),
                     'slug' => $news->slug,
                     'is_featured' => (bool) $news->is_featured,
                 ];
@@ -103,9 +111,7 @@ class NewsController extends Controller
                 'contenido'   => $news->content,
 
                 // Public image URL from Cloudinary (if exists)
-                'imagen'      => $news->image_url
-                    ? Storage::disk('cloudinary')->url($news->image_url)
-                    : null,
+                'imagen'      => $this->resolveImageUrl($news->image_url),
 
                 // Optional external source link
                 'source_url'  => $news->source_url,
