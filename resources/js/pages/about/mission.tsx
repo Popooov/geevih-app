@@ -110,7 +110,7 @@ export default function Mission() {
                                 <h2 className="text-xl font-semibold tracking-tight text-foreground">Una plataforma colaborativa sólida</h2>
                                 <p className="leading-8 text-muted-foreground">
                                     Gracias a su integración en SEISIDA, el grupo cuenta con una plataforma colaborativa robusta para impulsar la
-                                    formación, la investigación innovadora, la colaboración activa, para avanzar en el conocimiento y la práctica enfermera exeprta en VIH en España.
+                                    formación, la investigación innovadora, la colaboración activa, para avanzar en el conocimiento y la práctica enfermera experta en VIH en España.
                                 </p>
                             </CardContent>
                         </Card>
