@@ -2,7 +2,39 @@ import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
 import { type ShowEventPageProps } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { ArrowLeft, Calendar, Clock3, MapPin } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock3, ExternalLink, MapPin } from 'lucide-react';
+
+function EventActions({ registrationUrl, onlineUrl, className }: { registrationUrl?: string | null; onlineUrl?: string | null; className?: string }) {
+    return (
+        <div className={cn('flex flex-col gap-3 sm:flex-row sm:flex-wrap', className)}>
+            {registrationUrl && (
+                <a
+                    href={registrationUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-zinc-900 px-5 py-3 text-sm font-semibold text-zinc-50 shadow-sm transition-colors hover:bg-zinc-800 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-offset-zinc-950"
+                >
+                    Inscribirse
+                    <ExternalLink aria-hidden="true" className="h-4 w-4 shrink-0" />
+                    <span className="sr-only"> (se abre en una pestaña nueva)</span>
+                </a>
+            )}
+
+            {onlineUrl && (
+                <a
+                    href={onlineUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-zinc-200/60 bg-zinc-50/50 px-5 py-3 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-100 hover:text-zinc-900 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none dark:border-zinc-800/50 dark:bg-zinc-900/50 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 dark:focus-visible:ring-offset-zinc-950"
+                >
+                    Acceder online
+                    <ExternalLink aria-hidden="true" className="h-4 w-4 shrink-0" />
+                    <span className="sr-only"> (se abre en una pestaña nueva)</span>
+                </a>
+            )}
+        </div>
+    );
+}
 
 function EventBadge({ children, variant = 'default' }: { children: React.ReactNode; variant?: 'default' | 'secondary' | 'live' }) {
     const styles = {
@@ -51,9 +83,8 @@ export default function Show() {
 
     const imageSrc = event.imagen?.trim() ? event.imagen : '/images/event-placeholder.png';
     const isPast = Boolean(event.isPast);
-    const canRegister = !isPast && Boolean(event.registration_url);
-    const canAccessOnline = Boolean(event.online_url);
-    const hasCtas = canRegister || canAccessOnline;
+    const registrationUrl = isPast ? null : event.registration_url;
+    const hasCtas = Boolean(registrationUrl || event.online_url);
 
     const backHref = event.backLink ?? '/formacion';
     const backLabel = event.category ? `Volver a ${event.category}` : 'Volver a formación';
@@ -63,12 +94,12 @@ export default function Show() {
             <Head title={event.titulo} />
 
             <div className="mx-auto max-w-7xl px-5 pt-6 pb-16 sm:px-6 lg:px-8 lg:pt-10 lg:pb-20">
-                <div className="space-y-10 lg:space-y-12">
+                <div className="space-y-6 lg:space-y-8">
                     {/* BACK */}
                     <div>
                         <Link
                             href={backHref}
-                            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition hover:text-primary"
+                            className="inline-flex min-h-11 items-center gap-2 rounded-md text-sm font-medium text-muted-foreground transition hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
                         >
                             <ArrowLeft className="h-4 w-4" />
                             {backLabel}
@@ -99,6 +130,8 @@ export default function Show() {
                                         </p>
                                     )}
                                 </div>
+
+                                {hasCtas && <EventActions registrationUrl={registrationUrl} onlineUrl={event.online_url} />}
                             </div>
 
                             {/* MEDIA */}
@@ -163,7 +196,7 @@ export default function Show() {
                     </section>
 
                     {/* MAIN */}
-                    <main className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_340px]">
+                    <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_340px]">
                         {/* CONTENT */}
                         <section>
                             <div className="rounded-[2rem] bg-background px-6 py-7 shadow-[0_16px_40px_rgba(175,16,26,0.05)] sm:px-8 sm:py-8 dark:bg-zinc-950/95">
@@ -181,7 +214,7 @@ export default function Show() {
 
                                 <div className="mt-8">
                                     {event.contenido ? (
-                                        <div className="prose prose-slate dark:prose-invert max-w-none">
+                                        <div className="prose max-w-none prose-slate dark:prose-invert">
                                             <div dangerouslySetInnerHTML={{ __html: event.contenido }} />
                                         </div>
                                     ) : (
@@ -192,10 +225,10 @@ export default function Show() {
                         </section>
 
                         {/* SIDEBAR */}
-                        <aside className="space-y-6 lg:sticky lg:top-6">
+                        <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
                             {/* CTAs */}
                             {hasCtas && (
-                                <div className="rounded-[1.75rem] bg-background px-5 py-5 shadow-[0_16px_40px_rgba(175,16,26,0.05)] sm:px-6 dark:bg-zinc-950/95">
+                                <div className="hidden rounded-[1.75rem] bg-background px-5 py-5 shadow-[0_16px_40px_rgba(175,16,26,0.05)] sm:px-6 lg:block dark:bg-zinc-950/95">
                                     <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between lg:flex-col lg:items-stretch">
                                         <div className="space-y-1">
                                             <h3 className="text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase">Acciones</h3>
@@ -205,29 +238,7 @@ export default function Show() {
                                             </p>
                                         </div>
 
-                                        <div className="flex flex-col gap-3 sm:flex-row sm:items-center lg:flex-col lg:items-stretch">
-                                            {canRegister && event.registration_url && (
-                                                <a
-                                                    href={event.registration_url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="inline-flex h-11 w-full items-center justify-center rounded-xl bg-zinc-900 px-5 text-sm font-semibold text-zinc-50 shadow-sm transition-all duration-200 hover:bg-zinc-800 focus-visible:ring-2 focus-visible:ring-zinc-500/50 focus-visible:ring-offset-2 focus-visible:outline-none sm:w-auto sm:min-w-40 lg:w-full dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-offset-zinc-950"
-                                                >
-                                                    Inscribirse
-                                                </a>
-                                            )}
-
-                                            {canAccessOnline && event.online_url && (
-                                                <a
-                                                    href={event.online_url}
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    className="inline-flex h-11 w-full items-center justify-center rounded-xl border border-zinc-200/60 bg-zinc-50/50 px-5 text-sm font-semibold text-zinc-700 transition-all duration-200 hover:bg-zinc-100 hover:text-zinc-900 focus-visible:ring-2 focus-visible:ring-zinc-500/30 focus-visible:ring-offset-2 focus-visible:outline-none sm:w-auto sm:min-w-40 lg:w-full dark:border-zinc-800/50 dark:bg-zinc-900/50 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 dark:focus-visible:ring-offset-zinc-950"
-                                                >
-                                                    Acceder online
-                                                </a>
-                                            )}
-                                        </div>
+                                        <EventActions registrationUrl={registrationUrl} onlineUrl={event.online_url} className="lg:flex-col" />
                                     </div>
                                 </div>
                             )}
@@ -260,7 +271,7 @@ export default function Show() {
                                 </Link>
                             </div>
                         </aside>
-                    </main>
+                    </div>
                 </div>
             </div>
         </AppLayout>
