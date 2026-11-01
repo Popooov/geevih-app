@@ -221,6 +221,7 @@ class EventController extends Controller
                 'lugar' => $event->is_online ? 'Online' : $event->location,
 
                 'fecha' => $dateRange,
+                'year' => $start?->year,
                 'hora' => $timeRange,
                 'descripcion' => $event->description,
 
