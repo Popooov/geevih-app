@@ -53,6 +53,7 @@ export interface EventItem {
     titulo: string;
     lugar: string;
     fecha: string; // ej: "Jan 28, 2026" (toFormattedDateString)
+    year?: number | null; // Año de inicio de la actividad.
     hora?: string | null;
 
     descripcion?: string | null;
