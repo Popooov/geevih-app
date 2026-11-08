@@ -153,7 +153,7 @@ function EmptyState({ title, description, children }: { title: string; descripti
 
 function EventGrid({ events, priority = false, isPast }: { events: EventItem[]; priority?: boolean; isPast?: boolean }) {
     return (
-        <div className={cn('grid grid-cols-1 gap-6', isPast ? 'md:grid-cols-2' : 'lg:grid-cols-2')}>
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {events.map((event, index) => (
                 <EventCard
                     key={event.id}
