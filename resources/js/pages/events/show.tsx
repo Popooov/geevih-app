@@ -1,3 +1,4 @@
+import { siteButtonVariants } from '@/components/site-button';
 import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
 import { type ShowEventPageProps } from '@/types';
@@ -8,12 +9,7 @@ function EventActions({ registrationUrl, onlineUrl, className }: { registrationU
     return (
         <div className={cn('flex flex-col gap-3 sm:flex-row sm:flex-wrap', className)}>
             {registrationUrl && (
-                <a
-                    href={registrationUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-zinc-900 px-5 py-3 text-sm font-semibold text-zinc-50 shadow-sm transition-colors hover:bg-zinc-800 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-offset-zinc-950"
-                >
+                <a href={registrationUrl} target="_blank" rel="noopener noreferrer" className={siteButtonVariants({ variant: 'primary' })}>
                     Inscribirse
                     <ExternalLink aria-hidden="true" className="h-4 w-4 shrink-0" />
                     <span className="sr-only"> (se abre en una pestaña nueva)</span>
@@ -25,7 +21,7 @@ function EventActions({ registrationUrl, onlineUrl, className }: { registrationU
                     href={onlineUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl border border-zinc-200/60 bg-zinc-50/50 px-5 py-3 text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-100 hover:text-zinc-900 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none dark:border-zinc-800/50 dark:bg-zinc-900/50 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-zinc-200 dark:focus-visible:ring-offset-zinc-950"
+                    className={siteButtonVariants({ variant: registrationUrl ? 'secondary' : 'primary' })}
                 >
                     Acceder online
                     <ExternalLink aria-hidden="true" className="h-4 w-4 shrink-0" />
@@ -40,7 +36,7 @@ function EventBadge({ children, variant = 'default' }: { children: React.ReactNo
     const styles = {
         default: 'bg-primary/10 text-primary dark:bg-primary/15 dark:text-red-200',
         secondary: 'bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300',
-        live: 'bg-emerald-600 text-white dark:bg-emerald-500',
+        live: 'bg-emerald-700 text-white dark:bg-emerald-300 dark:text-zinc-950',
     };
 
     return (
@@ -72,7 +68,7 @@ function MetaItem({ icon: Icon, children, className }: { icon: React.ElementType
 function InfoRow({ label, value }: { label: string; value: string }) {
     return (
         <div className="space-y-1">
-            <p className="text-[11px] font-semibold tracking-[0.18em] text-muted-foreground uppercase dark:text-zinc-500">{label}</p>
+            <p className="text-[11px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">{label}</p>
             <p className="text-sm leading-6 text-foreground dark:text-white">{value}</p>
         </div>
     );
@@ -93,8 +89,8 @@ export default function Show() {
         <AppLayout>
             <Head title={event.titulo} />
 
-            <div className="mx-auto max-w-7xl px-5 pt-6 pb-16 sm:px-6 lg:px-8 lg:pt-10 lg:pb-20">
-                <div className="space-y-6 lg:space-y-8">
+            <div className="site-page">
+                <div className="site-stack">
                     {/* BACK */}
                     <div>
                         <Link

@@ -1,4 +1,5 @@
 import NewsCard from '@/components/news-card';
+import { siteButtonVariants } from '@/components/site-button';
 import AppLayout from '@/layouts/app-layout';
 import { type NewsPageProps } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
@@ -20,8 +21,8 @@ export default function Index() {
         <AppLayout>
             <Head title="Noticias" />
 
-            <div className="mx-auto max-w-7xl px-5 pt-6 pb-16 sm:px-6 lg:px-8 lg:pt-10 lg:pb-20">
-                <div className={featured ? 'space-y-10 lg:space-y-12' : 'space-y-7 lg:space-y-8'}>
+            <div className="site-page">
+                <div className="site-stack">
                     <section className="relative overflow-hidden rounded-[2rem] bg-background/85 px-5 py-10 text-center backdrop-blur-xl sm:px-6 sm:py-12 dark:bg-background/70">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.08),transparent_60%)] dark:bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.12),transparent_60%)]" />
 
@@ -57,7 +58,7 @@ export default function Index() {
                                         </div>
 
                                         <div className="max-w-3xl space-y-4">
-                                            <h2 className="text-[1.95rem] font-semibold leading-[1.08] tracking-tight text-foreground sm:text-[2.35rem] lg:text-[2.7rem] xl:text-[2.25rem] 2xl:text-[2.6rem] dark:text-white">
+                                            <h2 className="text-[1.95rem] leading-[1.08] font-semibold tracking-tight text-foreground sm:text-[2.35rem] lg:text-[2.7rem] xl:text-[2.25rem] 2xl:text-[2.6rem] dark:text-white">
                                                 {featured.titulo}
                                             </h2>
 
@@ -69,7 +70,7 @@ export default function Index() {
                                         </div>
                                     </div>
 
-                                    <div className="order-2 relative w-full max-w-[860px] overflow-hidden rounded-[1.5rem] bg-muted shadow-[0_20px_50px_rgba(175,16,26,0.08)] sm:rounded-[1.75rem] xl:order-none xl:row-span-2 xl:mx-0 xl:max-w-none dark:bg-zinc-900">
+                                    <div className="relative order-2 w-full max-w-[860px] overflow-hidden rounded-[1.5rem] bg-muted shadow-[0_20px_50px_rgba(175,16,26,0.08)] sm:rounded-[1.75rem] xl:order-none xl:row-span-2 xl:mx-0 xl:max-w-none dark:bg-zinc-900">
                                         <img
                                             src={featured.imagen?.trim() ? featured.imagen : '/images/news-placeholder.png'}
                                             alt={featured.titulo}
@@ -87,7 +88,7 @@ export default function Index() {
                                         <Link
                                             href={`/noticias/${featured.slug ?? featured.id}`}
                                             prefetch
-                                            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#af101a_0%,#d32f2f_100%)] px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(175,16,26,0.18)] transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(175,16,26,0.22)] sm:w-auto"
+                                            className={siteButtonVariants({ variant: 'primary' }) + ' w-full sm:w-auto'}
                                         >
                                             Leer noticia
                                             <ArrowRight className="h-4 w-4" />

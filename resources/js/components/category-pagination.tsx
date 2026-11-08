@@ -58,19 +58,17 @@ export default function CategoryPagination({
     const hasNext = current < last;
 
     const itemBaseClass =
-        'inline-flex h-10 min-w-10 items-center justify-center rounded-xl px-3 text-sm font-medium transition-colors duration-200';
+        'inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl px-3 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background focus-visible:outline-none';
 
-    const linkClass =
-        'text-muted-foreground hover:bg-muted hover:text-foreground dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-zinc-100';
+    const linkClass = 'text-muted-foreground hover:bg-muted hover:text-foreground';
 
-    const activeClass =
-        'bg-foreground text-background shadow-sm hover:bg-foreground hover:text-background dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-white dark:hover:text-zinc-950';
+    const activeClass = 'bg-primary text-primary-foreground shadow-sm';
 
     const disabledClass = 'pointer-events-none text-muted-foreground/45 select-none dark:text-zinc-600';
 
     return (
-        <nav aria-label="pagination" className="mt-10 flex justify-center">
-            <ul className="inline-flex items-center gap-1.5 rounded-2xl bg-background/70 p-1.5 backdrop-blur-sm dark:bg-zinc-950/40">
+        <nav aria-label="Paginación" className="mt-10 flex justify-center">
+            <ul className="flex flex-wrap items-center justify-center gap-2 rounded-2xl bg-card p-2">
                 {/* Previous */}
                 <li>
                     {hasPrev ? (
@@ -89,7 +87,7 @@ export default function CategoryPagination({
                 {/* Pages */}
                 {pages.map((p, i) =>
                     p === '...' ? (
-                        <li key={`e-${i}`} className="flex h-10 min-w-8 items-center justify-center px-1 text-sm text-muted-foreground dark:text-zinc-500">
+                        <li key={`e-${i}`} className="flex h-10 min-w-8 items-center justify-center px-1 text-sm text-muted-foreground">
                             …
                         </li>
                     ) : (

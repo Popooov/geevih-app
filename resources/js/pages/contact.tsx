@@ -1,3 +1,4 @@
+import { siteButtonVariants } from '@/components/site-button';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import { Mail, Send } from 'lucide-react';
@@ -9,8 +10,8 @@ export default function Contact() {
         <AppLayout>
             <Head title="Contacto" />
 
-            <div className="mx-auto max-w-6xl px-6 pt-6 pb-10 lg:px-8 lg:pt-10 lg:pb-14">
-                <div className="space-y-10 lg:space-y-12">
+            <div className="site-page">
+                <div className="site-stack">
                     <section className="relative overflow-hidden rounded-[2rem] bg-background/85 px-6 py-10 text-center backdrop-blur-xl md:px-8 md:py-12 dark:bg-background/70">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.08),transparent_60%)] dark:bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.12),transparent_60%)]" />
 
@@ -46,12 +47,9 @@ export default function Contact() {
                                 </div>
 
                                 <div className="md:shrink-0 md:pl-6">
-                                    <a
-                                        href={`mailto:${email}`}
-                                        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-red-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-red-600/15 transition-colors hover:bg-red-700 sm:w-auto"
-                                    >
+                                    <a href={`mailto:${email}`} className={siteButtonVariants({ variant: 'primary' }) + ' w-full sm:w-auto'}>
                                         <Send className="h-4 w-4" />
-                                        Enviar mensaje
+                                        Escribir un correo
                                     </a>
                                 </div>
                             </div>

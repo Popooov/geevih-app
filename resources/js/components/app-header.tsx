@@ -98,7 +98,8 @@ export function AppHeader() {
         if (title === 'Recursos') return setRecursosOpen(value);
     };
 
-    const desktopItemBase = 'h-10 rounded-full rounded-full px-4 xl:px-5 text-[15px] font-medium transition-all duration-200 bg-transparent px-4 xl:px-5 text-[15px] font-medium transition-colors';
+    const desktopItemBase =
+        'h-10 rounded-full rounded-full px-4 xl:px-5 text-[15px] font-medium transition-all duration-200 bg-transparent px-4 xl:px-5 text-[15px] font-medium transition-colors';
 
     const desktopItemInactive =
         'text-foreground/80 hover:bg-muted hover:text-foreground dark:text-foreground/75 dark:hover:bg-white/10 dark:hover:text-foreground';
@@ -109,7 +110,7 @@ export function AppHeader() {
 
     return (
         <header className="sticky top-0 z-50 border-b border-border/60 bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80">
-            <div className="mx-auto flex h-[72px] items-center justify-between px-4 md:max-w-7xl lg:px-6">
+            <div className="mx-auto flex h-[72px] w-full max-w-6xl items-center justify-between px-5 sm:px-6 lg:px-8">
                 <Link href="/" prefetch className="flex items-center">
                     <AppLogo />
                 </Link>
@@ -123,7 +124,7 @@ export function AppHeader() {
                                 aria-label="Abrir navegación"
                                 variant="outline"
                                 size="icon"
-                                className="h-10 w-10 rounded-full border-border/70 bg-background/80 shadow-sm"
+                                className="h-11 w-11 rounded-xl border-border/70 bg-background/80 shadow-sm"
                             >
                                 <Menu className="h-5 w-5" />
                             </Button>
@@ -168,9 +169,7 @@ export function AppHeader() {
                                                             aria-current={isActive ? 'page' : undefined}
                                                         >
                                                             <span className="flex items-center gap-3">
-                                                                {item.icon && (
-                                                                    <Icon iconNode={item.icon as any} className="h-[18px] w-[18px] opacity-80" />
-                                                                )}
+                                                                {item.icon && <Icon iconNode={item.icon} className="h-[18px] w-[18px] opacity-80" />}
                                                                 <span>{item.title}</span>
                                                             </span>
 
@@ -220,7 +219,7 @@ export function AppHeader() {
                                                 )}
                                                 aria-current={isActive ? 'page' : undefined}
                                             >
-                                                {item.icon && <Icon iconNode={item.icon as any} className="h-[18px] w-[18px] opacity-80" />}
+                                                {item.icon && <Icon iconNode={item.icon} className="h-[18px] w-[18px] opacity-80" />}
                                                 <span>{item.title}</span>
                                             </Link>
                                         );
@@ -246,7 +245,7 @@ export function AppHeader() {
                                             <NavigationMenuTrigger
                                                 className={cn(
                                                     navigationMenuTriggerStyle(),
-                                                    'h-10 rounded-full transition-colors bg-transparent px-4 text-[15px] font-medium xl:px-5',
+                                                    'h-10 rounded-full bg-transparent px-4 text-[15px] font-medium transition-colors xl:px-5',
                                                     isActive
                                                         ? 'bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-200'
                                                         : 'text-foreground/85 hover:bg-muted hover:text-foreground dark:text-foreground/80 dark:hover:bg-white/10',
@@ -256,7 +255,7 @@ export function AppHeader() {
                                             >
                                                 {item.icon && (
                                                     <Icon
-                                                        iconNode={item.icon as any}
+                                                        iconNode={item.icon}
                                                         className={cn(
                                                             'mr-2 hidden h-4 w-4 xl:block',
                                                             isActive ? 'text-red-600 dark:text-red-400' : 'text-foreground/50',
@@ -278,7 +277,7 @@ export function AppHeader() {
                                                                         href={sub.href}
                                                                         prefetch
                                                                         className={cn(
-                                                                            'block rounded-xl px-3 py-2.5 text-sm outline-none transition-all duration-200',
+                                                                            'block rounded-xl px-3 py-2.5 text-sm transition-all duration-200 outline-none',
                                                                             isActiveSub
                                                                                 ? 'bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-200'
                                                                                 : 'text-foreground/85 hover:bg-muted hover:text-foreground dark:text-foreground/80 dark:hover:bg-white/10',
@@ -310,7 +309,7 @@ export function AppHeader() {
                                         >
                                             {item.icon && (
                                                 <Icon
-                                                    iconNode={item.icon as any}
+                                                    iconNode={item.icon}
                                                     className={cn(
                                                         'mr-2 hidden h-4 w-4 xl:block',
                                                         isActive ? 'text-red-600 dark:text-red-400' : 'text-foreground/50',

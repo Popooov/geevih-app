@@ -1,3 +1,4 @@
+import { siteButtonVariants } from '@/components/site-button';
 import { Link } from '@inertiajs/react';
 import { ArrowRight, Calendar } from 'lucide-react';
 
@@ -10,45 +11,48 @@ interface NoticiaCardProps {
 }
 
 export default function NewsCard({ titulo, fecha, resumen, imagen, enlace }: NoticiaCardProps) {
-    const imageSrc = imagen?.trim() ? imagen : '/images/noticia-placeholder.jpg';
-    const href = enlace?.trim() ? enlace : '#';
-
-    return (
-        <Link href={href} className="group block h-full">
-            <article className="flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-white shadow-[0_8px_24px_rgba(0,0,0,0.04)] ring-1 ring-black/5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:bg-background hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] dark:bg-neutral-900 dark:shadow-none dark:ring-white/10 dark:hover:bg-neutral-800">
-                <div className="relative aspect-video w-full overflow-hidden bg-muted dark:bg-zinc-900">
-                    <img
-                        src={imageSrc}
-                        alt={titulo}
-                        className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]"
-                        onError={(e) => {
-                            e.currentTarget.onerror = null;
-                            e.currentTarget.src = '/images/noticia-placeholder.jpg';
-                        }}
-                    />
-                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/10 via-black/0 to-transparent" />
-                </div>
-
-                <div className="flex flex-1 flex-col p-6">
-                    <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.14em] text-muted-foreground uppercase dark:text-zinc-400">
-                        <Calendar className="h-3.5 w-3.5 text-primary" />
-                        {fecha}
+    const imageSrc = imagen?.trim() || '/images/news-placeholder.png';
+    const href = enlace?.trim();
+    const available = Boolean(href && href !== '#');
+    const card = (
+        <article className={'site-card' + (available ? ' site-card-interactive' : '')}>
+            <div className="aspect-video overflow-hidden bg-muted">
+                <img
+                    src={imageSrc}
+                    alt={titulo}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-full w-full object-contain"
+                    onError={(event) => {
+                        event.currentTarget.onerror = null;
+                        event.currentTarget.src = '/images/news-placeholder.png';
+                    }}
+                />
+            </div>
+            <div className="site-card-body">
+                <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Calendar aria-hidden="true" className="h-4 w-4 shrink-0" />
+                    {fecha}
+                </p>
+                <h3 className="mt-4 line-clamp-3 site-card-title">{titulo}</h3>
+                {resumen && <p className="mt-3 line-clamp-3 site-card-description">{resumen}</p>}
+                {available && (
+                    <div className="site-card-footer">
+                        <span className={siteButtonVariants({ variant: 'secondary' })}>
+                            Leer noticia
+                            <ArrowRight aria-hidden="true" />
+                        </span>
                     </div>
+                )}
+            </div>
+        </article>
+    );
 
-                    <h3 className="mt-4 line-clamp-3 text-lg leading-snug font-semibold tracking-tight text-foreground transition-colors group-hover:text-primary sm:text-xl dark:text-white">
-                        {titulo}
-                    </h3>
-
-                    <p className="mt-3 line-clamp-3 text-sm leading-6 text-muted-foreground dark:text-zinc-300">{resumen}</p>
-
-                    <div className="mt-auto pt-6">
-                        <div className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
-                            Leer más
-                            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                        </div>
-                    </div>
-                </div>
-            </article>
+    return available && href ? (
+        <Link href={href} className="site-card-link">
+            {card}
         </Link>
+    ) : (
+        card
     );
 }

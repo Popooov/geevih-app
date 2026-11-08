@@ -1,3 +1,4 @@
+import { siteButtonVariants } from '@/components/site-button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Briefcase, Globe, Linkedin, Mail } from 'lucide-react';
@@ -24,25 +25,17 @@ interface MemberCardProps {
     priority?: boolean;
 }
 
-export default function MemberCard({ member, index = 0, priority = false }: MemberCardProps) {
+export default function MemberCard({ member, priority = false }: MemberCardProps) {
     const src = member.photo_url?.trim() ? member.photo_url : '/images/member-placeholder.svg';
     const alt = member.photo_alt?.trim() ? member.photo_alt : `Foto de ${member.name}`;
 
     const hasBio = Boolean(member.bio?.trim());
     const hasLinks = Boolean(member.website_url?.trim() || member.linkedin_url?.trim());
 
-    const actionPillClass =
-        'inline-flex items-center gap-2 rounded-full border border-border/70 bg-background px-3 py-1.5 text-xs font-semibold text-foreground/90 transition-colors hover:border-red-600/30 hover:text-red-600 dark:hover:border-red-400/30 dark:hover:text-red-400';
+    const actionPillClass = siteButtonVariants({ variant: 'secondary' });
 
     return (
-        <Card
-            className={[
-                'group flex h-full flex-col overflow-hidden rounded-[1.5rem] border-0 bg-white shadow-[0_10px_30px_rgba(0,0,0,0.04)] ring-1 ring-black/5 transition-all duration-300',
-                'animate-in fade-in slide-in-from-bottom-8 motion-reduce:transform-none motion-reduce:animate-none',
-                'hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(0,0,0,0.08)] dark:bg-neutral-900 dark:ring-white/10 dark:hover:bg-neutral-800',
-            ].join(' ')}
-            style={{ animationDelay: `${index * 50}ms` }}
-        >
+        <Card>
             <div className="relative h-72 w-full overflow-hidden bg-slate-100 dark:bg-slate-800">
                 <img
                     src={src}
@@ -50,7 +43,7 @@ export default function MemberCard({ member, index = 0, priority = false }: Memb
                     width={640}
                     height={640}
                     sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    className="h-full w-full object-cover"
                     loading={priority ? 'eager' : 'lazy'}
                     fetchPriority={priority ? 'high' : 'auto'}
                     decoding="async"
@@ -61,26 +54,24 @@ export default function MemberCard({ member, index = 0, priority = false }: Memb
                 />
 
                 {member.email ? (
-                    <div className="absolute right-4 bottom-4 left-4 translate-y-0 opacity-100 transition-all duration-300 sm:translate-y-3 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100">
+                    <div className="absolute right-4 bottom-4 left-4">
                         <a
                             href={`mailto:${member.email}`}
-                            className="flex items-center gap-2 rounded-xl bg-white/90 px-3 py-2.5 text-xs font-medium text-slate-800 shadow-lg backdrop-blur-sm transition-colors hover:text-red-600 dark:bg-slate-900/90 dark:text-slate-200 dark:hover:text-red-400"
+                            className="flex min-h-11 items-center gap-2 rounded-xl bg-card/95 px-3 py-3 text-sm text-card-foreground shadow-sm backdrop-blur-sm hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                             onClick={(e) => e.stopPropagation()}
                         >
-                            <Mail className="h-4 w-4 text-red-600 dark:text-red-400" />
+                            <Mail className="h-4 w-4 text-primary" />
                             <span className="truncate">{member.email}</span>
                         </a>
                     </div>
                 ) : null}
             </div>
 
-            <CardContent className="flex flex-1 flex-col p-6">
+            <CardContent className="site-card-body">
                 <div className="space-y-5">
                     <div className="space-y-3">
                         <div className="space-y-2">
-                            <h3 className="text-xl leading-tight font-bold text-foreground transition-colors duration-300 group-hover:text-red-600 dark:group-hover:text-red-400">
-                                {member.name}
-                            </h3>
+                            <h3 className="site-card-title">{member.name}</h3>
 
                             {member.role ? (
                                 <div className="flex items-start gap-2 text-sm font-medium text-muted-foreground">
@@ -92,7 +83,7 @@ export default function MemberCard({ member, index = 0, priority = false }: Memb
                             {member.affiliation ? <p className="text-sm leading-6 font-medium text-primary/90">{member.affiliation}</p> : null}
                         </div>
 
-                        {member.summary ? <p className="text-sm leading-7 text-slate-600 dark:text-slate-400">{member.summary}</p> : null}
+                        {member.summary ? <p className="site-card-description">{member.summary}</p> : null}
                     </div>
                 </div>
 
@@ -101,14 +92,14 @@ export default function MemberCard({ member, index = 0, priority = false }: Memb
                         <Dialog>
                             <DialogTrigger asChild>
                                 <button type="button" className={actionPillClass}>
-                                    Leer bio
+                                    Leer biografía
                                 </button>
                             </DialogTrigger>
 
                             <DialogContent className="max-h-[85dvh] w-[calc(100vw-1.5rem)] max-w-2xl overflow-hidden p-0 sm:w-full">
                                 <div className="flex max-h-[85dvh] flex-col">
                                     <div className="border-b border-border/70 p-5 sm:p-6">
-                                        <DialogHeader className="space-y-1 text-left">
+                                        <DialogHeader className="space-y-1 pr-10 text-left">
                                             <DialogTitle className="text-2xl font-extrabold text-foreground">{member.name}</DialogTitle>
 
                                             <div className="space-y-1 pt-1">
@@ -166,7 +157,7 @@ export default function MemberCard({ member, index = 0, priority = false }: Memb
                                             <p className="mb-4 text-sm font-semibold text-slate-700 dark:text-slate-300">{member.summary}</p>
                                         ) : null}
 
-                                        <div className="prose prose-slate dark:prose-invert max-w-none">
+                                        <div className="prose max-w-none prose-slate dark:prose-invert">
                                             <div dangerouslySetInnerHTML={{ __html: member.bio || '' }} />
                                         </div>
                                     </div>

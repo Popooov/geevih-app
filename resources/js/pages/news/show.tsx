@@ -1,3 +1,4 @@
+import { siteButtonVariants } from '@/components/site-button';
 import AppLayout from '@/layouts/app-layout';
 import { type ShowNewsPageProps } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
@@ -12,8 +13,8 @@ export default function Show() {
         <AppLayout>
             <Head title={singleNews.titulo} />
 
-            <div className="mx-auto max-w-7xl px-5 pt-6 pb-16 sm:px-6 lg:px-8 lg:pt-8 lg:pb-20">
-                <div className="space-y-6 lg:space-y-8">
+            <div className="site-page">
+                <div className="site-stack">
                     <div>
                         <Link
                             href="/noticias"
@@ -47,7 +48,7 @@ export default function Show() {
                                     href={singleNews.source_url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-zinc-900 px-5 py-3 text-sm font-semibold text-zinc-50 transition-colors hover:bg-zinc-800 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none sm:w-auto dark:bg-zinc-100 dark:text-zinc-950 dark:hover:bg-zinc-200 dark:focus-visible:ring-offset-zinc-950"
+                                    className={siteButtonVariants({ variant: 'primary' }) + ' w-full sm:w-auto'}
                                 >
                                     Ver fuente original
                                     <ExternalLink aria-hidden="true" className="h-4 w-4 shrink-0" />

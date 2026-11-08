@@ -8,8 +8,8 @@ export default function Mission() {
         <AppLayout>
             <Head title="Misión y Objetivos" />
 
-            <div className="mx-auto max-w-6xl px-6 lg:px-8 pt-6 pb-12 lg:pt-10 lg:pb-14">
-                <div className="space-y-14">
+            <div className="site-page">
+                <div className="site-stack">
                     <section className="relative overflow-hidden rounded-[2rem] bg-background/85 px-6 py-12 text-center backdrop-blur-xl dark:bg-background/70">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.08),transparent_60%)] dark:bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.12),transparent_60%)]" />
 
@@ -40,8 +40,9 @@ export default function Mission() {
                                 </h2>
                                 <p className="max-w-4xl leading-8 text-muted-foreground">
                                     GEEVIH nace con la misión de ser un referente en el ámbito de los cuidados a las personas con VIH en todos los
-                                    servicios sanitarios del territorio español. Contribuimos activamente al diagnóstico precoz del VIH/ITS y en la mejora de la
-                                    calidad de vida de las personas que viven con el VIH a través de la excelencia enfermera, la investigación y la formación continua.
+                                    servicios sanitarios del territorio español. Contribuimos activamente al diagnóstico precoz del VIH/ITS y en la
+                                    mejora de la calidad de vida de las personas que viven con el VIH a través de la excelencia enfermera, la
+                                    investigación y la formación continua.
                                 </p>
                             </div>
                         </div>
@@ -54,8 +55,8 @@ export default function Mission() {
                         </div>
 
                         <div className="grid gap-4 md:grid-cols-3">
-                            <Card className="h-full border-0 bg-white shadow-sm ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-md dark:bg-neutral-900 dark:ring-white/10 dark:hover:bg-neutral-800">
-                                <CardContent className="space-y-4 p-6">
+                            <Card>
+                                <CardContent className="space-y-4">
                                     <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400">
                                         <ShieldCheck className="h-7 w-7" />
                                     </div>
@@ -66,8 +67,8 @@ export default function Mission() {
                                 </CardContent>
                             </Card>
 
-                            <Card className="h-full border-0 bg-white shadow-sm ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-md dark:bg-neutral-900 dark:ring-white/10 dark:hover:bg-neutral-800">
-                                <CardContent className="space-y-4 p-6">
+                            <Card>
+                                <CardContent className="space-y-4">
                                     <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400">
                                         <BookOpen className="h-7 w-7" />
                                     </div>
@@ -78,8 +79,8 @@ export default function Mission() {
                                 </CardContent>
                             </Card>
 
-                            <Card className="h-full border-0 bg-white shadow-sm ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-md dark:bg-neutral-900 dark:ring-white/10 dark:hover:bg-neutral-800">
-                                <CardContent className="space-y-4 p-6">
+                            <Card>
+                                <CardContent className="space-y-4">
                                     <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400">
                                         <HeartPulse className="h-7 w-7" />
                                     </div>
@@ -93,24 +94,26 @@ export default function Mission() {
                     </section>
 
                     <div className="grid gap-4 md:grid-cols-2">
-                        <Card className="border-0 bg-background/95 shadow-sm ring-1 ring-black/5 transition-all hover:shadow-md dark:bg-neutral-900 dark:ring-white/10">
-                            <CardContent className="space-y-4 p-6 lg:p-7">
+                        <Card>
+                            <CardContent className="space-y-4">
                                 <p className="text-xs font-medium tracking-[0.14em] text-muted-foreground uppercase">Principios fundamentales</p>
                                 <h2 className="text-xl font-semibold tracking-tight text-foreground">Cuidados integrales y libres de estigma</h2>
                                 <p className="leading-8 text-muted-foreground">
-                                    La prestación de cuidados de enfermería integrales, libres de estigma y discriminación, es un principio básico de GEEVIH.
-                                    Consideramos que la investigación enfermera de excelencia es imprescindible para mejorar la atención y calidad de vida de las PVIH.
+                                    La prestación de cuidados de enfermería integrales, libres de estigma y discriminación, es un principio básico de
+                                    GEEVIH. Consideramos que la investigación enfermera de excelencia es imprescindible para mejorar la atención y
+                                    calidad de vida de las PVIH.
                                 </p>
                             </CardContent>
                         </Card>
 
-                        <Card className="border-0 bg-background/95 shadow-sm ring-1 ring-black/5 transition-all hover:shadow-md dark:bg-neutral-900 dark:ring-white/10">
-                            <CardContent className="space-y-4 p-6 lg:p-7">
+                        <Card>
+                            <CardContent className="space-y-4">
                                 <p className="text-xs font-medium tracking-[0.14em] text-muted-foreground uppercase">Integración en SEISIDA</p>
                                 <h2 className="text-xl font-semibold tracking-tight text-foreground">Una plataforma colaborativa sólida</h2>
                                 <p className="leading-8 text-muted-foreground">
                                     Gracias a su integración en SEISIDA, el grupo cuenta con una plataforma colaborativa robusta para impulsar la
-                                    formación, la investigación innovadora, la colaboración activa, para avanzar en el conocimiento y la práctica enfermera experta en VIH en España.
+                                    formación, la investigación innovadora, la colaboración activa, para avanzar en el conocimiento y la práctica
+                                    enfermera experta en VIH en España.
                                 </p>
                             </CardContent>
                         </Card>
@@ -121,8 +124,9 @@ export default function Mission() {
 
                         <blockquote className="mx-auto max-w-4xl space-y-5">
                             <p className="text-lg leading-8 font-medium text-foreground italic md:text-2xl md:leading-10">
-                                “GEEVIH surge de la necesidad de crear un espacio donde las enfermeras que trabajan en el ámbito del VIH puedan desarrollar iniciativas que permitan
-                                alcanzar la excelencia en la práctica clínica, la investigación y la formación continua.”
+                                “GEEVIH surge de la necesidad de crear un espacio donde las enfermeras que trabajan en el ámbito del VIH puedan
+                                desarrollar iniciativas que permitan alcanzar la excelencia en la práctica clínica, la investigación y la formación
+                                continua.”
                             </p>
                             <footer className="text-sm font-semibold tracking-[0.14em] text-primary uppercase">Equipo de Dirección</footer>
                         </blockquote>

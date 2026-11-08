@@ -13,8 +13,8 @@ export default function SobreNosotros() {
         <AppLayout>
             <Head title="Sobre Nosotros" />
 
-            <div className="mx-auto max-w-6xl px-6 pt-6 pb-12 lg:px-8 lg:pt-10 lg:pb-14">
-                <div className="space-y-12">
+            <div className="site-page">
+                <div className="site-stack">
                     {/* HERO */}
                     <section className="relative overflow-hidden rounded-[2rem] bg-background/85 px-6 py-12 text-center backdrop-blur-xl sm:px-8 lg:px-12 lg:py-16 dark:bg-background/70">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.08),transparent_60%)] dark:bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.12),transparent_60%)]" />
@@ -50,12 +50,7 @@ export default function SobreNosotros() {
 
                         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
                             {(members ?? []).map((member, index) => (
-                                <MemberCard
-                                    key={member.id}
-                                    member={member}
-                                    index={index}
-                                    priority={index < 3}
-                                />
+                                <MemberCard key={member.id} member={member} index={index} priority={index < 3} />
                             ))}
                         </div>
                     </section>

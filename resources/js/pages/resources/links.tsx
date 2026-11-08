@@ -1,4 +1,5 @@
 import LinkCard from '@/components/link-card';
+import { siteButtonVariants } from '@/components/site-button';
 import AppLayout from '@/layouts/app-layout';
 import { type Resource, type ResourcesPageProps } from '@/types';
 import { Head, router, usePage } from '@inertiajs/react';
@@ -77,8 +78,8 @@ export default function Links() {
         <AppLayout>
             <Head title="Enlaces de Interés" />
 
-            <div className="mx-auto max-w-6xl px-6 pt-6 pb-12 lg:px-8 lg:pt-10 lg:pb-14">
-                <div className="space-y-14">
+            <div className="site-page">
+                <div className="site-stack">
                     <section className="relative overflow-hidden rounded-[2rem] bg-background/85 px-6 py-12 text-center backdrop-blur-xl dark:bg-background/70">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.08),transparent_60%)] dark:bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.12),transparent_60%)]" />
 
@@ -139,7 +140,7 @@ export default function Links() {
                             ))}
                         </div>
 
-                        {(pinned.length > 0 || others.length > 0) ? (
+                        {pinned.length > 0 || others.length > 0 ? (
                             <div className="flex flex-col items-center gap-4 pt-4 text-center">
                                 <p className="text-xs font-medium tracking-[0.16em] text-muted-foreground uppercase">
                                     Mostrando {others.length} de {total} enlaces
@@ -150,7 +151,7 @@ export default function Links() {
                                         type="button"
                                         onClick={loadMore}
                                         disabled={isLoading}
-                                        className="inline-flex min-h-12 cursor-pointer items-center justify-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-semibold text-white shadow-[0_18px_45px_rgba(175,16,26,0.18)] transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-60 dark:shadow-[0_18px_45px_rgba(175,16,26,0.22)]"
+                                        className={siteButtonVariants({ variant: 'primary' })}
                                     >
                                         {isLoading ? (
                                             <>

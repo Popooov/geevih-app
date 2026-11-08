@@ -47,8 +47,8 @@ export default function Areas() {
         <AppLayout>
             <Head title="Áreas" />
 
-            <div className="mx-auto max-w-6xl px-6 pt-6 pb-12 lg:px-8 lg:pt-10 lg:pb-14">
-                <div className="space-y-12">
+            <div className="site-page">
+                <div className="site-stack">
                     <section className="relative overflow-hidden rounded-[2rem] bg-background/85 px-6 py-12 text-center backdrop-blur-xl sm:px-8 lg:px-12 lg:py-16 dark:bg-background/70">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.08),transparent_60%)] dark:bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.12),transparent_60%)]" />
 
@@ -68,24 +68,12 @@ export default function Areas() {
 
                     <section className="grid grid-cols-1 gap-6 lg:grid-cols-3">
                         {areasData.map((area, index) => (
-                            <Card
-                                key={index}
-                                className={[
-                                    'group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] border-0 bg-white',
-                                    'shadow-[0_10px_30px_rgba(0,0,0,0.04)] ring-1 ring-black/5',
-                                    'transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(0,0,0,0.08)]',
-                                    'dark:bg-neutral-900 dark:ring-white/10 dark:hover:bg-neutral-800',
-                                    'animate-in fade-in slide-in-from-bottom-8 motion-reduce:transform-none motion-reduce:animate-none',
-                                ].join(' ')}
-                                style={{ animationDelay: `${index * 70}ms` }}
-                            >
-                                <div className={['h-[3px] w-full transition-all duration-300 group-hover:h-1', area.accentBar].join(' ')} />
+                            <Card key={index} className="relative">
+                                <div className={['h-[3px] w-full', area.accentBar].join(' ')} />
 
                                 <div className="flex-1 p-6 pb-4 lg:p-7 lg:pb-5">
                                     <div className="space-y-3">
-                                        <CardTitle className="text-3xl leading-tight font-bold tracking-tight text-foreground">
-                                            {area.title}
-                                        </CardTitle>
+                                        <CardTitle>{area.title}</CardTitle>
 
                                         <CardDescription className="max-w-sm text-[15px] leading-7 text-foreground/75">
                                             {area.description}
@@ -93,7 +81,7 @@ export default function Areas() {
                                     </div>
                                 </div>
 
-                                <CardContent className="px-6 pt-0 pb-6 lg:px-7 lg:pb-7">
+                                <CardContent>
                                     <p className="mb-5 text-xs font-medium tracking-[0.16em] text-muted-foreground uppercase">Detalles clave</p>
 
                                     <ul className="space-y-4">

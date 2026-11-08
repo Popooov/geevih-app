@@ -1,4 +1,5 @@
 import EventCard from '@/components/event-card';
+import { siteButtonVariants } from '@/components/site-button';
 import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
 import { type EventItem, type EventPageProps } from '@/types';
@@ -114,12 +115,7 @@ function FilterPills({ value, onChange }: { value: FilterMode; onChange: (value:
                     aria-pressed={value === option.value}
                     aria-controls="training-results"
                     onClick={() => onChange(option.value)}
-                    className={cn(
-                        'inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full px-4 py-2 text-sm font-medium transition focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none',
-                        value === option.value
-                            ? 'bg-zinc-950 text-white dark:bg-white dark:text-zinc-950'
-                            : 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-white',
-                    )}
+                    className={cn(siteButtonVariants({ variant: value === option.value ? 'primary' : 'secondary' }))}
                 >
                     {option.label}
                 </button>
@@ -177,8 +173,7 @@ function EventGrid({ events, priority = false, isPast }: { events: EventItem[]; 
     );
 }
 
-const actionClass =
-    'inline-flex min-h-11 items-center justify-center rounded-xl border border-border px-4 py-2 text-sm font-semibold text-foreground transition hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none dark:text-zinc-200';
+const actionClass = siteButtonVariants({ variant: 'secondary' });
 
 function TrainingListing({ upcomingEvents = [], pastEvents = [], currentCategory = null }: EventPageProps) {
     const [query, setQuery] = useState('');
@@ -214,8 +209,8 @@ function TrainingListing({ upcomingEvents = [], pastEvents = [], currentCategory
     return (
         <AppLayout>
             <Head title={content.title} />
-            <div className="mx-auto max-w-6xl px-5 pt-6 pb-16 sm:px-6 lg:px-6 lg:pt-9 lg:pb-20 xl:px-0">
-                <div className="space-y-10 lg:space-y-12">
+            <div className="site-page">
+                <div className="site-stack">
                     <section className="relative overflow-hidden rounded-[2rem] bg-background/92 px-5 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] backdrop-blur-xl sm:px-7 sm:py-7 lg:px-8 dark:bg-zinc-950/85">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.08),transparent_46%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.14),transparent_46%)]" />
                         <div
@@ -369,15 +364,10 @@ function TrainingListing({ upcomingEvents = [], pastEvents = [], currentCategory
                                 <SectionIntro icon={FileText} badge="Catálogo" title="Material disponible" />
                                 <div className="grid gap-5 sm:grid-cols-2">
                                     {filteredMaterials.map((material) => (
-                                        <article
-                                            key={material.id}
-                                            className="flex flex-col rounded-2xl bg-background p-6 shadow-[0_14px_34px_rgba(175,16,26,0.045)] dark:bg-zinc-950/95"
-                                        >
+                                        <article key={material.id} className="site-card p-5 sm:p-6">
                                             <FileText aria-hidden="true" className="mb-4 h-6 w-6 text-primary" />
-                                            <h3 className="text-lg leading-snug font-semibold text-foreground">{material.titulo}</h3>
-                                            {material.descripcion && (
-                                                <p className="mt-3 text-sm leading-7 text-foreground/70 dark:text-zinc-300">{material.descripcion}</p>
-                                            )}
+                                            <h3 className="site-card-title">{material.titulo}</h3>
+                                            {material.descripcion && <p className="mt-3 site-card-description">{material.descripcion}</p>}
                                             {material.link && (
                                                 <div className="mt-auto pt-5">
                                                     <Link href={material.link} className={actionClass}>
