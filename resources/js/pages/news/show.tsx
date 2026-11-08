@@ -14,7 +14,7 @@ export default function Show() {
             <Head title={singleNews.titulo} />
 
             <div className="site-page">
-                <div className="site-stack">
+                <div className="lg:pt-8 site-stack">
                     <div>
                         <Link
                             href="/noticias"
