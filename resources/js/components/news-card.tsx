@@ -10,8 +10,10 @@ interface NoticiaCardProps {
     enlace?: string | null;
 }
 
+const fallbackImageSrc = '/images/news-placeholder.png';
+
 export default function NewsCard({ titulo, fecha, resumen, imagen, enlace }: NoticiaCardProps) {
-    const imageSrc = imagen?.trim() || '/images/news-placeholder.png';
+    const imageSrc = imagen?.trim() || fallbackImageSrc;
     const href = enlace?.trim();
     const available = Boolean(href && href !== '#');
     const card = (
@@ -23,9 +25,10 @@ export default function NewsCard({ titulo, fecha, resumen, imagen, enlace }: Not
                     loading="lazy"
                     decoding="async"
                     className="h-full w-full object-contain"
-                    onError={(event) => {
-                        event.currentTarget.onerror = null;
-                        event.currentTarget.src = '/images/news-placeholder.png';
+                    onError={({ currentTarget }) => {
+                        if (currentTarget.getAttribute('src') !== fallbackImageSrc) {
+                            currentTarget.src = fallbackImageSrc;
+                        }
                     }}
                 />
             </div>
