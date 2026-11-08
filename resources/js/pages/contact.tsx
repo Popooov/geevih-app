@@ -27,7 +27,7 @@ export default function Contact() {
                     <section className="mx-auto max-w-3xl overflow-hidden rounded-[2rem] bg-card/80 shadow-sm ring-1 ring-black/5 dark:ring-white/10">
                         <div className="p-6 md:p-8">
                             <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-                                <div className="flex flex-1 items-start gap-4">
+                                <div className="flex flex-1 items-center gap-8">
                                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400">
                                         <Mail className="h-6 w-6" />
                                     </div>
