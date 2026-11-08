@@ -2,7 +2,7 @@ import { SiteButton } from '@/components/site-button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
-import { Calendar, Clock3, MapPin } from 'lucide-react';
+import { Calendar, Clock3, MapPin, Video } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 interface EventCardProps {
@@ -47,7 +47,7 @@ function MetaItem({ icon: Icon, children }: { icon: React.ElementType; children:
                     'bg-muted text-muted-foreground',
                 )}
             >
-                <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <Icon aria-hidden="true" className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </span>
 
             <span className="leading-6">{children}</span>
@@ -103,7 +103,7 @@ export default function EventCard({
                 />
             </div>
 
-            <div className="site-card-body">
+            <div className="site-card-body md:max-lg:p-4">
                 <div className="space-y-3.5">
                     <div className="flex flex-wrap items-center gap-2">
                         {isPast && <EventBadge variant="finished">Finalizado</EventBadge>}
@@ -123,6 +123,16 @@ export default function EventCard({
                     {hora && <MetaItem icon={Clock3}>{hora}</MetaItem>}
 
                     {showPhysicalLocation && <MetaItem icon={MapPin}>{lugar}</MetaItem>}
+
+                    {!isPast && online_url && is_online && (
+                        <MetaItem icon={Video}>
+                            <SiteButton asChild variant="ghost" className="px-0 hover:bg-transparent hover:underline">
+                                <a href={online_url} target="_blank" rel="noopener noreferrer">
+                                    Acceder online<span className="sr-only"> (se abre en una pestaña nueva)</span>
+                                </a>
+                            </SiteButton>
+                        </MetaItem>
+                    )}
                 </div>
 
                 <div className="site-card-footer">
@@ -137,13 +147,6 @@ export default function EventCard({
                         {enlace && (
                             <SiteButton asChild variant={!isPast && registration_url ? 'secondary' : 'primary'}>
                                 <Link href={enlace}>{isPast ? 'Ver detalles' : 'Ver actividad'}</Link>
-                            </SiteButton>
-                        )}
-                        {!isPast && online_url && is_online && (
-                            <SiteButton asChild variant="ghost">
-                                <a href={online_url} target="_blank" rel="noopener noreferrer">
-                                    Acceder online<span className="sr-only"> (se abre en una pestaña nueva)</span>
-                                </a>
                             </SiteButton>
                         )}
                     </div>
