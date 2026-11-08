@@ -4,7 +4,7 @@ import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
 import { type EventItem, type EventPageProps } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { Archive, CalendarCheck, FileText, Filter, Presentation, Search } from 'lucide-react';
+import { Archive, CalendarCheck, ChevronDown, FileText, Filter, Presentation, Search } from 'lucide-react';
 import { useRef, useState, type ReactNode } from 'react';
 
 type FilterMode = 'all' | 'online' | 'presencial';
@@ -104,7 +104,7 @@ function FilterPills({ value, onChange }: { value: FilterMode; onChange: (value:
     ];
     return (
         <div role="group" aria-label="Modalidad de la actividad" className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-2 pr-1 text-sm font-medium text-muted-foreground dark:text-zinc-400">
+            <span className="inline-flex w-full items-center gap-2 text-sm font-medium text-muted-foreground sm:w-auto sm:pr-1 dark:text-zinc-400">
                 <Filter aria-hidden="true" className="h-4 w-4" />
                 Modalidad
             </span>
@@ -115,7 +115,10 @@ function FilterPills({ value, onChange }: { value: FilterMode; onChange: (value:
                     aria-pressed={value === option.value}
                     aria-controls="training-results"
                     onClick={() => onChange(option.value)}
-                    className={cn(siteButtonVariants({ variant: value === option.value ? 'primary' : 'secondary' }))}
+                    className={cn(
+                        siteButtonVariants({ variant: value === option.value ? 'primary' : 'secondary' }),
+                        'cursor-pointer px-2.5 max-[359px]:px-2 max-[359px]:text-xs sm:px-5',
+                    )}
                 >
                     {option.label}
                 </button>
@@ -150,7 +153,7 @@ function EmptyState({ title, description, children }: { title: string; descripti
 
 function EventGrid({ events, priority = false, isPast }: { events: EventItem[]; priority?: boolean; isPast?: boolean }) {
     return (
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className={cn('grid grid-cols-1 gap-6', isPast ? 'md:grid-cols-2' : 'lg:grid-cols-2')}>
             {events.map((event, index) => (
                 <EventCard
                     key={event.id}
@@ -211,7 +214,7 @@ function TrainingListing({ upcomingEvents = [], pastEvents = [], currentCategory
             <Head title={content.title} />
             <div className="site-page">
                 <div className="site-stack">
-                    <section className="relative overflow-hidden rounded-[2rem] bg-background/92 px-5 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] backdrop-blur-xl sm:px-7 sm:py-7 lg:px-8 lg:mt-8 dark:bg-zinc-950/85">
+                    <section className="relative overflow-hidden rounded-[2rem] bg-background/92 px-5 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] backdrop-blur-xl sm:px-7 sm:py-7 lg:mt-8 lg:px-8 dark:bg-zinc-950/85">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.08),transparent_46%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.14),transparent_46%)]" />
                         <div
                             className={cn(
@@ -278,20 +281,26 @@ function TrainingListing({ upcomingEvents = [], pastEvents = [], currentCategory
                                             <label htmlFor="training-year" className="block text-sm font-medium text-foreground">
                                                 Año de inicio
                                             </label>
-                                            <select
-                                                id="training-year"
-                                                value={activeYear}
-                                                onChange={(event) => setYear(event.target.value)}
-                                                aria-controls="training-results"
-                                                className="min-h-11 w-full rounded-xl border border-border bg-background px-3 py-2 text-base text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:min-w-40"
-                                            >
-                                                <option value="all">Todos los años</option>
-                                                {years.map((value) => (
-                                                    <option key={value} value={value}>
-                                                        {value}
-                                                    </option>
-                                                ))}
-                                            </select>
+                                            <div className="relative">
+                                                <select
+                                                    id="training-year"
+                                                    value={activeYear}
+                                                    onChange={(event) => setYear(event.target.value)}
+                                                    aria-controls="training-results"
+                                                    className="min-h-11 w-full cursor-pointer appearance-none rounded-xl border border-border bg-background py-2 pr-9 pl-3 text-base text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:min-w-40 forced-colors:appearance-auto"
+                                                >
+                                                    <option value="all">Todos los años</option>
+                                                    {years.map((value) => (
+                                                        <option key={value} value={value}>
+                                                            {value}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                                <ChevronDown
+                                                    aria-hidden="true"
+                                                    className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-muted-foreground forced-colors:hidden"
+                                                />
+                                            </div>
                                         </div>
                                     )}
                                 </div>
@@ -308,7 +317,7 @@ function TrainingListing({ upcomingEvents = [], pastEvents = [], currentCategory
                                               : 'actividades'}
                                     </p>
                                     {hasFilters && (
-                                        <button type="button" onClick={clearFilters} className={actionClass}>
+                                        <button type="button" onClick={clearFilters} className={cn(actionClass, 'cursor-pointer')}>
                                             Restablecer filtros
                                         </button>
                                     )}
@@ -355,7 +364,7 @@ function TrainingListing({ upcomingEvents = [], pastEvents = [], currentCategory
                                 title="No hay resultados con estos filtros"
                                 description="Prueba otra búsqueda o restablece los filtros para ver todos los contenidos."
                             >
-                                <button type="button" onClick={clearFilters} className={actionClass}>
+                                <button type="button" onClick={clearFilters} className={cn(actionClass, 'cursor-pointer')}>
                                     Restablecer filtros
                                 </button>
                             </EmptyState>
