@@ -21,9 +21,11 @@ interface EventCardProps {
     priority?: boolean;
 }
 
+const fallbackImageSrc = '/images/event-placeholder.png';
+
 function EventBadge({ children, variant = 'default' }: { children: ReactNode; variant?: 'default' | 'secondary' | 'live' | 'finished' }) {
     const styles = {
-        default: 'bg-primary/10 text-primary dark:bg-primary/15 dark:text-red-200',
+        default: 'bg-muted text-foreground',
         secondary: 'bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300',
         live: 'bg-emerald-700 text-white dark:bg-emerald-300 dark:text-zinc-950',
         finished: 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900',
@@ -68,7 +70,7 @@ export default function EventCard({
     isPast,
     priority = false,
 }: EventCardProps) {
-    const imageSrc = imagen && imagen.trim() !== '' ? imagen : '/images/event-placeholder.png';
+    const imageSrc = imagen?.trim() || fallbackImageSrc;
     const showPhysicalLocation = !!lugar && !is_online;
 
     return (
@@ -84,9 +86,10 @@ export default function EventCard({
                     fetchPriority={priority ? 'high' : 'auto'}
                     decoding="async"
                     className="h-full w-full object-cover"
-                    onError={(e) => {
-                        e.currentTarget.onerror = null;
-                        e.currentTarget.src = '/images/event-placeholder.png';
+                    onError={({ currentTarget }) => {
+                        if (currentTarget.getAttribute('src') !== fallbackImageSrc) {
+                            currentTarget.src = fallbackImageSrc;
+                        }
                     }}
                 />
 
@@ -103,9 +106,10 @@ export default function EventCard({
             <div className="site-card-body">
                 <div className="space-y-3.5">
                     <div className="flex flex-wrap items-center gap-2">
-                        {is_online && !isPast && <EventBadge variant="secondary">Online</EventBadge>}
-                        {isOngoing && !isPast && <EventBadge variant="live">En curso</EventBadge>}
                         {isPast && <EventBadge variant="finished">Finalizado</EventBadge>}
+                        {isOngoing && !isPast && <EventBadge variant="live">En curso</EventBadge>}
+                        {is_online === true && <EventBadge variant="secondary">Online</EventBadge>}
+                        {is_online === false && <EventBadge>Presencial</EventBadge>}
                     </div>
 
                     <h3 className="line-clamp-3 site-card-title">{titulo}</h3>
