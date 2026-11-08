@@ -23,7 +23,7 @@ export default function Index() {
 
             <div className="site-page">
                 <div className="site-stack">
-                    <section className="relative overflow-hidden rounded-[2rem] bg-background/85 px-5 py-10 text-center backdrop-blur-xl sm:px-6 sm:py-12 dark:bg-background/70">
+                    <section className="relative overflow-hidden rounded-[2rem] bg-background/85 px-5 py-10 text-center backdrop-blur-xl sm:px-6 sm:py-12 lg:py-24 dark:bg-background/70">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.08),transparent_60%)] dark:bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.12),transparent_60%)]" />
 
                         <div className="relative mx-auto max-w-3xl">
