@@ -11,13 +11,13 @@ export default function Home() {
             <Head title="Grupo de Enfermería Experta en VIH" />
 
             <div className="min-h-[calc(100vh-80px)]">
-                <div className="site-page flex flex-col gap-10">
-                    <section className="relative w-full overflow-hidden rounded-[2rem] bg-background/85 px-6 py-14 text-center backdrop-blur-xl sm:px-8 lg:px-10 lg:py-20 dark:bg-background/70">
+                <div className="site-page flex flex-col gap-10 lg:max-w-7xl">
+                    <section className="relative w-full overflow-hidden rounded-[2rem] bg-background/85 px-6 py-14 text-center backdrop-blur-xl sm:px-8 lg:px-10 lg:py-28 dark:bg-background/70">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.08),transparent_50%)] dark:bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.14),transparent_50%)]" />
 
                         <div className="relative mx-auto max-w-4xl">
                             <div className="flex justify-center">
-                                <AppLogoIcon className="w-56 sm:w-64" />
+                                <AppLogoIcon className="w-44 sm:w-64" />
                             </div>
 
                             <h1 className="mt-8 text-4xl font-extrabold tracking-tight text-balance text-foreground sm:text-5xl lg:text-6xl">
@@ -91,20 +91,21 @@ export default function Home() {
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="group site-card-link lg:col-span-12"
-                                aria-label="Abrir PDF: Documento para el cuidado enfermero experto de personas con VIH (Proyecto National Policy)"
+                                aria-label="Abrir documento: Documento para el cuidado enfermero experto de personas con VIH (PDF, Proyecto National Policy)"
                             >
                                 <Card className="relative overflow-hidden site-card-interactive">
-                                    <div
-                                        className="absolute inset-0 transition-transform duration-500 group-hover:scale-105"
-                                        style={{
-                                            backgroundImage: "url('/images/documents/cuidado-enfermero-vih-cover.jpg')",
-                                            backgroundSize: 'cover',
-                                            backgroundPosition: 'center',
-                                        }}
+                                    <img
+                                        src="/images/documents/cuidado-enfermero-vih-cover.jpg"
+                                        alt=""
+                                        width={2285}
+                                        height={1520}
+                                        loading="lazy"
+                                        decoding="async"
+                                        className="absolute inset-0 h-full w-full object-contain md:object-cover md:transition-transform md:duration-500 md:group-hover:scale-105"
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-black/10" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent md:bg-gradient-to-r md:from-black/50 md:via-black/30 md:to-black/10" />
 
-                                    <div className="relative flex h-full min-h-[320px] flex-col justify-between p-6 sm:min-h-[360px] sm:p-7">
+                                    <div className="relative flex aspect-[2285/1520] w-full flex-col justify-between p-4 md:aspect-auto md:h-full md:min-h-[360px] md:p-7">
                                         <div>
                                             <span className="inline-flex items-center rounded-full bg-black/70 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
                                                 PDF destacado
@@ -113,7 +114,10 @@ export default function Home() {
 
                                         <div className="inline-flex items-center gap-2 text-sm font-semibold text-white/90 hover:text-white">
                                             <span>Abrir documento</span>
-                                            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                                            <ArrowRight
+                                                aria-hidden="true"
+                                                className="h-4 w-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-1"
+                                            />
                                         </div>
                                     </div>
                                 </Card>
