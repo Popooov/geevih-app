@@ -110,8 +110,8 @@ export function AppHeader() {
 
     return (
         <header className="sticky top-0 z-50 border-b border-border/60 bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80">
-            <div className="mx-auto flex h-[72px] w-full max-w-6xl items-center justify-between px-5 sm:px-6 lg:px-8">
-                <Link href="/" prefetch className="flex items-center">
+            <div className="mx-auto flex h-[72px] w-full max-w-7xl items-center justify-between px-5 sm:px-6 lg:px-8">
+                <Link href="/" prefetch className="flex shrink-0 items-center">
                     <AppLogo />
                 </Link>
 
@@ -230,7 +230,7 @@ export function AppHeader() {
                     </Sheet>
                 </div>
 
-                <div className="ml-6 hidden h-full items-center lg:flex">
+                <div className="ml-6 hidden h-full items-center lg:flex xl:ml-10">
                     <NavigationMenu viewport={false} className="relative flex h-full items-center">
                         <NavigationMenuList className="flex h-full items-center gap-2 xl:gap-3">
                             {mainNavItems.map((item, index) => {
