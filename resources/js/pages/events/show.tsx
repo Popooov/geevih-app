@@ -90,7 +90,7 @@ export default function Show() {
             <Head title={event.titulo} />
 
             <div className="site-page">
-                <div className="site-stack">
+                <div className="lg:pt-8 site-stack ">
                     {/* BACK */}
                     <div>
                         <Link
