@@ -5,6 +5,8 @@ import { type NewsPageProps } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { ArrowRight } from 'lucide-react';
 
+const fallbackImageSrc = '/images/news-placeholder.png';
+
 export default function Index() {
     const { news } = usePage<NewsPageProps>().props;
 
@@ -23,7 +25,7 @@ export default function Index() {
 
             <div className="site-page">
                 <div className="site-stack">
-                    <section className="relative overflow-hidden rounded-[2rem] bg-background/85 px-5 py-10 text-center backdrop-blur-xl sm:px-6 sm:py-12 lg:py-24 dark:bg-background/70">
+                    <section className="relative overflow-hidden rounded-[2rem] bg-background/85 px-5 pt-10 pb-4 text-center backdrop-blur-xl sm:px-6 sm:pt-12 sm:pb-6 lg:pt-24 lg:pb-8 dark:bg-background/70">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.08),transparent_60%)] dark:bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.12),transparent_60%)]" />
 
                         <div className="relative mx-auto max-w-3xl">
@@ -72,12 +74,13 @@ export default function Index() {
 
                                     <div className="relative order-2 w-full max-w-[860px] overflow-hidden rounded-[1.5rem] bg-muted shadow-[0_20px_50px_rgba(175,16,26,0.08)] sm:rounded-[1.75rem] xl:order-none xl:row-span-2 xl:mx-0 xl:max-w-none dark:bg-zinc-900">
                                         <img
-                                            src={featured.imagen?.trim() ? featured.imagen : '/images/news-placeholder.png'}
+                                            src={featured.imagen?.trim() || fallbackImageSrc}
                                             alt={featured.titulo}
-                                            className="aspect-[16/9] w-full object-cover object-center sm:aspect-[18/8] lg:aspect-[18/8] xl:aspect-[16/9]"
-                                            onError={(e) => {
-                                                e.currentTarget.onerror = null;
-                                                e.currentTarget.src = '/images/news-placeholder.png';
+                                            className="aspect-video w-full object-cover"
+                                            onError={({ currentTarget }) => {
+                                                if (currentTarget.getAttribute('src') !== fallbackImageSrc) {
+                                                    currentTarget.src = fallbackImageSrc;
+                                                }
                                             }}
                                         />
 
