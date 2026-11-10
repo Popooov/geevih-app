@@ -82,11 +82,19 @@ export interface EventCategoryInfo {
     slug: string;
 }
 
+export interface EventTimeFact {
+    tipo: 'horario' | 'inicio' | 'fin';
+    etiqueta: string;
+    valor: string;
+}
+
 export interface SingleEvent {
     id: number;
     titulo: string;
     lugar: string;
     fecha: string;
+    fecha_label?: string;
+    horarios?: EventTimeFact[];
     hora?: string | null;
     descripcion?: string | null;
     contenido?: string | null;
