@@ -13,14 +13,14 @@ class EventController extends Controller
     /**
      * Format a date manually in Spanish.
      */
-    private function formatSpanishDate(mixed $date): string
+    private function formatSpanishDate(mixed $date, bool $abbreviated = false, bool $includeYear = true): string
     {
         if (! $date) {
             return '';
         }
 
         try {
-            $c = $date instanceof \DateTime
+            $c = $date instanceof \DateTimeInterface
                 ? Carbon::instance($date)
                 : Carbon::parse($date);
 
@@ -38,12 +38,28 @@ class EventController extends Controller
                 'noviembre',
                 'diciembre',
             ];
+            $mesesAbreviados = [
+                'ene.',
+                'feb.',
+                'mar.',
+                'abr.',
+                'may.',
+                'jun.',
+                'jul.',
+                'ago.',
+                'sept.',
+                'oct.',
+                'nov.',
+                'dic.',
+            ];
 
             $dia = $c->format('j');
-            $mesNombre = $meses[(int) $c->format('n') - 1];
+            $mesIndice = (int) $c->format('n') - 1;
+            $mesNombre = $abbreviated ? $mesesAbreviados[$mesIndice] : $meses[$mesIndice];
             $anio = $c->format('Y');
+            $fecha = $abbreviated ? "{$dia} {$mesNombre}" : "{$dia} de {$mesNombre}";
 
-            return "{$dia} de {$mesNombre} de {$anio}";
+            return $includeYear ? "{$fecha} de {$anio}" : $fecha;
         } catch (\Throwable $e) {
             return '';
         }
@@ -59,7 +75,7 @@ class EventController extends Controller
         }
 
         try {
-            $startDate = $start instanceof \DateTime
+            $startDate = $start instanceof \DateTimeInterface
                 ? Carbon::instance($start)
                 : Carbon::parse($start);
 
@@ -67,7 +83,7 @@ class EventController extends Controller
                 return $this->formatSpanishDate($startDate);
             }
 
-            $endDate = $end instanceof \DateTime
+            $endDate = $end instanceof \DateTimeInterface
                 ? Carbon::instance($end)
                 : Carbon::parse($end);
 
@@ -75,10 +91,79 @@ class EventController extends Controller
                 return $this->formatSpanishDate($startDate);
             }
 
-            return $this->formatSpanishDate($startDate) . ' – ' . $this->formatSpanishDate($endDate);
+            if ($startDate->format('Y-m') === $endDate->format('Y-m')) {
+                return $startDate->format('j') . '–' . $this->formatSpanishDate($endDate);
+            }
+
+            $differentYear = $startDate->year !== $endDate->year;
+
+            return $this->formatSpanishDate($startDate, abbreviated: true, includeYear: $differentYear)
+                . ' – ' . $this->formatSpanishDate($endDate, abbreviated: true);
         } catch (\Throwable $e) {
             return '';
         }
+    }
+
+    private function formatEventSchedule(Event $event): array
+    {
+        $start = $event->start_at;
+        $end = $event->end_at;
+        $isMultiDay = $start && $end && ! $start->isSameDay($end);
+        $differentYear = $isMultiDay && $start->year !== $end->year;
+        $isCourse = $event->category?->slug === 'cursos';
+
+        // Existing records use midnight to represent a date without a published time.
+        $startTime = $start && $start->format('H:i') !== '00:00' ? $start->format('H:i') : null;
+        $endTime = $end && $end->format('H:i') !== '00:00' ? $end->format('H:i') : null;
+        $timeRange = ! $isMultiDay && $startTime !== null && $endTime !== null
+            ? $startTime . ' – ' . $endTime
+            : null;
+
+        $startValue = $isMultiDay && $startTime !== null
+            ? $this->formatSpanishDate($start, abbreviated: true, includeYear: $differentYear) . ' a las ' . $startTime
+            : $startTime;
+        $endValue = $isMultiDay && $endTime !== null
+            ? $this->formatSpanishDate($end, abbreviated: true, includeYear: $differentYear) . ' a las ' . $endTime
+            : $endTime;
+
+        $timeFacts = [];
+
+        if ($timeRange !== null) {
+            $timeFacts[] = ['tipo' => 'horario', 'etiqueta' => 'Horario', 'valor' => $timeRange];
+        } else {
+            if ($startValue !== null) {
+                $startLabel = $isMultiDay
+                    ? ($isCourse ? 'Inicio del curso' : 'Inicio del evento')
+                    : 'Hora de inicio';
+                $timeFacts[] = ['tipo' => 'inicio', 'etiqueta' => $startLabel, 'valor' => $startValue];
+            }
+
+            if ($endValue !== null) {
+                $endLabel = $isMultiDay
+                    ? ($isCourse ? 'Fin del curso' : 'Fin del evento')
+                    : 'Hora de fin';
+                $timeFacts[] = ['tipo' => 'fin', 'etiqueta' => $endLabel, 'valor' => $endValue];
+            }
+        }
+
+        $cardTime = $timeRange;
+
+        if ($cardTime === null && $startValue !== null) {
+            $cardTime = $isMultiDay ? 'Inicio el ' . $startValue : 'Inicio a las ' . $startValue;
+        }
+
+        if ($cardTime === null && $endValue !== null) {
+            $cardTime = $isMultiDay ? 'Fin el ' . $endValue : 'Fin a las ' . $endValue;
+        }
+
+        return [
+            'fecha' => $this->formatSpanishDateRange($start, $end),
+            'fecha_label' => $isMultiDay ? ($isCourse ? 'Periodo del curso' : 'Fechas') : 'Fecha',
+            'horarios' => $timeFacts,
+            'hora_resumen' => $cardTime,
+            'hora' => $timeRange ?? $startTime,
+            'fin' => $timeRange === null ? $endTime : null,
+        ];
     }
 
     private function resolveOptimizedCloudinaryImageUrl(?string $path, string $transformations): ?string
@@ -183,31 +268,7 @@ class EventController extends Controller
             // This only applies when the event has an end date.
             $isOngoing = $end ? ($start->lte($now) && $end->gte($now)) : false;
 
-            // Format start and end times.
-            // 00:00 is treated as "no visible time" because some events only need a date.
-            $hasStartTime = $start && $start->format('H:i') !== '00:00';
-            $hasEndTime = $end && $end->format('H:i') !== '00:00';
-
-            $time = $hasStartTime ? $start->format('H:i') : null;
-            $endTime = $hasEndTime ? $end->format('H:i') : null;
-
-            // Build the visible date range.
-            // If the event starts and ends on the same day, only one date is shown.
-            // If it spans multiple days, a date range is shown.
-            $dateRange = $this->formatSpanishDateRange($start, $end);
-
-            // Build the visible time range.
-            // If the event starts and ends on the same day, both times are shown.
-            // If it spans multiple days, only the start time is shown.
-            $timeRange = null;
-
-            if ($time) {
-                $timeRange = $time;
-
-                if ($end && $start->isSameDay($end) && $endTime) {
-                    $timeRange = $time . ' – ' . $endTime;
-                }
-            }
+            $schedule = $this->formatEventSchedule($event);
 
             // Get the category slug if the event has a category.
             $categorySlug = $event->category?->slug;
@@ -220,9 +281,9 @@ class EventController extends Controller
                 // Show "Online" as the place when the event is online.
                 'lugar' => $event->is_online ? 'Online' : $event->location,
 
-                'fecha' => $dateRange,
+                'fecha' => $schedule['fecha'],
                 'year' => $start?->year,
-                'hora' => $timeRange,
+                'hora' => $schedule['hora_resumen'],
                 'descripcion' => $event->description,
 
                 // Convert the Cloudinary stored path into a public URL.
@@ -284,20 +345,7 @@ class EventController extends Controller
         $isOngoing = $end ? ($start->lte($now) && $end->gte($now)) : false;
         $isPast = ($end ?? $start)?->lt($now) ?? false;
 
-        // Format start and end times.
-        // 00:00 is treated as "no visible time" because some events only need a date.
-        $hasStartTime = $start && $start->format('H:i') !== '00:00';
-        $hasEndTime = $end && $end->format('H:i') !== '00:00';
-
-        $time = $hasStartTime ? $start->format('H:i') : null;
-        $endTime = $hasEndTime ? $end->format('H:i') : null;
-
-        // Build the visible date range.
-        $dateRange = $this->formatSpanishDateRange($start, $end);
-
-        // Build the visible time range.
-        $hasTimeRange = $time !== null && $endTime !== null && $start->isSameDay($end);
-        $timeRange = $hasTimeRange ? $time . ' – ' . $endTime : $time;
+        $schedule = $this->formatEventSchedule($event);
 
         // Render the event detail page with all data needed by React.
         return Inertia::render('events/show', [
@@ -309,9 +357,11 @@ class EventController extends Controller
                 // Show "Online" as the place when the event is online.
                 'lugar' => $event->is_online ? 'Online' : $event->location,
 
-                'fecha' => $dateRange,
-                'hora' => $timeRange,
-                'fin' => $hasTimeRange ? null : $endTime,
+                'fecha' => $schedule['fecha'],
+                'fecha_label' => $schedule['fecha_label'],
+                'horarios' => $schedule['horarios'],
+                'hora' => $schedule['hora'],
+                'fin' => $schedule['fin'],
                 'descripcion' => $event->description,
                 'contenido' => $event->content,
 
