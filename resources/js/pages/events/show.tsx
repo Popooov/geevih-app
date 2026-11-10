@@ -3,11 +3,14 @@ import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
 import { type ShowEventPageProps } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { ArrowLeft, Calendar, Clock3, ExternalLink, MapPin } from 'lucide-react';
+import { ArrowLeft, Calendar, Clock3, ExternalLink, Flag, MapPin, type LucideIcon } from 'lucide-react';
+import { type ReactNode } from 'react';
 
-function EventActions({ registrationUrl, onlineUrl, className }: { registrationUrl?: string | null; onlineUrl?: string | null; className?: string }) {
+const fallbackImageSrc = '/images/event-placeholder.png';
+
+function EventActions({ registrationUrl, onlineUrl }: { registrationUrl?: string | null; onlineUrl?: string | null }) {
     return (
-        <div className={cn('flex flex-col gap-3 sm:flex-row sm:flex-wrap', className)}>
+        <div className="flex flex-col gap-3 @lg:flex-row @lg:flex-wrap">
             {registrationUrl && (
                 <a href={registrationUrl} target="_blank" rel="noopener noreferrer" className={siteButtonVariants({ variant: 'primary' })}>
                     Inscribirse
@@ -32,11 +35,19 @@ function EventActions({ registrationUrl, onlineUrl, className }: { registrationU
     );
 }
 
-function EventBadge({ children, variant = 'default' }: { children: React.ReactNode; variant?: 'default' | 'secondary' | 'live' }) {
+function EventBadge({
+    children,
+    variant = 'category',
+}: {
+    children: ReactNode;
+    variant?: 'category' | 'online' | 'inPerson' | 'ongoing' | 'finished';
+}) {
     const styles = {
-        default: 'bg-primary/10 text-primary dark:bg-primary/15 dark:text-red-200',
-        secondary: 'bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300',
-        live: 'bg-emerald-700 text-white dark:bg-emerald-300 dark:text-zinc-950',
+        category: 'bg-primary/10 text-primary dark:bg-primary/15 dark:text-red-200',
+        online: 'bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300',
+        inPerson: 'bg-muted text-foreground',
+        ongoing: 'bg-emerald-700 text-white dark:bg-emerald-300 dark:text-zinc-950',
+        finished: 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900',
     };
 
     return (
@@ -48,28 +59,16 @@ function EventBadge({ children, variant = 'default' }: { children: React.ReactNo
     );
 }
 
-function MetaItem({ icon: Icon, children, className }: { icon: React.ElementType; children: React.ReactNode; className?: string }) {
+function EventFact({ icon: Icon, label, value, className }: { icon: LucideIcon; label: string; value: string; className?: string }) {
     return (
-        <div
-            className={cn(
-                'flex min-w-0 items-center gap-3 px-1 py-3 text-xs leading-5 text-foreground/70 md:rounded-2xl md:bg-zinc-50/90 md:px-4 md:text-base md:shadow-[0_8px_24px_rgba(175,16,26,0.025)] dark:text-zinc-300 md:dark:bg-zinc-900/60',
-                className,
-            )}
-        >
-            <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-zinc-700 sm:h-9 sm:w-9 md:bg-zinc-200/80 dark:bg-zinc-800 dark:text-zinc-300">
-                <Icon className="h-4 w-4" />
-            </span>
-
-            <span className="min-w-0 flex-1 break-words">{children}</span>
-        </div>
-    );
-}
-
-function InfoRow({ label, value }: { label: string; value: string }) {
-    return (
-        <div className="space-y-1">
-            <p className="text-[11px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">{label}</p>
-            <p className="text-sm leading-6 text-foreground dark:text-white">{value}</p>
+        <div className={cn('relative min-w-0 pl-11', className)}>
+            <dt className="text-xs leading-4 font-medium text-muted-foreground">
+                <span aria-hidden="true" className="absolute top-1 left-0 grid size-8 place-items-center rounded-xl bg-muted/80">
+                    <Icon className="size-4" />
+                </span>
+                {label}
+            </dt>
+            <dd className="mt-0.5 text-sm leading-5 font-medium break-words text-foreground">{value}</dd>
         </div>
     );
 }
@@ -77,10 +76,12 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 export default function Show() {
     const { event } = usePage<ShowEventPageProps>().props;
 
-    const imageSrc = event.imagen?.trim() ? event.imagen : '/images/event-placeholder.png';
+    const imageSrc = event.imagen?.trim() || fallbackImageSrc;
+    const description = event.descripcion?.trim();
+    const content = event.contenido?.trim();
     const isPast = Boolean(event.isPast);
     const registrationUrl = isPast ? null : event.registration_url;
-    const hasCtas = Boolean(registrationUrl || event.online_url);
+    const onlineUrl = event.online_url;
 
     const backHref = event.backLink ?? '/formacion';
     const backLabel = event.category ? `Volver a ${event.category}` : 'Volver a formación';
@@ -90,183 +91,102 @@ export default function Show() {
             <Head title={event.titulo} />
 
             <div className="site-page">
-                <div className="lg:pt-8 site-stack ">
-                    {/* BACK */}
+                <div className="space-y-6 lg:space-y-8 lg:pt-8">
                     <div>
                         <Link
                             href={backHref}
-                            className="inline-flex min-h-11 items-center gap-2 rounded-md text-sm font-medium text-muted-foreground transition hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
+                            className="inline-flex min-h-11 items-center gap-2 rounded-md text-sm font-medium text-muted-foreground transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
                         >
-                            <ArrowLeft className="h-4 w-4" />
+                            <ArrowLeft aria-hidden="true" className="h-4 w-4" />
                             {backLabel}
                         </Link>
                     </div>
 
-                    {/* HERO */}
-                    <section className="relative overflow-hidden rounded-[2rem] bg-background/92 px-5 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] backdrop-blur-xl sm:px-8 sm:py-8 lg:px-9 xl:px-8 dark:bg-zinc-950/85">
-                        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.08),transparent_46%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.14),transparent_46%)]" />
+                    <section
+                        aria-labelledby="event-title"
+                        className="relative isolate grid items-center gap-6 overflow-hidden rounded-[2rem] bg-card p-5 sm:p-7 lg:grid-cols-2 lg:gap-10 lg:p-8"
+                    >
+                        <div
+                            aria-hidden="true"
+                            className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.08),transparent_55%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.16),transparent_55%)]"
+                        />
 
-                        <div className="relative grid gap-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(420px,1fr)] lg:items-start xl:grid-cols-[minmax(0,1fr)_520px]">
-                            {/* TOP INFO */}
-                            <div className="space-y-6">
-                                <div className="flex flex-wrap items-center gap-2 lg:hidden">
-                                    {event.category && <EventBadge>{event.category}</EventBadge>}
-                                    {event.is_online && <EventBadge variant="secondary">Online</EventBadge>}
-                                    {event.isOngoing && <EventBadge variant="live">En curso</EventBadge>}
-                                </div>
+                        <div className="flex min-w-0 justify-center">
+                            <img
+                                src={imageSrc}
+                                alt={event.titulo}
+                                width={1040}
+                                height={585}
+                                loading="eager"
+                                fetchPriority="high"
+                                decoding="async"
+                                className="h-auto max-h-[30rem] w-auto max-w-full rounded-[1.25rem] shadow-[0_12px_32px_rgba(175,16,26,0.08)] sm:rounded-[1.75rem]"
+                                onError={({ currentTarget }) => {
+                                    if (currentTarget.getAttribute('src') !== fallbackImageSrc) {
+                                        currentTarget.src = fallbackImageSrc;
+                                    }
+                                }}
+                            />
+                        </div>
 
-                                <div className="max-w-2xl space-y-4 lg:max-w-xl xl:max-w-2xl">
-                                    <h1 className="text-2xl leading-tight font-semibold tracking-tight text-foreground sm:text-3xl md:text-4xl lg:text-3xl xl:text-4xl dark:text-white">
-                                        {event.titulo}
-                                    </h1>
-
-                                    {event.descripcion && (
-                                        <p className="max-w-2xl text-sm leading-7 text-foreground/65 sm:text-[0.95rem] dark:text-zinc-300">
-                                            {event.descripcion}
-                                        </p>
-                                    )}
-                                </div>
-
-                                {hasCtas && <EventActions registrationUrl={registrationUrl} onlineUrl={event.online_url} />}
+                        <div className="min-w-0 space-y-5 lg:order-first">
+                            <div className="flex flex-wrap items-center gap-2">
+                                {event.category && <EventBadge>{event.category}</EventBadge>}
+                                <EventBadge variant={event.is_online ? 'online' : 'inPerson'}>{event.is_online ? 'Online' : 'Presencial'}</EventBadge>
+                                {isPast && <EventBadge variant="finished">Finalizado</EventBadge>}
+                                {!isPast && event.isOngoing && <EventBadge variant="ongoing">En curso</EventBadge>}
                             </div>
 
-                            {/* MEDIA */}
-                            <div className="space-y-4 lg:self-start">
-                                <div className="relative mx-auto w-full max-w-[620px] overflow-hidden rounded-[1.75rem] bg-muted shadow-[0_22px_55px_rgba(175,16,26,0.10)] lg:mx-0 lg:max-w-[520px] dark:bg-zinc-900">
-                                    <img
-                                        src={imageSrc}
-                                        alt={event.titulo}
-                                        width={1040}
-                                        height={585}
-                                        sizes="(min-width: 1280px) 520px, (min-width: 1024px) 50vw, 100vw"
-                                        loading="eager"
-                                        fetchPriority="high"
-                                        decoding="async"
-                                        className="aspect-video h-auto w-full object-cover object-center"
-                                        onError={(e) => {
-                                            e.currentTarget.onerror = null;
-                                            e.currentTarget.src = '/images/event-placeholder.png';
-                                        }}
-                                    />
+                            <h1
+                                id="event-title"
+                                className="text-2xl leading-tight font-semibold tracking-tight break-words text-foreground sm:text-3xl lg:text-4xl"
+                            >
+                                {event.titulo}
+                            </h1>
 
-                                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-black/0 to-transparent" />
-                                </div>
-
-                                <div className="hidden rounded-[1.5rem] bg-white/65 px-4 py-4 shadow-[0_12px_34px_rgba(175,16,26,0.04)] backdrop-blur-sm lg:block dark:bg-zinc-900/45">
-                                    <div className="flex flex-wrap items-center gap-2">
-                                        {event.is_online ? (
-                                            <EventBadge variant="secondary">Actividad online</EventBadge>
-                                        ) : (
-                                            <EventBadge variant="secondary">Actividad presencial</EventBadge>
-                                        )}
-                                        {event.isOngoing && <EventBadge variant="live">En curso</EventBadge>}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* META ROW */}
-                            <div className="rounded-[1.75rem] bg-white/70 px-4 py-2 shadow-[0_14px_36px_rgba(175,16,26,0.035)] backdrop-blur-sm md:bg-white/55 md:p-3 lg:col-span-2 dark:bg-zinc-900/35">
-                                <div className="divide-y divide-zinc-200/60 md:grid md:grid-cols-12 md:gap-3 md:divide-y-0 dark:divide-zinc-800/70">
-                                    <MetaItem icon={MapPin} className="md:col-span-12 xl:col-span-5">
-                                        {event.is_online ? 'Online' : event.lugar || 'Ubicación por confirmar'}
-                                    </MetaItem>
-
-                                    <MetaItem icon={Calendar} className="md:col-span-8 xl:col-span-5">
-                                        {event.fecha}
-                                    </MetaItem>
-
-                                    {event.hora && (
-                                        <MetaItem icon={Clock3} className="md:col-span-4 xl:col-span-2">
-                                            {event.hora}
-                                        </MetaItem>
-                                    )}
-
-                                    {/* {event.online_url && event.is_online && (
-                                        <MetaItem icon={Globe} className="md:col-span-12 xl:col-span-12">
-                                            Acceso online disponible
-                                        </MetaItem>
-                                    )} */}
-                                </div>
-                            </div>
+                            {description && <p className="max-w-[65ch] text-base leading-7 break-words text-muted-foreground">{description}</p>}
                         </div>
                     </section>
 
-                    {/* MAIN */}
-                    <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_320px] xl:grid-cols-[minmax(0,1fr)_340px]">
-                        {/* CONTENT */}
-                        <section>
-                            <div className="rounded-[2rem] bg-background px-6 py-7 shadow-[0_16px_40px_rgba(175,16,26,0.05)] sm:px-8 sm:py-8 dark:bg-zinc-950/95">
-                                <div className="space-y-3">
-                                    <div className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] text-primary uppercase">
-                                        Detalle
-                                    </div>
+                    <div className={cn('grid items-start gap-6 lg:gap-8 lg:px-8', content && 'lg:grid-cols-[minmax(0,1fr)_minmax(16rem,30%)]')}>
+                        <aside
+                            aria-labelledby="event-facts"
+                            className="@container min-w-0 space-y-5 rounded-3xl bg-muted/45 p-5 sm:p-7 lg:order-last lg:p-6"
+                        >
+                            <h2 id="event-facts" className="text-lg font-semibold tracking-tight text-foreground">
+                                Ficha del evento
+                            </h2>
 
-                                    <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl dark:text-white">
-                                        Información del evento
-                                    </h2>
+                            <dl className="flex flex-wrap gap-x-6 gap-y-4">
+                                <EventFact icon={Calendar} label="Fecha" value={event.fecha} className={cn('w-full', !event.fin && '@lg:w-auto')} />
+                                {event.hora && (
+                                    <EventFact icon={Clock3} label={event.fin ? 'Inicio' : 'Horario'} value={event.hora} className="min-w-24" />
+                                )}
+                                {event.fin && <EventFact icon={Flag} label="Fin" value={event.fin} />}
+                                {!event.is_online && (
+                                    <EventFact
+                                        icon={MapPin}
+                                        label="Lugar"
+                                        value={event.lugar || 'Ubicación por confirmar'}
+                                        className="w-full @lg:w-auto"
+                                    />
+                                )}
+                            </dl>
 
-                                    <p className="text-sm text-foreground/65 dark:text-zinc-300">Información completa y contexto de la actividad.</p>
-                                </div>
-
-                                <div className="mt-8">
-                                    {event.contenido ? (
-                                        <div className="prose max-w-none prose-slate dark:prose-invert">
-                                            <div dangerouslySetInnerHTML={{ __html: event.contenido }} />
-                                        </div>
-                                    ) : (
-                                        <p className="text-muted-foreground">No hay contenido adicional.</p>
-                                    )}
-                                </div>
-                            </div>
-                        </section>
-
-                        {/* SIDEBAR */}
-                        <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
-                            {/* CTAs */}
-                            {hasCtas && (
-                                <div className="hidden rounded-[1.75rem] bg-background px-5 py-5 shadow-[0_16px_40px_rgba(175,16,26,0.05)] sm:px-6 lg:block dark:bg-zinc-950/95">
-                                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between lg:flex-col lg:items-stretch">
-                                        <div className="space-y-1">
-                                            <h3 className="text-xs font-semibold tracking-[0.14em] text-muted-foreground uppercase">Acciones</h3>
-
-                                            <p className="max-w-sm text-sm leading-6 text-foreground/60 lg:max-w-none dark:text-zinc-400">
-                                                Gestiona tu participación en esta actividad.
-                                            </p>
-                                        </div>
-
-                                        <EventActions registrationUrl={registrationUrl} onlineUrl={event.online_url} className="lg:flex-col" />
-                                    </div>
-                                </div>
-                            )}
-
-                            {/* INFO */}
-                            <div className="rounded-[1.75rem] bg-background p-6 shadow-[0_16px_40px_rgba(175,16,26,0.05)] dark:bg-zinc-950/95">
-                                <h3 className="text-sm font-semibold text-muted-foreground uppercase">Ficha</h3>
-
-                                <div className="mt-5 space-y-4">
-                                    <InfoRow label="Fecha" value={event.fecha} />
-
-                                    {event.hora && <InfoRow label="Hora" value={event.hora} />}
-
-                                    <InfoRow label="Modalidad" value={event.is_online ? 'Online' : 'Presencial'} />
-
-                                    <InfoRow label="Lugar" value={event.is_online ? 'Online' : event.lugar || '—'} />
-
-                                    {event.fin && <InfoRow label="Fin" value={event.fin} />}
-                                </div>
-                            </div>
-
-                            {/* BACK */}
-                            <div className="rounded-[1.75rem] bg-background p-6 shadow-[0_16px_40px_rgba(175,16,26,0.05)] dark:bg-zinc-950/95">
-                                <Link
-                                    href={backHref}
-                                    className="flex items-center justify-center gap-2 text-sm font-medium transition hover:text-primary"
-                                >
-                                    <ArrowLeft className="h-4 w-4" />
-                                    {backLabel}
-                                </Link>
-                            </div>
+                            {(registrationUrl || onlineUrl) && <EventActions registrationUrl={registrationUrl} onlineUrl={onlineUrl} />}
                         </aside>
+
+                        {content && (
+                            <section aria-labelledby="event-details" className="min-w-0 space-y-5 px-5 sm:px-7 lg:px-0">
+                                <h2 id="event-details" className="text-xl font-semibold tracking-tight text-foreground sm:text-2xl">
+                                    Información del evento
+                                </h2>
+                                <div
+                                    className="prose overflow-x-auto [overflow-wrap:anywhere] prose-slate lg:max-w-none dark:prose-invert"
+                                    dangerouslySetInnerHTML={{ __html: content }}
+                                />
+                            </section>
+                        )}
                     </div>
                 </div>
             </div>
