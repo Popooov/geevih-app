@@ -296,15 +296,8 @@ class EventController extends Controller
         $dateRange = $this->formatSpanishDateRange($start, $end);
 
         // Build the visible time range.
-        $timeRange = null;
-
-        if ($time) {
-            $timeRange = $time;
-
-            if ($end && $start->isSameDay($end) && $endTime) {
-                $timeRange = $time . ' – ' . $endTime;
-            }
-        }
+        $hasTimeRange = $time !== null && $endTime !== null && $start->isSameDay($end);
+        $timeRange = $hasTimeRange ? $time . ' – ' . $endTime : $time;
 
         // Render the event detail page with all data needed by React.
         return Inertia::render('events/show', [
@@ -318,18 +311,14 @@ class EventController extends Controller
 
                 'fecha' => $dateRange,
                 'hora' => $timeRange,
-                'fin' => $event->end_at
-                    ? ($hasEndTime
-                        ? $event->end_at->format('d/m/Y H:i')
-                        : $event->end_at->format('d/m/Y'))
-                    : null,
+                'fin' => $hasTimeRange ? null : $endTime,
                 'descripcion' => $event->description,
                 'contenido' => $event->content,
 
                 // Convert the Cloudinary stored path into a public URL.
                 'imagen' => $this->resolveOptimizedCloudinaryImageUrl(
                     $event->image_url,
-                    'f_auto,q_auto:eco,c_fill,g_auto,w_1040,h_585'
+                    'f_auto,q_auto:eco,c_limit,w_1040,h_585'
                 ),
 
                 'registration_url' => $event->registration_url,
