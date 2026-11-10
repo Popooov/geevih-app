@@ -1,7 +1,7 @@
 import { siteButtonVariants } from '@/components/site-button';
 import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
-import { type ShowEventPageProps } from '@/types';
+import { type EventTimeFact, type ShowEventPageProps } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { ArrowLeft, Calendar, Clock3, ExternalLink, Flag, MapPin, type LucideIcon } from 'lucide-react';
 import { type ReactNode } from 'react';
@@ -82,6 +82,10 @@ export default function Show() {
     const isPast = Boolean(event.isPast);
     const registrationUrl = isPast ? null : event.registration_url;
     const onlineUrl = event.online_url;
+    const timeFacts: EventTimeFact[] = event.horarios ?? [
+        ...(event.hora ? [{ tipo: 'inicio' as const, etiqueta: event.fin ? 'Inicio' : 'Horario', valor: event.hora }] : []),
+        ...(event.fin ? [{ tipo: 'fin' as const, etiqueta: 'Fin', valor: event.fin }] : []),
+    ];
 
     const backHref = event.backLink ?? '/formacion';
     const backLabel = event.category ? `Volver a ${event.category}` : 'Volver a formación';
@@ -157,23 +161,39 @@ export default function Show() {
                                 Ficha del evento
                             </h2>
 
-                            <dl className="flex flex-wrap gap-x-6 gap-y-4">
-                                <EventFact icon={Calendar} label="Fecha" value={event.fecha} className={cn('w-full', !event.fin && '@lg:w-auto')} />
-                                {event.hora && (
-                                    <EventFact icon={Clock3} label={event.fin ? 'Inicio' : 'Horario'} value={event.hora} className="min-w-24" />
-                                )}
-                                {event.fin && <EventFact icon={Flag} label="Fin" value={event.fin} />}
-                                {!event.is_online && (
+                            <div className="flex flex-col gap-5 md:max-lg:flex-row md:max-lg:items-center">
+                                <dl className="flex min-w-0 flex-wrap gap-x-6 gap-y-4 md:max-lg:flex-1">
                                     <EventFact
-                                        icon={MapPin}
-                                        label="Lugar"
-                                        value={event.lugar || 'Ubicación por confirmar'}
-                                        className="w-full @lg:w-auto"
+                                        icon={Calendar}
+                                        label={event.fecha_label ?? 'Fecha'}
+                                        value={event.fecha}
+                                        className={cn('w-full', timeFacts.length < 2 && '@lg:w-auto')}
                                     />
-                                )}
-                            </dl>
+                                    {timeFacts.map((fact) => (
+                                        <EventFact
+                                            key={fact.tipo}
+                                            icon={fact.tipo === 'fin' ? Flag : Clock3}
+                                            label={fact.etiqueta}
+                                            value={fact.valor}
+                                            className={timeFacts.length > 1 ? 'w-full' : 'min-w-24'}
+                                        />
+                                    ))}
+                                    {!event.is_online && (
+                                        <EventFact
+                                            icon={MapPin}
+                                            label="Lugar"
+                                            value={event.lugar || 'Ubicación por confirmar'}
+                                            className="w-full @lg:w-auto"
+                                        />
+                                    )}
+                                </dl>
 
-                            {(registrationUrl || onlineUrl) && <EventActions registrationUrl={registrationUrl} onlineUrl={onlineUrl} />}
+                                {(registrationUrl || onlineUrl) && (
+                                    <div className="@container md:max-lg:w-48 md:max-lg:shrink-0">
+                                        <EventActions registrationUrl={registrationUrl} onlineUrl={onlineUrl} />
+                                    </div>
+                                )}
+                            </div>
                         </aside>
 
                         {content && (
