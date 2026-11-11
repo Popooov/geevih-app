@@ -37,6 +37,18 @@
             content="Grupo de Enfermería Experta en VIH integrado en SEISIDA. Formación, investigación, recursos y actualidad sobre cuidados de enfermería en VIH."
         >
 
+        @isset($sharePreview)
+            <meta property="og:type" content="{{ $sharePreview['type'] }}">
+            <meta property="og:site_name" content="GEEVIH · SEISIDA">
+            <meta property="og:title" content="{{ $sharePreview['title'] }}">
+            <meta property="og:url" content="{{ $sharePreview['url'] }}">
+            @if($sharePreview['description'] !== '')
+                <meta property="og:description" content="{{ $sharePreview['description'] }}">
+            @endif
+            <meta property="og:image" content="{{ $sharePreview['image'] }}">
+            <meta property="og:image:alt" content="{{ $sharePreview['imageAlt'] }}">
+        @endisset
+
         <link rel="icon" href="/favicon.ico" sizes="any">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
