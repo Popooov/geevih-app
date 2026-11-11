@@ -141,6 +141,7 @@ export interface SingleNews {
 
     source_url?: string | null;
     slug?: string;
+    link?: string;
 }
 
 /**
