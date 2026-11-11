@@ -1,3 +1,4 @@
+import { ShareButton } from '@/components/share-button';
 import { siteButtonVariants } from '@/components/site-button';
 import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
@@ -47,7 +48,10 @@ export default function Show() {
 
             <div className="site-page">
                 <div className="mx-auto max-w-3xl space-y-4 lg:pt-8">
-                    <div>{backLink}</div>
+                    <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+                        {backLink}
+                        {singleNews.link && <ShareButton key={singleNews.link} title={singleNews.titulo} url={singleNews.link} />}
+                    </div>
 
                     <article aria-labelledby="news-title" className="space-y-6 sm:space-y-8">
                         <header className="space-y-3 sm:space-y-4">

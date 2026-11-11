@@ -1,3 +1,4 @@
+import { ShareButton } from '@/components/share-button';
 import { siteButtonVariants } from '@/components/site-button';
 import AppLayout from '@/layouts/app-layout';
 import { attendanceLabels, getAttendanceMode, matchesAttendanceMode } from '@/lib/events';
@@ -116,7 +117,7 @@ export default function Show() {
 
             <div className="site-page">
                 <div className="space-y-6 lg:space-y-8 lg:pt-8">
-                    <div>
+                    <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
                         <Link
                             href={backHref}
                             className="inline-flex min-h-11 items-center gap-2 rounded-md text-sm font-medium text-muted-foreground transition-colors hover:text-primary focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none"
@@ -124,6 +125,7 @@ export default function Show() {
                             <ArrowLeft aria-hidden="true" className="h-4 w-4" />
                             {backLabel}
                         </Link>
+                        {event.link && <ShareButton key={event.link} title={event.titulo} url={event.link} />}
                     </div>
 
                     <section
