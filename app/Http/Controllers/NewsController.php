@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\News;
-use Inertia\Inertia;
 use Carbon\Carbon;
+use Cloudinary\Cloudinary;
+use Inertia\Inertia;
 
 class NewsController extends Controller
 {
@@ -47,12 +48,11 @@ class NewsController extends Controller
         }
     }
 
-    private const CLOUDINARY_IMAGE_BASE_URL =
-        'https://res.cloudinary.com/dnke4qnie/image/upload/';
-
     private function resolveImageUrl(?string $path): ?string
     {
-        if (! $path) {
+        $path = trim($path ?? '');
+
+        if ($path === '') {
             return null;
         }
 
@@ -60,7 +60,10 @@ class NewsController extends Controller
             return $path;
         }
 
-        return self::CLOUDINARY_IMAGE_BASE_URL . ltrim($path, '/');
+        return (string) app(Cloudinary::class)
+            ->image(ltrim($path, '/'))
+            ->secure()
+            ->toUrl();
     }
 
     public function index()
@@ -72,8 +75,6 @@ class NewsController extends Controller
 
         return Inertia::render('news/index', [
             'news' => $allNews->map(function (News $news): array {
-                $imagePath = $news->image_url;
-
                 return [
                     'id' => $news->id,
                     'titulo' => $news->title,
@@ -93,6 +94,14 @@ class NewsController extends Controller
         // Ensure the news item is published, otherwise return 404
         abort_unless($news->is_published, 404);
 
+        // The rich-text editor can leave empty paragraphs in a brief notice.
+        $content = $news->content;
+        $visibleContent = html_entity_decode(
+            strip_tags($content ?? '', ['img', 'audio', 'video', 'iframe', 'embed', 'object', 'svg', 'math']),
+            ENT_QUOTES | ENT_HTML5,
+            'UTF-8'
+        );
+
         return Inertia::render('news/show', [
             // Prepare single news item for detail view
             'singleNews' => [
@@ -108,10 +117,11 @@ class NewsController extends Controller
                 'descripcion' => $news->summary,
 
                 // Full article content
-                'contenido'   => $news->content,
+                'contenido'   => preg_match('/[^\s\p{Z}\p{Cf}]/u', $visibleContent) === 1 ? $content : null,
 
                 // Public image URL from Cloudinary (if exists)
                 'imagen'      => $this->resolveImageUrl($news->image_url),
+                'image_alt'   => $news->image_alt,
 
                 // Optional external source link
                 'source_url'  => $news->source_url,

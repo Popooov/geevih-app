@@ -1,9 +1,11 @@
 import EventCard from '@/components/event-card';
+import { siteButtonVariants } from '@/components/site-button';
 import AppLayout from '@/layouts/app-layout';
+import { getAttendanceMode, matchesAttendanceMode } from '@/lib/events';
 import { cn } from '@/lib/utils';
 import { type EventItem, type EventPageProps } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
-import { Archive, CalendarCheck, FileText, Filter, Presentation, Search } from 'lucide-react';
+import { Archive, CalendarCheck, ChevronDown, FileText, Filter, Presentation, Search } from 'lucide-react';
 import { useRef, useState, type ReactNode } from 'react';
 
 type FilterMode = 'all' | 'online' | 'presencial';
@@ -90,7 +92,7 @@ function filterEvents(events: EventItem[], query: string, year: string, mode: Fi
         const text = normalizeSearch([event.titulo, event.descripcion ?? ''].join(' '));
         const matchesSearch = terms.every((term) => text.includes(term));
         const matchesYear = year === 'all' || String(event.year) === year;
-        const matchesMode = mode === 'all' || (mode === 'online' ? event.is_online === true : event.is_online === false);
+        const matchesMode = mode === 'all' || matchesAttendanceMode(event, mode === 'online' ? 'online' : 'in_person');
         return matchesSearch && matchesYear && matchesMode;
     });
 }
@@ -103,7 +105,7 @@ function FilterPills({ value, onChange }: { value: FilterMode; onChange: (value:
     ];
     return (
         <div role="group" aria-label="Modalidad de la actividad" className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-2 pr-1 text-sm font-medium text-muted-foreground dark:text-zinc-400">
+            <span className="inline-flex w-full items-center gap-2 text-sm font-medium text-muted-foreground sm:w-auto sm:pr-1 dark:text-zinc-400">
                 <Filter aria-hidden="true" className="h-4 w-4" />
                 Modalidad
             </span>
@@ -115,10 +117,8 @@ function FilterPills({ value, onChange }: { value: FilterMode; onChange: (value:
                     aria-controls="training-results"
                     onClick={() => onChange(option.value)}
                     className={cn(
-                        'inline-flex min-h-11 cursor-pointer items-center justify-center rounded-full px-4 py-2 text-sm font-medium transition focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none',
-                        value === option.value
-                            ? 'bg-zinc-950 text-white dark:bg-white dark:text-zinc-950'
-                            : 'bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800 dark:hover:text-white',
+                        siteButtonVariants({ variant: value === option.value ? 'primary' : 'secondary' }),
+                        'cursor-pointer px-2.5 max-[359px]:px-2 max-[359px]:text-xs sm:px-5',
                     )}
                 >
                     {option.label}
@@ -154,7 +154,7 @@ function EmptyState({ title, description, children }: { title: string; descripti
 
 function EventGrid({ events, priority = false, isPast }: { events: EventItem[]; priority?: boolean; isPast?: boolean }) {
     return (
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
             {events.map((event, index) => (
                 <EventCard
                     key={event.id}
@@ -166,6 +166,8 @@ function EventGrid({ events, priority = false, isPast }: { events: EventItem[]; 
                     enlace={event.link}
                     lugar={event.lugar}
                     is_online={event.is_online}
+                    attendance_mode={event.attendance_mode}
+                    status_label={event.status_label}
                     registration_url={event.registration_url}
                     online_url={event.online_url}
                     isOngoing={event.isOngoing}
@@ -177,8 +179,7 @@ function EventGrid({ events, priority = false, isPast }: { events: EventItem[]; 
     );
 }
 
-const actionClass =
-    'inline-flex min-h-11 items-center justify-center rounded-xl border border-border px-4 py-2 text-sm font-semibold text-foreground transition hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none dark:text-zinc-200';
+const actionClass = siteButtonVariants({ variant: 'secondary' });
 
 function TrainingListing({ upcomingEvents = [], pastEvents = [], currentCategory = null }: EventPageProps) {
     const [query, setQuery] = useState('');
@@ -191,11 +192,7 @@ function TrainingListing({ upcomingEvents = [], pastEvents = [], currentCategory
     const years = [...new Set(allEvents.map((event) => event.year).filter((value): value is number => typeof value === 'number'))].sort(
         (a, b) => b - a,
     );
-    const showModeFilter =
-        !isMaterial &&
-        currentCategory?.slug !== 'webinars' &&
-        allEvents.some((event) => event.is_online === true) &&
-        allEvents.some((event) => event.is_online === false);
+    const showModeFilter = !isMaterial && new Set(allEvents.map(getAttendanceMode).filter(Boolean)).size > 1;
     const activeMode = showModeFilter ? mode : 'all';
     const activeYear = !isMaterial && years.some((value) => String(value) === year) ? year : 'all';
     const hasFilters = normalizeSearch(query).length > 0 || activeYear !== 'all' || activeMode !== 'all';
@@ -214,9 +211,9 @@ function TrainingListing({ upcomingEvents = [], pastEvents = [], currentCategory
     return (
         <AppLayout>
             <Head title={content.title} />
-            <div className="mx-auto max-w-6xl px-5 pt-6 pb-16 sm:px-6 lg:px-6 lg:pt-9 lg:pb-20 xl:px-0">
-                <div className="space-y-10 lg:space-y-12">
-                    <section className="relative overflow-hidden rounded-[2rem] bg-background/92 px-5 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] backdrop-blur-xl sm:px-7 sm:py-7 lg:px-8 dark:bg-zinc-950/85">
+            <div className="site-page">
+                <div className="site-stack">
+                    <section className="relative overflow-hidden rounded-[2rem] bg-background/92 px-5 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] backdrop-blur-xl sm:px-7 sm:py-7 sm:my-6 lg:mt-8 lg:px-8 dark:bg-zinc-950/85">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.08),transparent_46%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.14),transparent_46%)]" />
                         <div
                             className={cn(
@@ -283,20 +280,26 @@ function TrainingListing({ upcomingEvents = [], pastEvents = [], currentCategory
                                             <label htmlFor="training-year" className="block text-sm font-medium text-foreground">
                                                 Año de inicio
                                             </label>
-                                            <select
-                                                id="training-year"
-                                                value={activeYear}
-                                                onChange={(event) => setYear(event.target.value)}
-                                                aria-controls="training-results"
-                                                className="min-h-11 w-full rounded-xl border border-border bg-background px-3 py-2 text-base text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:min-w-40"
-                                            >
-                                                <option value="all">Todos los años</option>
-                                                {years.map((value) => (
-                                                    <option key={value} value={value}>
-                                                        {value}
-                                                    </option>
-                                                ))}
-                                            </select>
+                                            <div className="relative">
+                                                <select
+                                                    id="training-year"
+                                                    value={activeYear}
+                                                    onChange={(event) => setYear(event.target.value)}
+                                                    aria-controls="training-results"
+                                                    className="min-h-11 w-full cursor-pointer appearance-none rounded-xl border border-border bg-background py-2 pr-9 pl-3 text-base text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none sm:min-w-40 forced-colors:appearance-auto"
+                                                >
+                                                    <option value="all">Todos los años</option>
+                                                    {years.map((value) => (
+                                                        <option key={value} value={value}>
+                                                            {value}
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                                <ChevronDown
+                                                    aria-hidden="true"
+                                                    className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-muted-foreground forced-colors:hidden"
+                                                />
+                                            </div>
                                         </div>
                                     )}
                                 </div>
@@ -313,7 +316,7 @@ function TrainingListing({ upcomingEvents = [], pastEvents = [], currentCategory
                                               : 'actividades'}
                                     </p>
                                     {hasFilters && (
-                                        <button type="button" onClick={clearFilters} className={actionClass}>
+                                        <button type="button" onClick={clearFilters} className={cn(actionClass, 'cursor-pointer')}>
                                             Restablecer filtros
                                         </button>
                                     )}
@@ -360,7 +363,7 @@ function TrainingListing({ upcomingEvents = [], pastEvents = [], currentCategory
                                 title="No hay resultados con estos filtros"
                                 description="Prueba otra búsqueda o restablece los filtros para ver todos los contenidos."
                             >
-                                <button type="button" onClick={clearFilters} className={actionClass}>
+                                <button type="button" onClick={clearFilters} className={cn(actionClass, 'cursor-pointer')}>
                                     Restablecer filtros
                                 </button>
                             </EmptyState>
@@ -369,15 +372,10 @@ function TrainingListing({ upcomingEvents = [], pastEvents = [], currentCategory
                                 <SectionIntro icon={FileText} badge="Catálogo" title="Material disponible" />
                                 <div className="grid gap-5 sm:grid-cols-2">
                                     {filteredMaterials.map((material) => (
-                                        <article
-                                            key={material.id}
-                                            className="flex flex-col rounded-2xl bg-background p-6 shadow-[0_14px_34px_rgba(175,16,26,0.045)] dark:bg-zinc-950/95"
-                                        >
+                                        <article key={material.id} className="site-card p-5 sm:p-6">
                                             <FileText aria-hidden="true" className="mb-4 h-6 w-6 text-primary" />
-                                            <h3 className="text-lg leading-snug font-semibold text-foreground">{material.titulo}</h3>
-                                            {material.descripcion && (
-                                                <p className="mt-3 text-sm leading-7 text-foreground/70 dark:text-zinc-300">{material.descripcion}</p>
-                                            )}
+                                            <h3 className="site-card-title">{material.titulo}</h3>
+                                            {material.descripcion && <p className="mt-3 site-card-description">{material.descripcion}</p>}
                                             {material.link && (
                                                 <div className="mt-auto pt-5">
                                                     <Link href={material.link} className={actionClass}>

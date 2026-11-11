@@ -133,10 +133,11 @@ export interface SingleNews {
 
     titulo: string;
     fecha: string;
-    descripcion: string;
+    descripcion: string | null;
     contenido?: string | null;
 
     imagen?: string | null;
+    image_alt?: string | null;
 
     source_url?: string | null;
     slug?: string;

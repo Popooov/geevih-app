@@ -1,125 +1,115 @@
 import NewsCard from '@/components/news-card';
+import { siteButtonVariants } from '@/components/site-button';
 import AppLayout from '@/layouts/app-layout';
+import { cn } from '@/lib/utils';
 import { type NewsPageProps } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { ArrowRight } from 'lucide-react';
+
+const fallbackImageSrc = '/images/news-placeholder.png';
 
 export default function Index() {
     const { news } = usePage<NewsPageProps>().props;
 
     const featured = news.find((item) => Boolean(item.is_featured)) ?? null;
+    const featuredImageSrc = featured?.imagen?.trim();
+    const featuredSummary = featured?.descripcion?.trim();
 
     // Use only one item as the main featured news.
     // If more than one item is marked as featured in Filament,
     // the rest will still appear in the recent news list.
-    const rest = featured ? news.filter((item) => item.id !== featured.id) : news;
-
-    const gridColsClass = featured ? (rest.length >= 3 ? 'xl:grid-cols-3' : 'xl:grid-cols-2') : 'xl:grid-cols-2';
+    const recentNews = featured ? news.filter((item) => item.id !== featured.id) : news;
 
     return (
         <AppLayout>
             <Head title="Noticias" />
 
-            <div className="mx-auto max-w-7xl px-5 pt-6 pb-16 sm:px-6 lg:px-8 lg:pt-10 lg:pb-20">
-                <div className={featured ? 'space-y-10 lg:space-y-12' : 'space-y-7 lg:space-y-8'}>
-                    <section className="relative overflow-hidden rounded-[2rem] bg-background/85 px-5 py-10 text-center backdrop-blur-xl sm:px-6 sm:py-12 dark:bg-background/70">
+            <div className="site-page">
+                <div className="site-stack">
+                    <section className="relative overflow-hidden rounded-[2rem] bg-background/85 px-5 pt-10 pb-4 text-center backdrop-blur-xl sm:px-6 sm:pt-12 sm:pb-6 lg:pt-24 lg:pb-8 dark:bg-background/70">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.08),transparent_60%)] dark:bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.12),transparent_60%)]" />
 
                         <div className="relative mx-auto max-w-3xl">
-                            <p className="text-xs font-medium tracking-[0.16em] text-muted-foreground uppercase">Actualidad GEEVIH</p>
-
-                            <h1 className="mt-4 text-4xl font-extrabold tracking-tight text-balance text-foreground sm:text-5xl lg:text-6xl">
-                                Noticias
-                            </h1>
-
-                            <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base lg:text-lg lg:leading-8">
-                                Actualidad del Grupo GEEVIH, novedades científicas, participación institucional y contenidos de interés en el ámbito
-                                del VIH.
+                            <h1 className="text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl">Noticias</h1>
+                            <p className="mt-3 text-sm leading-6 text-balance text-muted-foreground sm:text-base">
+                                Novedades científicas y actividad del Grupo GEEVIH.
                             </p>
                         </div>
                     </section>
 
                     {featured && (
-                        <>
-                            <section className="relative overflow-hidden rounded-[2rem] bg-background/92 px-5 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] backdrop-blur-xl sm:px-8 sm:py-8 lg:px-10 lg:py-10 dark:bg-zinc-950/85">
-                                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(175,16,26,0.07),transparent_45%)] dark:bg-[radial-gradient(circle_at_top_right,rgba(175,16,26,0.12),transparent_45%)]" />
+                        <section
+                            aria-labelledby="featured-news-title"
+                            className="relative overflow-hidden rounded-[2rem] bg-background/92 px-5 pt-10 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] sm:px-8 sm:py-8 lg:px-10 dark:bg-zinc-950/85"
+                        >
+                            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(175,16,26,0.07),transparent_45%)] dark:bg-[radial-gradient(circle_at_top_right,rgba(175,16,26,0.12),transparent_45%)]" />
 
-                                <div className="relative mx-auto grid max-w-5xl gap-7 xl:max-w-none xl:grid-cols-[minmax(0,0.92fr)_minmax(440px,560px)] xl:items-center xl:gap-10">
-                                    <div className="space-y-6 xl:space-y-7">
-                                        <div className="flex flex-wrap items-center gap-2">
-                                            <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold tracking-[0.14em] text-primary uppercase">
-                                                Destacada
-                                            </span>
+                            <div
+                                className={cn(
+                                    'relative',
+                                    featuredImageSrc && 'grid items-center gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:gap-8',
+                                )}
+                            >
+                                <div className="max-w-3xl min-w-0 space-y-4 sm:space-y-5">
+                                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                                        <span className="inline-flex items-center rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold tracking-[0.14em] text-primary uppercase">
+                                            Destacada
+                                        </span>
 
-                                            <span className="inline-flex items-center rounded-full bg-zinc-100 px-3 py-1 text-[11px] font-semibold tracking-[0.14em] text-zinc-700 uppercase dark:bg-zinc-800 dark:text-zinc-300">
-                                                {featured.fecha}
-                                            </span>
-                                        </div>
-
-                                        <div className="max-w-3xl space-y-4">
-                                            <h2 className="text-[1.95rem] font-semibold leading-[1.08] tracking-tight text-foreground sm:text-[2.35rem] lg:text-[2.7rem] xl:text-[2.25rem] 2xl:text-[2.6rem] dark:text-white">
-                                                {featured.titulo}
-                                            </h2>
-
-                                            {featured.descripcion && (
-                                                <p className="max-w-3xl text-sm leading-7 text-foreground/70 sm:text-base sm:leading-8 lg:text-lg xl:max-w-2xl dark:text-zinc-300">
-                                                    {featured.descripcion}
-                                                </p>
-                                            )}
-                                        </div>
+                                        {featured.fecha && <span className="text-sm leading-5 text-muted-foreground">{featured.fecha}</span>}
                                     </div>
 
-                                    <div className="order-2 relative w-full max-w-[860px] overflow-hidden rounded-[1.5rem] bg-muted shadow-[0_20px_50px_rgba(175,16,26,0.08)] sm:rounded-[1.75rem] xl:order-none xl:row-span-2 xl:mx-0 xl:max-w-none dark:bg-zinc-900">
+                                    <div className="space-y-3">
+                                        <h2
+                                            id="featured-news-title"
+                                            className="text-3xl leading-[1.12] font-semibold tracking-tight text-balance [overflow-wrap:anywhere] text-foreground sm:text-4xl xl:text-[2.6rem]"
+                                        >
+                                            {featured.titulo}
+                                        </h2>
+
+                                        {featuredSummary && (
+                                            <p className="max-w-2xl text-sm leading-6 [overflow-wrap:anywhere] text-muted-foreground sm:text-base sm:leading-7">
+                                                {featuredSummary}
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <Link
+                                        href={`/noticias/${featured.slug ?? featured.id}`}
+                                        prefetch
+                                        className={cn(siteButtonVariants({ variant: 'primary' }), 'w-full sm:w-auto')}
+                                    >
+                                        Leer noticia
+                                        <ArrowRight aria-hidden="true" />
+                                    </Link>
+                                </div>
+
+                                {featuredImageSrc && (
+                                    <div className="mx-auto aspect-video w-full max-w-3xl overflow-hidden rounded-[1.5rem] bg-muted sm:rounded-[1.75rem]">
                                         <img
-                                            src={featured.imagen?.trim() ? featured.imagen : '/images/news-placeholder.png'}
+                                            src={featuredImageSrc}
                                             alt={featured.titulo}
-                                            className="aspect-[16/9] w-full object-cover object-center sm:aspect-[18/8] lg:aspect-[18/8] xl:aspect-[16/9]"
-                                            onError={(e) => {
-                                                e.currentTarget.onerror = null;
-                                                e.currentTarget.src = '/images/news-placeholder.png';
+                                            className="size-full object-contain"
+                                            onError={({ currentTarget }) => {
+                                                if (currentTarget.getAttribute('src') !== fallbackImageSrc) {
+                                                    currentTarget.src = fallbackImageSrc;
+                                                }
                                             }}
                                         />
-
-                                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/10 via-black/0 to-transparent" />
                                     </div>
-
-                                    <div className="order-3 xl:col-start-1 xl:row-start-2">
-                                        <Link
-                                            href={`/noticias/${featured.slug ?? featured.id}`}
-                                            prefetch
-                                            className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#af101a_0%,#d32f2f_100%)] px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(175,16,26,0.18)] transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(175,16,26,0.22)] sm:w-auto"
-                                        >
-                                            Leer noticia
-                                            <ArrowRight className="h-4 w-4" />
-                                        </Link>
-                                    </div>
-                                </div>
-                            </section>
-
-                            <div className="h-px bg-border/40 dark:bg-white/10" />
-                        </>
+                                )}
+                            </div>
+                        </section>
                     )}
 
-                    {rest.length > 0 ? (
-                        <section className={featured ? 'space-y-8' : 'max-w-5xl space-y-6'}>
-                            <div className="max-w-2xl space-y-3">
-                                <div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold tracking-[0.18em] text-primary uppercase">
-                                    {featured ? 'Archivo' : 'Últimas publicaciones'}
-                                </div>
+                    {recentNews.length > 0 ? (
+                        <section aria-labelledby="recent-news-title" className={cn('space-y-5 sm:space-y-6', !featured && 'max-w-5xl')}>
+                            <h2 id="recent-news-title" className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
+                                Últimas noticias
+                            </h2>
 
-                                <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl dark:text-white">
-                                    Noticias recientes
-                                </h2>
-
-                                <p className="text-sm leading-7 text-foreground/65 sm:text-base dark:text-zinc-300">
-                                    {featured
-                                        ? 'Consulta otras publicaciones y contenidos recientes del grupo.'
-                                        : 'Consulta las publicaciones y novedades más recientes del grupo.'}
-                                </p>
-                            </div>
-
-                            <div className={`grid grid-cols-1 gap-6 md:grid-cols-2 ${gridColsClass}`}>
-                                {rest.map((item) => (
+                            <div className={cn('grid grid-cols-1 gap-6 md:grid-cols-2', featured && recentNews.length >= 3 && 'xl:grid-cols-3')}>
+                                {recentNews.map((item) => (
                                     <NewsCard
                                         key={item.id}
                                         titulo={item.titulo}

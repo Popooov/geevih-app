@@ -1,3 +1,4 @@
+import { siteButtonVariants } from '@/components/site-button';
 import { Card, CardContent } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
@@ -11,9 +12,9 @@ export default function Membership() {
         <AppLayout>
             <Head title="Hazte socio" />
 
-            <div className="mx-auto max-w-6xl px-6 pt-6 pb-12 lg:px-8 lg:pt-10 lg:pb-14">
-                <div className="space-y-14">
-                    <section className="relative overflow-hidden rounded-[2rem] bg-background/85 px-6 py-12 text-center backdrop-blur-xl dark:bg-background/70">
+            <div className="site-page">
+                <div className="site-stack">
+                    <section className="relative overflow-hidden rounded-[2rem] bg-background/85 px-6 py-12 text-center backdrop-blur-xl sm:px-8 lg:px-12 lg:py-24 dark:bg-background/70">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.08),transparent_60%)] dark:bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.12),transparent_60%)]" />
 
                         <div className="relative mx-auto max-w-3xl">
@@ -58,8 +59,8 @@ export default function Membership() {
                     </section>
 
                     <section className="grid gap-4 md:grid-cols-2">
-                        <Card className="border-0 bg-background/95 shadow-sm ring-1 ring-black/5 transition-all hover:shadow-md dark:bg-neutral-900 dark:ring-white/10">
-                            <CardContent className="space-y-4 p-6 lg:p-7">
+                        <Card>
+                            <CardContent className="space-y-4">
                                 <p className="text-xs font-medium tracking-[0.14em] text-muted-foreground uppercase">Solicitud</p>
 
                                 <h2 className="text-xl font-semibold tracking-tight text-foreground">¿Cómo solicitar la incorporación?</h2>
@@ -73,7 +74,7 @@ export default function Membership() {
                                         href={typeformUrl}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="inline-flex items-center justify-center rounded-full bg-[linear-gradient(135deg,#af101a_0%,#d32f2f_100%)] px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(175,16,26,0.18)] transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(175,16,26,0.22)]"
+                                        className={siteButtonVariants({ variant: 'primary' })}
                                     >
                                         Ir al formulario
                                     </a>
@@ -81,8 +82,8 @@ export default function Membership() {
                             </CardContent>
                         </Card>
 
-                        <Card className="border-0 bg-background/95 shadow-sm ring-1 ring-black/5 transition-all hover:shadow-md dark:bg-neutral-900 dark:ring-white/10">
-                            <CardContent className="space-y-4 p-6 lg:p-7">
+                        <Card>
+                            <CardContent className="space-y-4">
                                 <p className="text-xs font-medium tracking-[0.14em] text-muted-foreground uppercase">Contacto</p>
 
                                 <h2 className="text-xl font-semibold tracking-tight text-foreground">¿Tienes dudas?</h2>

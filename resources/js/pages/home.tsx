@@ -1,3 +1,5 @@
+import AppLogoIcon from '@/components/app-logo-icon';
+import { siteButtonVariants } from '@/components/site-button';
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { Head, Link } from '@inertiajs/react';
@@ -9,13 +11,13 @@ export default function Home() {
             <Head title="Grupo de Enfermería Experta en VIH" />
 
             <div className="min-h-[calc(100vh-80px)]">
-                <div className="mx-auto flex max-w-6xl flex-col gap-10 px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-                    <section className="relative w-full overflow-hidden rounded-[2rem] bg-background/85 px-6 py-14 text-center backdrop-blur-xl sm:px-8 lg:px-10 lg:py-20 dark:bg-background/70">
+                <div className="site-page flex flex-col gap-10 lg:max-w-7xl">
+                    <section className="relative w-full overflow-hidden rounded-[2rem] bg-background/85 px-6 py-14 text-center backdrop-blur-xl sm:px-8 lg:px-10 lg:py-28 dark:bg-background/70">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.08),transparent_50%)] dark:bg-[radial-gradient(circle_at_top,rgba(175,16,26,0.14),transparent_50%)]" />
 
                         <div className="relative mx-auto max-w-4xl">
                             <div className="flex justify-center">
-                                <img src="images/geevih-logo.png" alt="Logo GEEVIH" className="h-auto w-56 sm:w-64" />
+                                <AppLogoIcon className="w-44 sm:w-64" />
                             </div>
 
                             <h1 className="mt-8 text-4xl font-extrabold tracking-tight text-balance text-foreground sm:text-5xl lg:text-6xl">
@@ -28,10 +30,7 @@ export default function Home() {
                             </p>
 
                             <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-                                <Link
-                                    href="/sobre/sobre-nosotros"
-                                    className="inline-flex items-center justify-center gap-2 rounded-full bg-[linear-gradient(135deg,#af101a_0%,#d32f2f_100%)] px-6 py-3 text-sm font-semibold text-white shadow-[0_12px_30px_rgba(175,16,26,0.18)] transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_36px_rgba(175,16,26,0.22)]"
-                                >
+                                <Link href="/sobre/sobre-nosotros" className={siteButtonVariants({ variant: 'primary' })}>
                                     Conoce GEEVIH
                                     <ArrowRight className="h-4 w-4" />
                                 </Link>
@@ -40,7 +39,7 @@ export default function Home() {
                                     href="https://seisida.typeform.com/to/kZwwPgdK"
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center justify-center gap-2 rounded-full bg-background/80 px-6 py-3 text-sm font-semibold text-foreground ring-1 ring-border/70 backdrop-blur-sm transition-colors hover:bg-muted"
+                                    className={siteButtonVariants({ variant: 'secondary' })}
                                 >
                                     Hacerse socio
                                     <UserPlus className="h-4 w-4" />
@@ -49,10 +48,7 @@ export default function Home() {
                         </div>
 
                         <div className="relative mt-12 grid gap-4 md:grid-cols-3">
-                            <Link
-                                href="/formacion/cursos"
-                                className="rounded-2xl bg-white p-5 text-left shadow-[0_10px_30px_rgba(0,0,0,0.04)] ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] dark:bg-neutral-900 dark:ring-white/10 dark:hover:bg-neutral-800"
-                            >
+                            <Link href="/formacion/cursos" className="site-card site-card-link site-card-interactive p-5 text-left sm:p-6">
                                 <p className="text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase">Formación</p>
                                 <p className="mt-3 text-base font-semibold text-foreground">Cursos, webinars y jornadas</p>
                                 <p className="mt-2 text-sm leading-6 text-muted-foreground">
@@ -60,10 +56,7 @@ export default function Home() {
                                 </p>
                             </Link>
 
-                            <Link
-                                href="/sobre/areas-de-trabajo"
-                                className="rounded-2xl bg-white p-5 text-left shadow-[0_10px_30px_rgba(0,0,0,0.04)] ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] dark:bg-neutral-900 dark:ring-white/10 dark:hover:bg-neutral-800"
-                            >
+                            <Link href="/sobre/areas-de-trabajo" className="site-card site-card-link site-card-interactive p-5 text-left sm:p-6">
                                 <p className="text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase">Investigación</p>
                                 <p className="mt-3 text-base font-semibold text-foreground">Evidencia y proyectos</p>
                                 <p className="mt-2 text-sm leading-6 text-muted-foreground">
@@ -71,10 +64,7 @@ export default function Home() {
                                 </p>
                             </Link>
 
-                            <Link
-                                href="/recursos/guias"
-                                className="rounded-2xl bg-white p-5 text-left shadow-[0_10px_30px_rgba(0,0,0,0.04)] ring-1 ring-black/5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] dark:bg-neutral-900 dark:ring-white/10 dark:hover:bg-neutral-800"
-                            >
+                            <Link href="/recursos/guias" className="site-card site-card-link site-card-interactive p-5 text-left sm:p-6">
                                 <p className="text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase">Recursos</p>
                                 <p className="mt-3 text-base font-semibold text-foreground">Guías y materiales</p>
                                 <p className="mt-2 text-sm leading-6 text-muted-foreground">
@@ -100,21 +90,22 @@ export default function Home() {
                                 href="https://www.seisida.net/wp-content/uploads/2025/10/Documento-para-el-cuidado-enfermero-experto-de-personas-con-VIH.pdf"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="group lg:col-span-12"
-                                aria-label="Abrir PDF: Documento para el cuidado enfermero experto de personas con VIH (Proyecto National Policy)"
+                                className="group site-card-link lg:col-span-12"
+                                aria-label="Abrir documento: Documento para el cuidado enfermero experto de personas con VIH (PDF, Proyecto National Policy)"
                             >
-                                <Card className="group relative h-full overflow-hidden border-0 shadow-none transition-all duration-300 hover:-translate-y-1">
-                                    <div
-                                        className="absolute inset-0 transition-transform duration-500 group-hover:scale-105"
-                                        style={{
-                                            backgroundImage: "url('/images/documents/cuidado-enfermero-vih-cover.jpg')",
-                                            backgroundSize: 'cover',
-                                            backgroundPosition: 'center',
-                                        }}
+                                <Card className="relative overflow-hidden site-card-interactive">
+                                    <img
+                                        src="/images/documents/cuidado-enfermero-vih-cover.jpg"
+                                        alt=""
+                                        width={2285}
+                                        height={1520}
+                                        loading="lazy"
+                                        decoding="async"
+                                        className="absolute inset-0 h-full w-full object-contain md:object-cover md:transition-transform md:duration-500 md:group-hover:scale-105"
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/30 to-black/10" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent md:bg-gradient-to-r md:from-black/50 md:via-black/30 md:to-black/10" />
 
-                                    <div className="relative flex h-full min-h-[320px] flex-col justify-between p-6 sm:min-h-[360px] sm:p-7">
+                                    <div className="relative flex aspect-[2285/1520] w-full flex-col justify-between p-4 md:aspect-auto md:h-full md:min-h-[360px] md:p-7">
                                         <div>
                                             <span className="inline-flex items-center rounded-full bg-black/70 px-3 py-1 text-xs font-semibold text-white backdrop-blur-sm">
                                                 PDF destacado
@@ -123,18 +114,21 @@ export default function Home() {
 
                                         <div className="inline-flex items-center gap-2 text-sm font-semibold text-white/90 hover:text-white">
                                             <span>Abrir documento</span>
-                                            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                                            <ArrowRight
+                                                aria-hidden="true"
+                                                className="h-4 w-4 motion-safe:transition-transform motion-safe:group-hover:translate-x-1"
+                                            />
                                         </div>
                                     </div>
                                 </Card>
                             </a>
 
-                            <Link href="/noticias" prefetch className="group lg:col-span-4">
-                                <Card className="h-full border-0 bg-white shadow-[0_8px_24px_rgba(0,0,0,0.04)] ring-1 ring-black/5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:bg-background dark:bg-neutral-900 dark:shadow-none dark:ring-white/10 dark:hover:bg-white/8">
-                                    <CardHeader className="h-full justify-between gap-8 p-6">
+                            <Link href="/noticias" prefetch className="group site-card-link lg:col-span-4">
+                                <Card className="site-card-interactive">
+                                    <CardHeader className="h-full justify-between gap-8">
                                         <div>
                                             <p className="text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase">Actualidad</p>
-                                            <CardTitle className="mt-3 text-lg text-foreground">Últimas noticias</CardTitle>
+                                            <CardTitle className="mt-3">Últimas noticias</CardTitle>
                                             <CardDescription className="mt-3 leading-7">
                                                 Lo más reciente del grupo GEEVIH, actividad científica y novedades en enfermería VIH.
                                             </CardDescription>
@@ -148,12 +142,12 @@ export default function Home() {
                                 </Card>
                             </Link>
 
-                            <Link href="/formacion/cursos" prefetch className="group lg:col-span-4">
-                                <Card className="h-full border-0 bg-white shadow-[0_8px_24px_rgba(0,0,0,0.04)] ring-1 ring-black/5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:bg-background dark:bg-neutral-900 dark:shadow-none dark:ring-white/10 dark:hover:bg-white/8">
-                                    <CardHeader className="h-full justify-between gap-8 p-6">
+                            <Link href="/formacion/cursos" prefetch className="group site-card-link lg:col-span-4">
+                                <Card className="site-card-interactive">
+                                    <CardHeader className="h-full justify-between gap-8">
                                         <div>
                                             <p className="text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase">Formación</p>
-                                            <CardTitle className="mt-3 text-lg text-foreground">Cursos y webinars</CardTitle>
+                                            <CardTitle className="mt-3">Cursos y webinars</CardTitle>
                                             <CardDescription className="mt-3 leading-7">
                                                 Accede a cursos, webinars y otras actividades formativas impulsadas por el grupo.
                                             </CardDescription>
@@ -171,14 +165,14 @@ export default function Home() {
                                 href="https://seisida.typeform.com/to/kZwwPgdK"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="group lg:col-span-4"
+                                className="group site-card-link lg:col-span-4"
                                 aria-label="Abrir formulario para hacerse socio"
                             >
-                                <Card className="h-full border-0 bg-[linear-gradient(135deg,rgba(175,16,26,0.07)_0%,rgba(211,47,47,0.035)_100%)] shadow-[0_8px_24px_rgba(175,16,26,0.04)] ring-1 ring-primary/15 transition-all duration-300 hover:-translate-y-1 dark:bg-[linear-gradient(135deg,rgba(175,16,26,0.10)_0%,rgba(211,47,47,0.05)_100%)] dark:ring-primary/20">
-                                    <CardHeader className="h-full justify-between gap-8 p-6">
+                                <Card className="site-card-interactive">
+                                    <CardHeader className="h-full justify-between gap-8">
                                         <div>
                                             <p className="text-xs font-medium tracking-[0.12em] text-muted-foreground uppercase">Participación</p>
-                                            <CardTitle className="mt-3 text-lg text-foreground">Hacerse socio</CardTitle>
+                                            <CardTitle className="mt-3">Hacerse socio</CardTitle>
                                             <CardDescription className="mt-3 leading-7">
                                                 Únete al GEEVIH y participa activamente en iniciativas de formación, investigación y comunidad.
                                             </CardDescription>

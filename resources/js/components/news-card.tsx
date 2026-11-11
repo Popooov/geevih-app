@@ -1,54 +1,67 @@
+import { siteButtonVariants } from '@/components/site-button';
+import { cn } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { ArrowRight, Calendar } from 'lucide-react';
 
 interface NoticiaCardProps {
     titulo: string;
     fecha: string;
-    resumen: string;
+    resumen: string | null;
     imagen?: string | null;
     enlace?: string | null;
 }
 
-export default function NewsCard({ titulo, fecha, resumen, imagen, enlace }: NoticiaCardProps) {
-    const imageSrc = imagen?.trim() ? imagen : '/images/noticia-placeholder.jpg';
-    const href = enlace?.trim() ? enlace : '#';
+const fallbackImageSrc = '/images/news-placeholder.png';
 
-    return (
-        <Link href={href} className="group block h-full">
-            <article className="flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-white shadow-[0_8px_24px_rgba(0,0,0,0.04)] ring-1 ring-black/5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:bg-background hover:shadow-[0_16px_40px_rgba(0,0,0,0.08)] dark:bg-neutral-900 dark:shadow-none dark:ring-white/10 dark:hover:bg-neutral-800">
-                <div className="relative aspect-video w-full overflow-hidden bg-muted dark:bg-zinc-900">
+export default function NewsCard({ titulo, fecha, resumen, imagen, enlace }: NoticiaCardProps) {
+    const imageSrc = imagen?.trim();
+    const summary = resumen?.trim();
+    const href = enlace?.trim();
+    const available = Boolean(href && href !== '#');
+    const compactClassName = !imageSrc && 'h-auto self-start';
+
+    const card = (
+        <article className={cn('site-card', available && 'site-card-interactive', compactClassName)}>
+            {imageSrc && (
+                <div className="aspect-video overflow-hidden bg-muted">
                     <img
                         src={imageSrc}
                         alt={titulo}
-                        className="h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]"
-                        onError={(e) => {
-                            e.currentTarget.onerror = null;
-                            e.currentTarget.src = '/images/noticia-placeholder.jpg';
+                        loading="lazy"
+                        decoding="async"
+                        className="size-full object-contain"
+                        onError={({ currentTarget }) => {
+                            if (currentTarget.getAttribute('src') !== fallbackImageSrc) {
+                                currentTarget.src = fallbackImageSrc;
+                            }
                         }}
                     />
-                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/10 via-black/0 to-transparent" />
                 </div>
-
-                <div className="flex flex-1 flex-col p-6">
-                    <div className="inline-flex items-center gap-2 text-[11px] font-semibold tracking-[0.14em] text-muted-foreground uppercase dark:text-zinc-400">
-                        <Calendar className="h-3.5 w-3.5 text-primary" />
-                        {fecha}
+            )}
+            <div className="site-card-body">
+                <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Calendar aria-hidden="true" className="h-4 w-4 shrink-0" />
+                    {fecha}
+                </p>
+                <h3 className="mt-4 site-card-title [overflow-wrap:anywhere]">{titulo}</h3>
+                {summary && <p className="mt-3 line-clamp-2 site-card-description [overflow-wrap:anywhere]">{summary}</p>}
+                {available && (
+                    <div className="site-card-footer">
+                        <span className={siteButtonVariants({ variant: 'secondary' })}>
+                            Leer noticia
+                            <ArrowRight aria-hidden="true" />
+                        </span>
                     </div>
+                )}
+            </div>
+        </article>
+    );
 
-                    <h3 className="mt-4 line-clamp-3 text-lg leading-snug font-semibold tracking-tight text-foreground transition-colors group-hover:text-primary sm:text-xl dark:text-white">
-                        {titulo}
-                    </h3>
-
-                    <p className="mt-3 line-clamp-3 text-sm leading-6 text-muted-foreground dark:text-zinc-300">{resumen}</p>
-
-                    <div className="mt-auto pt-6">
-                        <div className="inline-flex items-center gap-2 text-sm font-semibold text-primary">
-                            Leer más
-                            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                        </div>
-                    </div>
-                </div>
-            </article>
+    return available && href ? (
+        <Link href={href} className={cn('site-card-link', compactClassName)}>
+            {card}
         </Link>
+    ) : (
+        card
     );
 }

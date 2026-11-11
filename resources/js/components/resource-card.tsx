@@ -1,3 +1,4 @@
+import { siteButtonVariants } from '@/components/site-button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar, ExternalLink, FileText } from 'lucide-react';
 
@@ -12,96 +13,61 @@ interface RecursoCardProps {
 }
 
 export default function ResourceCard({ titulo, fecha, descripcion, enlace, imagen }: RecursoCardProps) {
-    const href = enlace?.trim() || undefined;
-    const isAvailable = Boolean(href);
-    const imageSrc = imagen?.trim() ? imagen : null;
-
+    const href = enlace?.trim();
+    const available = Boolean(href && href !== '#');
+    const imageSrc = imagen?.trim();
     const card = (
-        <Card
-            className={[
-                'group relative flex h-full min-h-[320px] flex-col overflow-hidden rounded-[1.5rem] border-0 bg-white/95',
-                'shadow-[0_18px_50px_rgba(175,16,26,0.045)] ring-1 ring-black/[0.045] transition-all duration-300',
-                'dark:bg-neutral-950 dark:shadow-[0_18px_50px_rgba(175,16,26,0.08)] dark:ring-white/10',
-                isAvailable ? 'hover:-translate-y-1 hover:shadow-[0_24px_65px_rgba(175,16,26,0.11)]' : 'opacity-85',
-            ].join(' ')}
-        >
-            <div className="relative aspect-video overflow-hidden bg-neutral-50 dark:bg-neutral-900">
+        <Card className={available ? 'site-card-interactive' : undefined}>
+            <div className="relative aspect-video overflow-hidden bg-muted">
                 {imageSrc ? (
-                    <>
-                        <img
-                            src={imageSrc}
-                            alt={`Imagen del recurso: ${titulo}`}
-                            loading="lazy"
-                            decoding="async"
-                            width={1672}
-                            height={941}
-                            className={[
-                                'h-full w-full object-cover object-center transition-transform duration-500',
-                                isAvailable ? 'group-hover:scale-[1.02]' : '',
-                            ].join(' ')}
-                        />
-
-                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/0 via-white/0 to-white/10 dark:to-neutral-950/20" />
-                    </>
+                    <img
+                        src={imageSrc}
+                        alt={'Imagen del recurso: ' + titulo}
+                        loading="lazy"
+                        decoding="async"
+                        className="h-full w-full object-contain"
+                    />
                 ) : (
-                    <div className="flex h-full items-center justify-center">
-                        <div className="flex flex-col items-center gap-2 text-neutral-500 dark:text-neutral-400">
-                            <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-black/[0.04] dark:bg-neutral-950 dark:ring-white/10">
-                                <FileText className="h-4 w-4" />
-                            </div>
-
-                            <span className="text-[11px] font-medium">Documento</span>
-                        </div>
+                    <div className="flex h-full flex-col items-center justify-center gap-2 text-muted-foreground">
+                        <FileText aria-hidden="true" className="h-8 w-8" />
+                        <span className="text-sm">Documento</span>
                     </div>
                 )}
             </div>
-
-            <CardHeader className="flex flex-1 flex-col space-y-3.5 p-5 pb-4 sm:p-6 sm:pb-4">
-                {fecha ? (
-                    <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground dark:text-neutral-400">
-                        <Calendar className="h-3.5 w-3.5 shrink-0" />
-                        <span>{fecha}</span>
-                    </div>
-                ) : null}
-
-                <CardTitle className="text-[15px] leading-[1.35] font-semibold tracking-tight text-neutral-950 transition-colors duration-300 group-hover:text-primary sm:text-base dark:text-white">
-                    {titulo}
-                </CardTitle>
-
-                {descripcion ? <p className="line-clamp-2 text-sm leading-6 text-muted-foreground dark:text-neutral-400">{descripcion}</p> : null}
+            <CardHeader className="site-card-body space-y-3 pb-0 sm:pb-0">
+                {fecha && (
+                    <p className="flex items-center gap-2 text-sm text-muted-foreground">
+                        <Calendar aria-hidden="true" className="h-4 w-4 shrink-0" />
+                        {fecha}
+                    </p>
+                )}
+                <CardTitle>{titulo}</CardTitle>
+                {descripcion && <p className="line-clamp-3 site-card-description">{descripcion}</p>}
             </CardHeader>
-
-            <CardContent className="mt-auto p-5 pt-0 sm:p-6 sm:pt-0">
-                {isAvailable ? (
-                    <div className="inline-flex items-center gap-2 rounded-full bg-neutral-100 px-3.5 py-2 text-xs font-semibold text-neutral-900 transition-all duration-300 group-hover:bg-primary group-hover:text-white dark:bg-neutral-900 dark:text-neutral-100">
-                        <ExternalLink className="h-3.5 w-3.5 shrink-0" />
-
-                        <span>Abrir recurso</span>
-
-                        <span className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
-                    </div>
+            <CardContent className="site-card-footer p-5 pt-6 sm:p-6">
+                {available ? (
+                    <span className={siteButtonVariants({ variant: 'secondary' })}>
+                        Abrir recurso
+                        <ExternalLink aria-hidden="true" />
+                    </span>
                 ) : (
-                    <div className="inline-flex items-center gap-2 rounded-full bg-neutral-100 px-3.5 py-2 text-xs font-semibold text-muted-foreground dark:bg-neutral-900 dark:text-neutral-400">
-                        <FileText className="h-3.5 w-3.5 shrink-0" />
-
-                        <span>Recurso no disponible</span>
-                    </div>
+                    <p className="site-card-description">Recurso no disponible</p>
                 )}
             </CardContent>
         </Card>
     );
 
-    return isAvailable ? (
+    return available && href ? (
         <a
             href={href}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label={`Abrir recurso: ${titulo}`}
-            className="block h-full rounded-[1.5rem] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4 focus-visible:outline-none"
+            aria-label={'Abrir recurso: ' + titulo + ' (se abre en una pestaña nueva)'}
+            className="site-card-link"
         >
             {card}
         </a>
     ) : (
-        <div className="block h-full cursor-default">{card}</div>
+        card
     );
 }

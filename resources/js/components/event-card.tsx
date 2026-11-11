@@ -1,7 +1,10 @@
+import { SiteButton } from '@/components/site-button';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
+import { attendanceLabels, getAttendanceMode, matchesAttendanceMode } from '@/lib/events';
 import { cn } from '@/lib/utils';
-import { Calendar, Clock3, MapPin } from 'lucide-react';
+import type { AttendanceMode } from '@/types';
+import { Link } from '@inertiajs/react';
+import { Calendar, Clock3, MapPin, Video } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 interface EventCardProps {
@@ -11,8 +14,10 @@ interface EventCardProps {
     descripcion?: string | null;
     imagen?: string | null;
     enlace?: string | null;
-    lugar?: string;
+    lugar?: string | null;
     is_online?: boolean;
+    attendance_mode?: AttendanceMode;
+    status_label?: string | null;
     registration_url?: string | null;
     online_url?: string | null;
     isOngoing?: boolean;
@@ -20,11 +25,14 @@ interface EventCardProps {
     priority?: boolean;
 }
 
-function EventBadge({ children, variant = 'default' }: { children: ReactNode; variant?: 'default' | 'secondary' | 'live' | 'finished' }) {
+const fallbackImageSrc = '/images/event-placeholder.png';
+
+function EventBadge({ children, variant = 'default' }: { children: ReactNode; variant?: 'default' | 'secondary' | 'hybrid' | 'live' | 'finished' }) {
     const styles = {
-        default: 'bg-primary/10 text-primary dark:bg-primary/15 dark:text-red-200',
+        default: 'bg-muted text-foreground',
         secondary: 'bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300',
-        live: 'bg-emerald-600 text-white dark:bg-emerald-500 dark:text-white',
+        hybrid: 'bg-violet-100 text-violet-800 dark:bg-violet-400/15 dark:text-violet-200',
+        live: 'bg-emerald-700 text-white dark:bg-emerald-300 dark:text-zinc-950',
         finished: 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900',
     };
 
@@ -35,21 +43,16 @@ function EventBadge({ children, variant = 'default' }: { children: ReactNode; va
     );
 }
 
-function MetaItem({ icon: Icon, children, muted }: { icon: React.ElementType; children: ReactNode; muted?: boolean }) {
+function MetaItem({ icon: Icon, children }: { icon: React.ElementType; children: ReactNode }) {
     return (
-        <div
-            className={cn(
-                'flex items-center gap-2.5 text-xs sm:text-sm',
-                muted ? 'text-foreground/55 dark:text-zinc-500' : 'text-foreground/70 dark:text-zinc-300',
-            )}
-        >
+        <div className={cn('flex items-center gap-2.5 text-xs sm:text-sm', 'text-muted-foreground')}>
             <span
                 className={cn(
                     'inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full sm:h-8 sm:w-8',
-                    muted ? 'bg-muted text-muted-foreground dark:bg-zinc-800 dark:text-zinc-400' : 'bg-primary/10 text-primary dark:bg-primary/15',
+                    'bg-muted text-muted-foreground',
                 )}
             >
-                <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <Icon aria-hidden="true" className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
             </span>
 
             <span className="leading-6">{children}</span>
@@ -66,26 +69,21 @@ export default function EventCard({
     enlace,
     lugar,
     is_online,
+    attendance_mode,
+    status_label,
     registration_url,
     online_url,
     isOngoing,
     isPast,
     priority = false,
 }: EventCardProps) {
-    const imageSrc = imagen && imagen.trim() !== '' ? imagen : '/images/event-placeholder.png';
-    const showPhysicalLocation = !!lugar && !is_online;
+    const imageSrc = imagen?.trim() || fallbackImageSrc;
+    const participation = { attendance_mode, is_online };
+    const mode = getAttendanceMode(participation);
+    const showPhysicalLocation = !!lugar && matchesAttendanceMode(participation, 'in_person');
 
     return (
-        <article
-            className={cn(
-                'group flex h-full flex-col overflow-hidden rounded-[1.75rem] transition-all duration-300',
-                isPast
-                    ? 'bg-muted/45 shadow-[0_12px_30px_rgba(0,0,0,0.025)] dark:bg-zinc-950/80'
-                    : isOngoing
-                      ? 'bg-primary/5 shadow-[0_18px_44px_rgba(175,16,26,0.07)] dark:bg-primary/10'
-                      : 'bg-background shadow-[0_14px_34px_rgba(175,16,26,0.045)] hover:-translate-y-0.5 hover:shadow-[0_20px_48px_rgba(175,16,26,0.09)] dark:bg-zinc-950/95',
-            )}
-        >
+        <article className={cn('site-card', isOngoing && !isPast && 'border-primary/40')}>
             <div className="relative aspect-[16/9] overflow-hidden bg-muted dark:bg-zinc-900">
                 <img
                     src={imageSrc}
@@ -96,13 +94,11 @@ export default function EventCard({
                     loading={priority ? 'eager' : 'lazy'}
                     fetchPriority={priority ? 'high' : 'auto'}
                     decoding="async"
-                    className={cn(
-                        'h-full w-full object-cover transition duration-700',
-                        isPast ? 'brightness-[0.82] grayscale-[0.75]' : 'group-hover:scale-[1.02]',
-                    )}
-                    onError={(e) => {
-                        e.currentTarget.onerror = null;
-                        e.currentTarget.src = '/images/event-placeholder.png';
+                    className="h-full w-full object-cover"
+                    onError={({ currentTarget }) => {
+                        if (currentTarget.getAttribute('src') !== fallbackImageSrc) {
+                            currentTarget.src = fallbackImageSrc;
+                        }
                     }}
                 />
 
@@ -116,83 +112,54 @@ export default function EventCard({
                 />
             </div>
 
-            <div className="flex flex-1 flex-col p-5 sm:p-6">
+            <div className="site-card-body md:max-lg:p-4">
                 <div className="space-y-3.5">
                     <div className="flex flex-wrap items-center gap-2">
-                        {is_online && !isPast && <EventBadge variant="secondary">Online</EventBadge>}
-                        {isOngoing && !isPast && <EventBadge variant="live">En curso</EventBadge>}
-                        {isPast && <EventBadge variant="finished">Finalizado</EventBadge>}
+                        {isPast && <EventBadge variant="finished">{status_label ?? 'Finalizado'}</EventBadge>}
+                        {isOngoing && !isPast && <EventBadge variant="live">{status_label ?? 'En curso'}</EventBadge>}
+                        {mode && (
+                            <EventBadge variant={mode === 'hybrid' ? 'hybrid' : mode === 'online' ? 'secondary' : 'default'}>
+                                {attendanceLabels[mode]}
+                            </EventBadge>
+                        )}
                     </div>
 
-                    <h3
-                        className={cn(
-                            'line-clamp-3 text-lg leading-snug font-semibold tracking-tight sm:text-xl',
-                            isPast ? 'text-foreground/80 dark:text-zinc-200' : 'text-foreground dark:text-white',
-                        )}
-                    >
-                        {titulo}
-                    </h3>
+                    <h3 className="line-clamp-3 site-card-title">{titulo}</h3>
 
-                    {descripcion && (
-                        <p
-                            className={cn(
-                                'line-clamp-3 text-sm leading-6',
-                                isPast ? 'text-foreground/55 dark:text-zinc-500' : 'text-foreground/65 dark:text-zinc-300',
-                            )}
-                        >
-                            {descripcion}
-                        </p>
-                    )}
+                    {descripcion && <p className="line-clamp-3 site-card-description">{descripcion}</p>}
                 </div>
 
                 <div className="mt-5 grid gap-2.5">
-                    <MetaItem icon={Calendar} muted={isPast}>
-                        {fecha}
-                    </MetaItem>
+                    <MetaItem icon={Calendar}>{fecha}</MetaItem>
 
-                    {hora && (
-                        <MetaItem icon={Clock3} muted={isPast}>
-                            {hora}
-                        </MetaItem>
-                    )}
+                    {hora && <MetaItem icon={Clock3}>{hora}</MetaItem>}
 
-                    {showPhysicalLocation && (
-                        <MetaItem icon={MapPin} muted={isPast}>
-                            {lugar}
+                    {showPhysicalLocation && <MetaItem icon={MapPin}>{lugar}</MetaItem>}
+
+                    {!isPast && online_url && matchesAttendanceMode(participation, 'online') && (
+                        <MetaItem icon={Video}>
+                            <SiteButton asChild variant="ghost" className="px-0 hover:bg-transparent hover:underline">
+                                <a href={online_url} target="_blank" rel="noopener noreferrer">
+                                    Acceder online<span className="sr-only"> (se abre en una pestaña nueva)</span>
+                                </a>
+                            </SiteButton>
                         </MetaItem>
                     )}
                 </div>
 
-                <div className="mt-auto pt-6">
+                <div className="site-card-footer">
                     <div className="flex flex-wrap items-center gap-3">
                         {!isPast && registration_url && (
-                            <a href={registration_url} target="_blank" rel="noopener noreferrer">
-                                <Button className="h-10 cursor-pointer rounded-xl bg-zinc-950 px-4 text-xs font-semibold text-white hover:bg-primary sm:h-11 sm:px-5 sm:text-sm dark:bg-white dark:text-zinc-950 dark:hover:bg-primary dark:hover:text-white">
-                                    Inscribirse
-                                </Button>
-                            </a>
+                            <SiteButton asChild>
+                                <a href={registration_url} target="_blank" rel="noopener noreferrer">
+                                    Inscribirse<span className="sr-only"> (se abre en una pestaña nueva)</span>
+                                </a>
+                            </SiteButton>
                         )}
-
                         {enlace && (
-                            <a href={enlace} target="_self" rel="noopener noreferrer">
-                                <Button
-                                    variant="ghost"
-                                    className="h-10 cursor-pointer rounded-xl px-3 text-xs font-semibold text-foreground/75 hover:bg-primary/5 hover:text-primary sm:h-11 sm:px-4 sm:text-sm dark:text-zinc-200 dark:hover:bg-zinc-900"
-                                >
-                                    {isPast ? 'Ver detalles' : 'Ver actividad'}
-                                </Button>
-                            </a>
-                        )}
-
-                        {!isPast && online_url && is_online && (
-                            <a href={online_url} target="_blank" rel="noopener noreferrer">
-                                <Button
-                                    variant="ghost"
-                                    className="h-10 cursor-pointer rounded-xl px-3 text-xs font-semibold text-[#005f7b] hover:bg-[#005f7b]/10 hover:text-[#005f7b] sm:h-11 sm:text-sm dark:text-sky-300 dark:hover:bg-sky-500/10 dark:hover:text-sky-200"
-                                >
-                                    Acceder online
-                                </Button>
-                            </a>
+                            <SiteButton asChild variant={!isPast && registration_url ? 'secondary' : 'primary'}>
+                                <Link href={enlace}>{isPast ? 'Ver detalles' : 'Ver actividad'}</Link>
+                            </SiteButton>
                         )}
                     </div>
                 </div>

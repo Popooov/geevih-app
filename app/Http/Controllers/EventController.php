@@ -2,25 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ScheduleType;
 use App\Models\Event;
 use App\Models\EventCategory;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
-use Carbon\Carbon;
 
 class EventController extends Controller
 {
     /**
      * Format a date manually in Spanish.
      */
-    private function formatSpanishDate(mixed $date): string
+    private function formatSpanishDate(mixed $date, bool $abbreviated = false, bool $includeYear = true): string
     {
         if (! $date) {
             return '';
         }
 
         try {
-            $c = $date instanceof \DateTime
+            $c = $date instanceof \DateTimeInterface
                 ? Carbon::instance($date)
                 : Carbon::parse($date);
 
@@ -38,12 +39,28 @@ class EventController extends Controller
                 'noviembre',
                 'diciembre',
             ];
+            $mesesAbreviados = [
+                'ene.',
+                'feb.',
+                'mar.',
+                'abr.',
+                'may.',
+                'jun.',
+                'jul.',
+                'ago.',
+                'sept.',
+                'oct.',
+                'nov.',
+                'dic.',
+            ];
 
             $dia = $c->format('j');
-            $mesNombre = $meses[(int) $c->format('n') - 1];
+            $mesIndice = (int) $c->format('n') - 1;
+            $mesNombre = $abbreviated ? $mesesAbreviados[$mesIndice] : $meses[$mesIndice];
             $anio = $c->format('Y');
+            $fecha = $abbreviated ? "{$dia} {$mesNombre}" : "{$dia} de {$mesNombre}";
 
-            return "{$dia} de {$mesNombre} de {$anio}";
+            return $includeYear ? "{$fecha} de {$anio}" : $fecha;
         } catch (\Throwable $e) {
             return '';
         }
@@ -59,7 +76,7 @@ class EventController extends Controller
         }
 
         try {
-            $startDate = $start instanceof \DateTime
+            $startDate = $start instanceof \DateTimeInterface
                 ? Carbon::instance($start)
                 : Carbon::parse($start);
 
@@ -67,7 +84,7 @@ class EventController extends Controller
                 return $this->formatSpanishDate($startDate);
             }
 
-            $endDate = $end instanceof \DateTime
+            $endDate = $end instanceof \DateTimeInterface
                 ? Carbon::instance($end)
                 : Carbon::parse($end);
 
@@ -75,10 +92,117 @@ class EventController extends Controller
                 return $this->formatSpanishDate($startDate);
             }
 
-            return $this->formatSpanishDate($startDate) . ' – ' . $this->formatSpanishDate($endDate);
+            if ($startDate->format('Y-m') === $endDate->format('Y-m')) {
+                return $startDate->format('j').'–'.$this->formatSpanishDate($endDate);
+            }
+
+            $differentYear = $startDate->year !== $endDate->year;
+
+            return $this->formatSpanishDate($startDate, abbreviated: true, includeYear: $differentYear)
+                .' – '.$this->formatSpanishDate($endDate, abbreviated: true);
         } catch (\Throwable $e) {
             return '';
         }
+    }
+
+    private function formatEventSchedule(Event $event): array
+    {
+        $start = $event->start_at;
+        $end = $event->end_at;
+        $isMultiDay = $start && $end && ! $start->isSameDay($end);
+        $differentYear = $isMultiDay && $start->year !== $end->year;
+        $isCourse = $event->category?->slug === 'cursos';
+        $notes = trim($event->schedule_notes ?? '');
+
+        if ($event->scheduleType() !== ScheduleType::Fixed) {
+            $flexible = $event->scheduleType() === ScheduleType::Availability;
+            $timeFacts = $flexible
+                ? [['tipo' => 'flexible', 'etiqueta' => 'Organización', 'valor' => 'A tu ritmo']]
+                : [[
+                    'tipo' => 'sesiones',
+                    'etiqueta' => 'Horario de las sesiones',
+                    'valor' => $notes ?: ($event->program_url ? 'Consulta el programa' : 'Por confirmar'),
+                ]];
+
+            if (! $end) {
+                $timeFacts[] = ['tipo' => 'fin', 'etiqueta' => 'Fin del periodo', 'valor' => 'Sin fecha publicada'];
+            }
+
+            if ($flexible && $notes !== '') {
+                $timeFacts[] = ['tipo' => 'nota', 'etiqueta' => 'Información del acceso', 'valor' => $notes];
+            }
+
+            $dateLabel = $flexible ? 'Periodo de acceso' : ($isCourse ? 'Periodo del curso' : 'Fechas');
+
+            if (! $end) {
+                $dateLabel = $flexible ? 'Disponible desde' : ($isCourse ? 'Inicio del curso' : 'Inicio del evento');
+            }
+
+            return [
+                'fecha' => $this->formatSpanishDateRange($start, $end),
+                'fecha_label' => $dateLabel,
+                'horarios' => $timeFacts,
+                'hora_resumen' => $flexible ? 'A tu ritmo' : 'Por sesiones',
+                'hora' => null,
+                'fin' => null,
+            ];
+        }
+
+        $startTime = $event->hasStartTime() ? $start?->format('H:i') : null;
+        $endTime = $event->hasEndTime() ? $end?->format('H:i') : null;
+        $timeRange = ! $isMultiDay && $startTime !== null && $endTime !== null
+            ? $startTime.' – '.$endTime
+            : null;
+
+        $startValue = $isMultiDay && $startTime !== null
+            ? $this->formatSpanishDate($start, abbreviated: true, includeYear: $differentYear).' a las '.$startTime
+            : $startTime;
+        $endValue = $isMultiDay && $endTime !== null
+            ? $this->formatSpanishDate($end, abbreviated: true, includeYear: $differentYear).' a las '.$endTime
+            : $endTime;
+
+        $timeFacts = [];
+
+        if ($timeRange !== null) {
+            $timeFacts[] = ['tipo' => 'horario', 'etiqueta' => 'Horario', 'valor' => $timeRange];
+        } else {
+            if ($startValue !== null) {
+                $startLabel = $isMultiDay
+                    ? ($isCourse ? 'Inicio del curso' : 'Inicio del evento')
+                    : 'Hora de inicio';
+                $timeFacts[] = ['tipo' => 'inicio', 'etiqueta' => $startLabel, 'valor' => $startValue];
+            }
+
+            if ($endValue !== null) {
+                $endLabel = $isMultiDay
+                    ? ($isCourse ? 'Fin del curso' : 'Fin del evento')
+                    : 'Hora de fin';
+                $timeFacts[] = ['tipo' => 'fin', 'etiqueta' => $endLabel, 'valor' => $endValue];
+            }
+        }
+
+        $cardTime = $timeRange;
+
+        if ($cardTime === null && $startValue !== null) {
+            $cardTime = $isMultiDay ? 'Inicio el '.$startValue : 'Inicio a las '.$startValue;
+        }
+
+        if ($cardTime === null && $endValue !== null) {
+            $cardTime = $isMultiDay ? 'Fin el '.$endValue : 'Fin a las '.$endValue;
+        }
+
+        if ($notes !== '') {
+            $timeFacts[] = ['tipo' => 'nota', 'etiqueta' => 'Información del horario', 'valor' => $notes];
+        }
+
+        return [
+            'fecha' => $this->formatSpanishDateRange($start, $end),
+            'fecha_label' => $isMultiDay ? ($isCourse ? 'Periodo del curso' : 'Fechas') : 'Fecha',
+            'horarios' => $timeFacts,
+            'hora_resumen' => $cardTime,
+            'hora' => $timeRange ?? $startTime,
+            'fin' => $timeRange === null ? $endTime : null,
+        ];
     }
 
     private function resolveOptimizedCloudinaryImageUrl(?string $path, string $transformations): ?string
@@ -144,70 +268,18 @@ class EventController extends Controller
             ->where('is_published', true)
             ->when($category, fn ($q) => $q->where('event_category_id', $category->id));
 
-        // Get upcoming or ongoing events.
-        // If the event has an end date, it is considered upcoming/active while end_at is in the future.
-        // If the event has no end date, start_at is used instead.
-        $upcoming = (clone $base)
-            ->where(function ($q) use ($now) {
-                $q->whereNotNull('end_at')->where('end_at', '>=', $now)
-                    ->orWhere(function ($q2) use ($now) {
-                        $q2->whereNull('end_at')->where('start_at', '>=', $now);
-                    });
-            })
+        // Both lists use the same calendar rules as the detail view.
+        // All published events were already loaded for this unpaginated listing.
+        [$upcoming, $past] = $base
             ->orderBy('start_at', 'asc')
-            ->get();
-
-        // Get past events.
-        // If the event has an end date, it is past when end_at is before now.
-        // If the event has no end date, start_at is used instead.
-        $past = (clone $base)
-            ->where(function ($q) use ($now) {
-                $q->whereNotNull('end_at')->where('end_at', '<', $now)
-                    ->orWhere(function ($q2) use ($now) {
-                        $q2->whereNull('end_at')->where('start_at', '<', $now);
-                    });
-            })
-            ->orderBy('start_at', 'desc')
-            ->get();
+            ->get()
+            ->partition(fn (Event $event) => ! $event->isPastAt($now));
 
         // Transform each Event model into the structure expected by the React page.
         $mapEvent = function (Event $event) use ($now) {
             $start = $event->start_at;
-            $end = $event->end_at;
 
-            // Determine if the event is already finished.
-            // If end_at exists, it is used. Otherwise, start_at is used.
-            $isPast = ($end ?? $start)?->lt($now) ?? false;
-
-            // Determine if the event is currently active.
-            // This only applies when the event has an end date.
-            $isOngoing = $end ? ($start->lte($now) && $end->gte($now)) : false;
-
-            // Format start and end times.
-            // 00:00 is treated as "no visible time" because some events only need a date.
-            $hasStartTime = $start && $start->format('H:i') !== '00:00';
-            $hasEndTime = $end && $end->format('H:i') !== '00:00';
-
-            $time = $hasStartTime ? $start->format('H:i') : null;
-            $endTime = $hasEndTime ? $end->format('H:i') : null;
-
-            // Build the visible date range.
-            // If the event starts and ends on the same day, only one date is shown.
-            // If it spans multiple days, a date range is shown.
-            $dateRange = $this->formatSpanishDateRange($start, $end);
-
-            // Build the visible time range.
-            // If the event starts and ends on the same day, both times are shown.
-            // If it spans multiple days, only the start time is shown.
-            $timeRange = null;
-
-            if ($time) {
-                $timeRange = $time;
-
-                if ($end && $start->isSameDay($end) && $endTime) {
-                    $timeRange = $time . ' – ' . $endTime;
-                }
-            }
+            $schedule = $this->formatEventSchedule($event);
 
             // Get the category slug if the event has a category.
             $categorySlug = $event->category?->slug;
@@ -217,12 +289,11 @@ class EventController extends Controller
                 'titulo' => $event->title,
                 'slug' => $event->slug,
 
-                // Show "Online" as the place when the event is online.
-                'lugar' => $event->is_online ? 'Online' : $event->location,
+                'lugar' => $event->attendanceMode()->allowsInPerson() ? $event->location : null,
 
-                'fecha' => $dateRange,
+                'fecha' => $schedule['fecha'],
                 'year' => $start?->year,
-                'hora' => $timeRange,
+                'hora' => $schedule['hora_resumen'],
                 'descripcion' => $event->description,
 
                 // Convert the Cloudinary stored path into a public URL.
@@ -242,11 +313,14 @@ class EventController extends Controller
                     : route('events.legacy-show', $event),
 
                 'registration_url' => $event->registration_url,
-                'online_url' => $event->online_url,
-                'is_online' => $event->is_online,
+                'online_url' => $event->attendanceMode()->allowsOnline() ? $event->online_url : null,
+                'attendance_mode' => $event->attendanceMode()->value,
+                'is_online' => $event->attendanceMode()->allowsOnline(),
+                'schedule_type' => $event->scheduleType()->value,
 
-                'isPast' => $isPast,
-                'isOngoing' => $isOngoing,
+                'isPast' => $event->isPastAt($now),
+                'isOngoing' => $event->isOngoingAt($now),
+                'status_label' => $event->statusLabelAt($now),
 
                 'category' => $event->category?->name,
                 'category_slug' => $categorySlug,
@@ -257,7 +331,7 @@ class EventController extends Controller
         // and the current category if one was selected.
         return Inertia::render('events/index', [
             'upcomingEvents' => $upcoming->map($mapEvent)->values(),
-            'pastEvents' => $past->map($mapEvent)->values(),
+            'pastEvents' => $past->sortByDesc('start_at')->map($mapEvent)->values(),
             'currentCategory' => $category ? [
                 'name' => $category->name,
                 'slug' => $category->slug,
@@ -276,35 +350,7 @@ class EventController extends Controller
         // Store the current date and time to check the event status.
         $now = now();
 
-        $start = $event->start_at;
-        $end = $event->end_at;
-
-        // Check if the event is currently ongoing.
-        // This only applies to events with an end date.
-        $isOngoing = $end ? ($start->lte($now) && $end->gte($now)) : false;
-        $isPast = ($end ?? $start)?->lt($now) ?? false;
-
-        // Format start and end times.
-        // 00:00 is treated as "no visible time" because some events only need a date.
-        $hasStartTime = $start && $start->format('H:i') !== '00:00';
-        $hasEndTime = $end && $end->format('H:i') !== '00:00';
-
-        $time = $hasStartTime ? $start->format('H:i') : null;
-        $endTime = $hasEndTime ? $end->format('H:i') : null;
-
-        // Build the visible date range.
-        $dateRange = $this->formatSpanishDateRange($start, $end);
-
-        // Build the visible time range.
-        $timeRange = null;
-
-        if ($time) {
-            $timeRange = $time;
-
-            if ($end && $start->isSameDay($end) && $endTime) {
-                $timeRange = $time . ' – ' . $endTime;
-            }
-        }
+        $schedule = $this->formatEventSchedule($event);
 
         // Render the event detail page with all data needed by React.
         return Inertia::render('events/show', [
@@ -313,30 +359,31 @@ class EventController extends Controller
                 'titulo' => $event->title,
                 'slug' => $event->slug,
 
-                // Show "Online" as the place when the event is online.
-                'lugar' => $event->is_online ? 'Online' : $event->location,
+                'lugar' => $event->attendanceMode()->allowsInPerson() ? $event->location : null,
 
-                'fecha' => $dateRange,
-                'hora' => $timeRange,
-                'fin' => $event->end_at
-                    ? ($hasEndTime
-                        ? $event->end_at->format('d/m/Y H:i')
-                        : $event->end_at->format('d/m/Y'))
-                    : null,
+                'fecha' => $schedule['fecha'],
+                'fecha_label' => $schedule['fecha_label'],
+                'horarios' => $schedule['horarios'],
+                'hora' => $schedule['hora'],
+                'fin' => $schedule['fin'],
                 'descripcion' => $event->description,
                 'contenido' => $event->content,
 
                 // Convert the Cloudinary stored path into a public URL.
                 'imagen' => $this->resolveOptimizedCloudinaryImageUrl(
                     $event->image_url,
-                    'f_auto,q_auto:eco,c_fill,g_auto,w_1040,h_585'
+                    'f_auto,q_auto:eco,c_limit,w_1040,h_585'
                 ),
 
                 'registration_url' => $event->registration_url,
-                'online_url' => $event->online_url,
-                'is_online' => $event->is_online,
-                'isOngoing' => $isOngoing,
-                'isPast' => $isPast,
+                'online_url' => $event->attendanceMode()->allowsOnline() ? $event->online_url : null,
+                'program_url' => $event->program_url,
+                'attendance_mode' => $event->attendanceMode()->value,
+                'is_online' => $event->attendanceMode()->allowsOnline(),
+                'schedule_type' => $event->scheduleType()->value,
+                'isOngoing' => $event->isOngoingAt($now),
+                'isPast' => $event->isPastAt($now),
+                'status_label' => $event->statusLabelAt($now),
 
                 'category' => $event->category?->name,
                 'category_slug' => $event->category?->slug,
