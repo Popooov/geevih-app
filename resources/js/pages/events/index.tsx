@@ -1,6 +1,7 @@
 import EventCard from '@/components/event-card';
 import { siteButtonVariants } from '@/components/site-button';
 import AppLayout from '@/layouts/app-layout';
+import { getAttendanceMode, matchesAttendanceMode } from '@/lib/events';
 import { cn } from '@/lib/utils';
 import { type EventItem, type EventPageProps } from '@/types';
 import { Head, Link, usePage } from '@inertiajs/react';
@@ -91,7 +92,7 @@ function filterEvents(events: EventItem[], query: string, year: string, mode: Fi
         const text = normalizeSearch([event.titulo, event.descripcion ?? ''].join(' '));
         const matchesSearch = terms.every((term) => text.includes(term));
         const matchesYear = year === 'all' || String(event.year) === year;
-        const matchesMode = mode === 'all' || (mode === 'online' ? event.is_online === true : event.is_online === false);
+        const matchesMode = mode === 'all' || matchesAttendanceMode(event, mode === 'online' ? 'online' : 'in_person');
         return matchesSearch && matchesYear && matchesMode;
     });
 }
@@ -165,6 +166,8 @@ function EventGrid({ events, priority = false, isPast }: { events: EventItem[]; 
                     enlace={event.link}
                     lugar={event.lugar}
                     is_online={event.is_online}
+                    attendance_mode={event.attendance_mode}
+                    status_label={event.status_label}
                     registration_url={event.registration_url}
                     online_url={event.online_url}
                     isOngoing={event.isOngoing}
@@ -189,11 +192,7 @@ function TrainingListing({ upcomingEvents = [], pastEvents = [], currentCategory
     const years = [...new Set(allEvents.map((event) => event.year).filter((value): value is number => typeof value === 'number'))].sort(
         (a, b) => b - a,
     );
-    const showModeFilter =
-        !isMaterial &&
-        currentCategory?.slug !== 'webinars' &&
-        allEvents.some((event) => event.is_online === true) &&
-        allEvents.some((event) => event.is_online === false);
+    const showModeFilter = !isMaterial && new Set(allEvents.map(getAttendanceMode).filter(Boolean)).size > 1;
     const activeMode = showModeFilter ? mode : 'all';
     const activeYear = !isMaterial && years.some((value) => String(value) === year) ? year : 'all';
     const hasFilters = normalizeSearch(query).length > 0 || activeYear !== 'all' || activeMode !== 'all';
