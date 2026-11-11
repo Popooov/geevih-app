@@ -213,7 +213,7 @@ function TrainingListing({ upcomingEvents = [], pastEvents = [], currentCategory
             <Head title={content.title} />
             <div className="site-page">
                 <div className="site-stack">
-                    <section className="relative overflow-hidden rounded-[2rem] bg-background/92 px-5 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] backdrop-blur-xl sm:px-7 sm:py-7 lg:mt-8 lg:px-8 dark:bg-zinc-950/85">
+                    <section className="relative overflow-hidden rounded-[2rem] bg-background/92 px-5 py-6 shadow-[0_24px_80px_rgba(175,16,26,0.05)] backdrop-blur-xl sm:px-7 sm:py-7 sm:my-6 lg:mt-8 lg:px-8 dark:bg-zinc-950/85">
                         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.08),transparent_46%)] dark:bg-[radial-gradient(circle_at_top_left,rgba(175,16,26,0.14),transparent_46%)]" />
                         <div
                             className={cn(

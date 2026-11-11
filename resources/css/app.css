@@ -152,7 +152,7 @@
 
 /* Shared public-site patterns. Layout and editorial content remain in their pages. */
 @utility site-page {
-    @apply mx-auto w-full max-w-6xl px-5 pt-6 pb-16 sm:px-6 lg:px-8 lg:pt-0 lg:pb-20;
+    @apply mx-auto w-full max-w-6xl px-5 pt-6 pb-16 sm:px-6 sm:pt-0 lg:px-8 lg:pt-0 lg:pb-20;
 }
 
 @utility site-stack {
