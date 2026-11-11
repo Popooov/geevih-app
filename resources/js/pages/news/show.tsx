@@ -47,7 +47,7 @@ export default function Show() {
             <Head title={singleNews.titulo} />
 
             <div className="site-page">
-                <div className="mx-auto max-w-3xl space-y-4 lg:pt-8">
+                <div className="mx-auto max-w-3xl space-y-4 md:pt-8">
                     <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
                         {backLink}
                         {singleNews.link && <ShareButton key={singleNews.link} title={singleNews.titulo} url={singleNews.link} />}
