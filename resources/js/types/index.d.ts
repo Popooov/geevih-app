@@ -44,18 +44,15 @@ export interface User {
 
 /**
  * EVENTS
- * Datos públicos de las tarjetas y la ficha de eventos.
+ * Mantiene el shape "ES" para no tocar React, pero añade campos nuevos.
  */
-export type AttendanceMode = 'in_person' | 'online' | 'hybrid';
-export type ScheduleType = 'fixed' | 'sessions' | 'availability';
-
 export interface EventItem {
     id: number;
 
     // legacy / frontend-friendly
     titulo: string;
-    lugar: string | null;
-    fecha: string; // Fecha o periodo en español.
+    lugar: string;
+    fecha: string; // ej: "Jan 28, 2026" (toFormattedDateString)
     year?: number | null; // Año de inicio de la actividad.
     hora?: string | null;
 
@@ -68,9 +65,6 @@ export interface EventItem {
 
     // nuevos (útiles para EventCard / lógica)
     is_online?: boolean;
-    attendance_mode?: AttendanceMode;
-    schedule_type?: ScheduleType;
-    status_label?: string | null;
     registration_url?: string | null;
     online_url?: string | null;
 
@@ -88,31 +82,19 @@ export interface EventCategoryInfo {
     slug: string;
 }
 
-export interface EventTimeFact {
-    tipo: 'horario' | 'inicio' | 'fin' | 'sesiones' | 'flexible' | 'nota';
-    etiqueta: string;
-    valor: string;
-}
-
 export interface SingleEvent {
     id: number;
     titulo: string;
-    lugar: string | null;
+    lugar: string;
     fecha: string;
-    fecha_label?: string;
-    horarios?: EventTimeFact[];
     hora?: string | null;
     descripcion?: string | null;
     contenido?: string | null;
     imagen?: string | null;
 
     is_online?: boolean;
-    attendance_mode?: AttendanceMode;
-    schedule_type?: ScheduleType;
-    status_label?: string | null;
     registration_url?: string | null;
     online_url?: string | null;
-    program_url?: string | null;
 
     fin?: string | null;
     slug?: string;
@@ -151,10 +133,11 @@ export interface SingleNews {
 
     titulo: string;
     fecha: string;
-    descripcion: string;
+    descripcion: string | null;
     contenido?: string | null;
 
     imagen?: string | null;
+    image_alt?: string | null;
 
     source_url?: string | null;
     slug?: string;
