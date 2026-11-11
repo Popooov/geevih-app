@@ -1,6 +1,8 @@
 import { SiteButton } from '@/components/site-button';
 import { Badge } from '@/components/ui/badge';
+import { attendanceLabels, getAttendanceMode, matchesAttendanceMode } from '@/lib/events';
 import { cn } from '@/lib/utils';
+import type { AttendanceMode } from '@/types';
 import { Link } from '@inertiajs/react';
 import { Calendar, Clock3, MapPin, Video } from 'lucide-react';
 import type { ReactNode } from 'react';
@@ -12,8 +14,10 @@ interface EventCardProps {
     descripcion?: string | null;
     imagen?: string | null;
     enlace?: string | null;
-    lugar?: string;
+    lugar?: string | null;
     is_online?: boolean;
+    attendance_mode?: AttendanceMode;
+    status_label?: string | null;
     registration_url?: string | null;
     online_url?: string | null;
     isOngoing?: boolean;
@@ -23,10 +27,11 @@ interface EventCardProps {
 
 const fallbackImageSrc = '/images/event-placeholder.png';
 
-function EventBadge({ children, variant = 'default' }: { children: ReactNode; variant?: 'default' | 'secondary' | 'live' | 'finished' }) {
+function EventBadge({ children, variant = 'default' }: { children: ReactNode; variant?: 'default' | 'secondary' | 'hybrid' | 'live' | 'finished' }) {
     const styles = {
         default: 'bg-muted text-foreground',
         secondary: 'bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300',
+        hybrid: 'bg-violet-100 text-violet-800 dark:bg-violet-400/15 dark:text-violet-200',
         live: 'bg-emerald-700 text-white dark:bg-emerald-300 dark:text-zinc-950',
         finished: 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900',
     };
@@ -64,6 +69,8 @@ export default function EventCard({
     enlace,
     lugar,
     is_online,
+    attendance_mode,
+    status_label,
     registration_url,
     online_url,
     isOngoing,
@@ -71,7 +78,9 @@ export default function EventCard({
     priority = false,
 }: EventCardProps) {
     const imageSrc = imagen?.trim() || fallbackImageSrc;
-    const showPhysicalLocation = !!lugar && !is_online;
+    const participation = { attendance_mode, is_online };
+    const mode = getAttendanceMode(participation);
+    const showPhysicalLocation = !!lugar && matchesAttendanceMode(participation, 'in_person');
 
     return (
         <article className={cn('site-card', isOngoing && !isPast && 'border-primary/40')}>
@@ -106,10 +115,13 @@ export default function EventCard({
             <div className="site-card-body md:max-lg:p-4">
                 <div className="space-y-3.5">
                     <div className="flex flex-wrap items-center gap-2">
-                        {isPast && <EventBadge variant="finished">Finalizado</EventBadge>}
-                        {isOngoing && !isPast && <EventBadge variant="live">En curso</EventBadge>}
-                        {is_online === true && <EventBadge variant="secondary">Online</EventBadge>}
-                        {is_online === false && <EventBadge>Presencial</EventBadge>}
+                        {isPast && <EventBadge variant="finished">{status_label ?? 'Finalizado'}</EventBadge>}
+                        {isOngoing && !isPast && <EventBadge variant="live">{status_label ?? 'En curso'}</EventBadge>}
+                        {mode && (
+                            <EventBadge variant={mode === 'hybrid' ? 'hybrid' : mode === 'online' ? 'secondary' : 'default'}>
+                                {attendanceLabels[mode]}
+                            </EventBadge>
+                        )}
                     </div>
 
                     <h3 className="line-clamp-3 site-card-title">{titulo}</h3>
@@ -124,7 +136,7 @@ export default function EventCard({
 
                     {showPhysicalLocation && <MetaItem icon={MapPin}>{lugar}</MetaItem>}
 
-                    {!isPast && online_url && is_online && (
+                    {!isPast && online_url && matchesAttendanceMode(participation, 'online') && (
                         <MetaItem icon={Video}>
                             <SiteButton asChild variant="ghost" className="px-0 hover:bg-transparent hover:underline">
                                 <a href={online_url} target="_blank" rel="noopener noreferrer">
