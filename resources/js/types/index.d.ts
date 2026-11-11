@@ -44,15 +44,18 @@ export interface User {
 
 /**
  * EVENTS
- * Mantiene el shape "ES" para no tocar React, pero añade campos nuevos.
+ * Datos públicos de las tarjetas y la ficha de eventos.
  */
+export type AttendanceMode = 'in_person' | 'online' | 'hybrid';
+export type ScheduleType = 'fixed' | 'sessions' | 'availability';
+
 export interface EventItem {
     id: number;
 
     // legacy / frontend-friendly
     titulo: string;
-    lugar: string;
-    fecha: string; // ej: "Jan 28, 2026" (toFormattedDateString)
+    lugar: string | null;
+    fecha: string; // Fecha o periodo en español.
     year?: number | null; // Año de inicio de la actividad.
     hora?: string | null;
 
@@ -65,6 +68,9 @@ export interface EventItem {
 
     // nuevos (útiles para EventCard / lógica)
     is_online?: boolean;
+    attendance_mode?: AttendanceMode;
+    schedule_type?: ScheduleType;
+    status_label?: string | null;
     registration_url?: string | null;
     online_url?: string | null;
 
@@ -83,7 +89,7 @@ export interface EventCategoryInfo {
 }
 
 export interface EventTimeFact {
-    tipo: 'horario' | 'inicio' | 'fin';
+    tipo: 'horario' | 'inicio' | 'fin' | 'sesiones' | 'flexible' | 'nota';
     etiqueta: string;
     valor: string;
 }
@@ -91,7 +97,7 @@ export interface EventTimeFact {
 export interface SingleEvent {
     id: number;
     titulo: string;
-    lugar: string;
+    lugar: string | null;
     fecha: string;
     fecha_label?: string;
     horarios?: EventTimeFact[];
@@ -101,8 +107,12 @@ export interface SingleEvent {
     imagen?: string | null;
 
     is_online?: boolean;
+    attendance_mode?: AttendanceMode;
+    schedule_type?: ScheduleType;
+    status_label?: string | null;
     registration_url?: string | null;
     online_url?: string | null;
+    program_url?: string | null;
 
     fin?: string | null;
     slug?: string;
