@@ -2,24 +2,33 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\AttendanceMode;
+use App\Enums\ScheduleType;
 use App\Filament\Resources\EventResource\Pages;
 use App\Models\Event;
+use Carbon\Carbon;
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class EventResource extends Resource
 {
     protected static ?string $model = Event::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
+
     protected static ?string $navigationGroup = 'Contenido';
+
     protected static ?string $modelLabel = 'Evento';
+
     protected static ?string $pluralModelLabel = 'Eventos';
 
     public static function form(Form $form): Form
@@ -51,34 +60,31 @@ class EventResource extends Resource
                         ->maxLength(255)
                         ->helperText('Se ajustará automáticamente si ya existe.'),
 
-                    Forms\Components\DateTimePicker::make('start_at')
-                        ->label('Inicio')
+                    Forms\Components\Select::make('attendance_mode')
+                        ->label('Modalidad de participación')
+                        ->options(AttendanceMode::class)
+                        ->default(AttendanceMode::InPerson->value)
                         ->required()
-                        ->seconds(false),
-
-                    Forms\Components\DateTimePicker::make('end_at')
-                        ->label('Fin')
-                        ->seconds(false)
-                        ->nullable()
-                        ->rule('after_or_equal:start_at'),
-
-                    Forms\Components\Toggle::make('is_online')
-                        ->label('Online')
-                        ->default(false)
-                        ->live(),
+                        ->rule(Rule::enum(AttendanceMode::class))
+                        ->live()
+                        ->helperText('Híbrido permite participar presencialmente o por internet.'),
 
                     Forms\Components\TextInput::make('location')
-                        ->label('Lugar (si presencial)')
+                        ->label('Sede presencial')
                         ->maxLength(255)
                         ->nullable()
-                        ->visible(fn (Forms\Get $get) => ! $get('is_online')),
+                        ->visible(fn (Forms\Get $get) => $get('attendance_mode') !== AttendanceMode::Online->value)
+                        ->dehydratedWhenHidden(),
 
                     Forms\Components\TextInput::make('online_url')
-                        ->label('Enlace online')
+                        ->label('Enlace de acceso online')
                         ->url()
+                        ->rule('url:http,https')
                         ->maxLength(255)
                         ->nullable()
-                        ->visible(fn (Forms\Get $get) => (bool) $get('is_online')),
+                        ->visible(fn (Forms\Get $get) => $get('attendance_mode') !== AttendanceMode::InPerson->value)
+                        ->dehydratedWhenHidden()
+                        ->helperText('Opcional. Puedes añadirlo cuando el acceso esté disponible.'),
 
                     Forms\Components\TextInput::make('registration_url')
                         ->label('Enlace de inscripción')
@@ -116,6 +122,84 @@ class EventResource extends Resource
                 ])
                 ->columns(2),
 
+            Forms\Components\Section::make('Calendario')
+                ->description('La organización temporal es independiente de la modalidad de participación.')
+                ->schema([
+                    Forms\Components\Select::make('schedule_type')
+                        ->label('Organización temporal')
+                        ->options(ScheduleType::class)
+                        ->default(ScheduleType::Fixed->value)
+                        ->required()
+                        ->rule(Rule::enum(ScheduleType::class))
+                        ->live()
+                        ->afterStateUpdated(function (Forms\Get $get, Forms\Set $set): void {
+                            if ($get('schedule_type') === ScheduleType::Fixed->value) {
+                                return;
+                            }
+
+                            foreach (['start', 'end'] as $endpoint) {
+                                $set("has_{$endpoint}_time", false);
+
+                                if ($value = $get("{$endpoint}_at")) {
+                                    $set("{$endpoint}_at", Carbon::parse($value)->startOfDay()->toDateTimeString());
+                                }
+                            }
+                        })
+                        ->helperText('Horario definido: inicio y cierre del evento. Por sesiones: días concretos según horario o programa. Acceso flexible: cada participante avanza a su ritmo.')
+                        ->columnSpanFull(),
+
+                    Forms\Components\Group::make()->schema([
+                        self::timeToggle('start'),
+                        self::calendarField('start')->required(),
+                    ]),
+
+                    Forms\Components\Group::make()->schema([
+                        self::timeToggle('end'),
+                        self::calendarField('end')
+                            ->nullable()
+                            ->helperText('Opcional. Si no hay fecha de cierre publicada, déjalo vacío.')
+                            ->rule(fn (Forms\Get $get): Closure => function (string $attribute, mixed $value, Closure $fail) use ($get): void {
+                                if (! $value || ! $get('start_at')) {
+                                    return;
+                                }
+
+                                $event = new Event([
+                                    'start_at' => $get('start_at'),
+                                    'end_at' => $value,
+                                    'schedule_type' => $get('schedule_type'),
+                                    'has_start_time' => $get('has_start_time'),
+                                    'has_end_time' => $get('has_end_time'),
+                                ]);
+
+                                if ($event->effectiveEndAt()->lt($event->effectiveStartAt())) {
+                                    $fail('El fin debe ser igual o posterior al inicio.');
+                                }
+                            }),
+                    ]),
+
+                    Forms\Components\Textarea::make('schedule_notes')
+                        ->label(fn (Forms\Get $get): string => match ($get('schedule_type')) {
+                            ScheduleType::Sessions->value => 'Horario de las sesiones',
+                            ScheduleType::Availability->value => 'Información del acceso',
+                            default => 'Información adicional del horario',
+                        })
+                        ->helperText('Ej.: martes y jueves, de 16:00 a 18:00. Si presencial y online tienen horarios diferentes, indícalos aquí o en el programa.')
+                        ->rows(3)
+                        ->maxLength(2000)
+                        ->nullable()
+                        ->columnSpanFull(),
+
+                    Forms\Components\TextInput::make('program_url')
+                        ->label('Enlace al programa')
+                        ->url()
+                        ->rule('url:http,https')
+                        ->maxLength(255)
+                        ->nullable()
+                        ->helperText('Opcional. Enlace a la página o PDF con la programación publicada.')
+                        ->columnSpanFull(),
+                ])
+                ->columns(2),
+
             Forms\Components\Section::make('Publicación')
                 ->schema([
                     Forms\Components\Toggle::make('is_published')
@@ -149,16 +233,23 @@ class EventResource extends Resource
 
                 Tables\Columns\TextColumn::make('start_at')
                     ->label('Inicio')
-                    ->dateTime('d/m/Y H:i')
+                    ->dateTime(fn (Event $record): string => $record->hasStartTime() ? 'd/m/Y H:i' : 'd/m/Y')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('end_at')
                     ->label('Fin')
-                    ->dateTime('d/m/Y H:i')
+                    ->dateTime(fn (Event $record): string => $record->hasEndTime() ? 'd/m/Y H:i' : 'd/m/Y')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                Tables\Columns\IconColumn::make('is_online')->boolean()->label('Online')->sortable(),
+                Tables\Columns\TextColumn::make('attendance_mode')
+                    ->label('Modalidad')
+                    ->badge()
+                    ->sortable(),
+
+                Tables\Columns\TextColumn::make('schedule_type')
+                    ->label('Organización temporal')
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('location')
                     ->label('Lugar')
@@ -175,6 +266,12 @@ class EventResource extends Resource
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
+                Tables\Filters\SelectFilter::make('attendance_mode')
+                    ->label('Modalidad')
+                    ->options(AttendanceMode::class),
+                Tables\Filters\SelectFilter::make('schedule_type')
+                    ->label('Organización temporal')
+                    ->options(ScheduleType::class),
                 Tables\Filters\SelectFilter::make('event_category_id')
                     ->label('Categoría')
                     ->relationship('category', 'name'),
@@ -204,6 +301,48 @@ class EventResource extends Resource
         ];
     }
 
+    private static function timeToggle(string $endpoint): Forms\Components\Toggle
+    {
+        return Forms\Components\Toggle::make("has_{$endpoint}_time")
+            ->label($endpoint === 'start' ? 'Indicar hora de inicio' : 'Indicar hora de fin')
+            ->default(false)
+            ->live()
+            ->visible(fn (Forms\Get $get) => $get('schedule_type') === ScheduleType::Fixed->value)
+            ->dehydratedWhenHidden()
+            ->afterStateUpdated(function (mixed $state, Forms\Get $get, Forms\Set $set) use ($endpoint): void {
+                if (! $state && ($value = $get("{$endpoint}_at"))) {
+                    $set("{$endpoint}_at", Carbon::parse($value)->startOfDay()->toDateTimeString());
+                }
+            });
+    }
+
+    private static function calendarField(string $endpoint): Forms\Components\DateTimePicker
+    {
+        $hasTime = fn (Forms\Get $get): bool => $get('schedule_type') === ScheduleType::Fixed->value
+            && (bool) $get("has_{$endpoint}_time");
+
+        return Forms\Components\DateTimePicker::make("{$endpoint}_at")
+            ->label(fn (Forms\Get $get): string => match ($get('schedule_type')) {
+                ScheduleType::Availability->value => $endpoint === 'start' ? 'Disponible desde' : 'Disponible hasta',
+                ScheduleType::Sessions->value => $endpoint === 'start' ? 'Primera fecha' : 'Última fecha',
+                default => $endpoint === 'start' ? 'Inicio del evento' : 'Fin del evento',
+            })
+            ->native(false)
+            ->locale('es')
+            ->seconds(false)
+            ->time($hasTime)
+            ->displayFormat(fn (Forms\Get $get): string => $hasTime($get) ? 'd/m/Y H:i' : 'd/m/Y')
+            ->dehydrateStateUsing(function (?string $state, Forms\Get $get) use ($hasTime): ?string {
+                if (! $state) {
+                    return null;
+                }
+
+                $date = Carbon::parse($state);
+
+                return ($hasTime($get) ? $date : $date->startOfDay())->toDateTimeString();
+            });
+    }
+
     public static function uniqueSlug(string $baseSlug, string $modelClass, ?int $ignoreId = null): string
     {
         $slug = Str::slug($baseSlug);
@@ -219,7 +358,7 @@ class EventResource extends Resource
         }
 
         // Si existe, buscamos el mayor sufijo usado: slug-2, slug-3...
-        $like = $slug . '-%';
+        $like = $slug.'-%';
 
         $maxSuffix = $modelClass::query()
             ->when($ignoreId, fn ($q) => $q->whereKeyNot($ignoreId))
@@ -228,10 +367,13 @@ class EventResource extends Resource
             })
             ->pluck('slug')
             ->map(function ($s) use ($slug) {
-                if ($s === $slug) return 1;
-                if (preg_match('/^' . preg_quote($slug, '/') . '-(\d+)$/', $s, $m)) {
+                if ($s === $slug) {
+                    return 1;
+                }
+                if (preg_match('/^'.preg_quote($slug, '/').'-(\d+)$/', $s, $m)) {
                     return (int) $m[1];
                 }
+
                 return 0;
             })
             ->max();
