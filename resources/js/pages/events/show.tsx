@@ -116,7 +116,7 @@ export default function Show() {
             <Head title={event.titulo} />
 
             <div className="site-page">
-                <div className="space-y-6 lg:space-y-8 lg:pt-8">
+                <div className="space-y-6 lg:space-y-8 md:pt-8">
                     <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
                         <Link
                             href={backHref}
