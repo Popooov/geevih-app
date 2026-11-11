@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Enums\ScheduleType;
 use App\Models\Event;
 use App\Models\EventCategory;
+use App\Support\CloudinaryImageUrl;
+use App\Support\SharePreview;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -205,22 +207,15 @@ class EventController extends Controller
         ];
     }
 
-    private function resolveOptimizedCloudinaryImageUrl(?string $path, string $transformations): ?string
+    private function resolveImageUrl(?string $path): ?string
     {
-        if (! $path) {
+        $path = trim($path ?? '');
+
+        if ($path === '') {
             return null;
         }
 
         if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
-            if (str_contains($path, 'res.cloudinary.com') && str_contains($path, '/image/upload/')) {
-                return preg_replace(
-                    '#/image/upload/#',
-                    "/image/upload/{$transformations}/",
-                    $path,
-                    1
-                );
-            }
-
             return $path;
         }
 
@@ -245,9 +240,8 @@ class EventController extends Controller
 
         if ($cloud) {
             return sprintf(
-                'https://res.cloudinary.com/%s/image/upload/%s/%s',
+                'https://res.cloudinary.com/%s/image/upload/%s',
                 $cloud,
-                $transformations,
                 ltrim($path, '/')
             );
         }
@@ -297,8 +291,8 @@ class EventController extends Controller
                 'descripcion' => $event->description,
 
                 // Convert the Cloudinary stored path into a public URL.
-                'imagen' => $this->resolveOptimizedCloudinaryImageUrl(
-                    $event->image_url,
+                'imagen' => CloudinaryImageUrl::transform(
+                    $this->resolveImageUrl($event->image_url),
                     'f_auto,q_auto:eco,c_fill,g_auto,w_768,h_432'
                 ),
 
@@ -351,6 +345,12 @@ class EventController extends Controller
         $now = now();
 
         $schedule = $this->formatEventSchedule($event);
+        $attendanceMode = $event->attendanceMode();
+        $imageUrl = $this->resolveImageUrl($event->image_url);
+        $link = route('training.show', [
+            'category' => $category->slug,
+            'event' => $event->slug,
+        ]);
 
         // Render the event detail page with all data needed by React.
         return Inertia::render('events/show', [
@@ -359,7 +359,7 @@ class EventController extends Controller
                 'titulo' => $event->title,
                 'slug' => $event->slug,
 
-                'lugar' => $event->attendanceMode()->allowsInPerson() ? $event->location : null,
+                'lugar' => $attendanceMode->allowsInPerson() ? $event->location : null,
 
                 'fecha' => $schedule['fecha'],
                 'fecha_label' => $schedule['fecha_label'],
@@ -370,16 +370,16 @@ class EventController extends Controller
                 'contenido' => $event->content,
 
                 // Convert the Cloudinary stored path into a public URL.
-                'imagen' => $this->resolveOptimizedCloudinaryImageUrl(
-                    $event->image_url,
+                'imagen' => CloudinaryImageUrl::transform(
+                    $imageUrl,
                     'f_auto,q_auto:eco,c_limit,w_1040,h_585'
                 ),
 
                 'registration_url' => $event->registration_url,
-                'online_url' => $event->attendanceMode()->allowsOnline() ? $event->online_url : null,
+                'online_url' => $attendanceMode->allowsOnline() ? $event->online_url : null,
                 'program_url' => $event->program_url,
-                'attendance_mode' => $event->attendanceMode()->value,
-                'is_online' => $event->attendanceMode()->allowsOnline(),
+                'attendance_mode' => $attendanceMode->value,
+                'is_online' => $attendanceMode->allowsOnline(),
                 'schedule_type' => $event->scheduleType()->value,
                 'isOngoing' => $event->isOngoingAt($now),
                 'isPast' => $event->isPastAt($now),
@@ -392,11 +392,20 @@ class EventController extends Controller
                 'backLink' => route('training.category', $category->slug),
 
                 // Current event detail URL.
-                'link' => route('training.show', [
-                    'category' => $category->slug,
-                    'event' => $event->slug,
-                ]),
+                'link' => $link,
             ],
-        ]);
+        ])->withViewData('sharePreview', SharePreview::make(
+            type: 'website',
+            title: $event->title,
+            url: $link,
+            description: implode(' · ', array_filter([
+                $schedule['fecha'],
+                $attendanceMode->getLabel(),
+                trim($event->description ?? ''),
+            ])),
+            imageUrl: $imageUrl,
+            imageAlt: $event->image_alt,
+            fallbackImage: 'images/event-share.jpg',
+        ));
     }
 }
